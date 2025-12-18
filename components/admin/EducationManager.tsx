@@ -1,7 +1,7 @@
 'use client'
 
 import { useEffect, useState } from 'react'
-import { Plus, Edit, Trash2, Save, X } from 'lucide-react'
+import { Plus, Edit, Trash2, Save, X, Trash } from 'lucide-react'
 import type { Education } from '@/lib/types'
 
 export default function EducationManager() {
@@ -80,10 +80,41 @@ export default function EducationManager() {
       const res = await fetch(`/api/education/${id}`, { method: 'DELETE' })
       if (res.ok) {
         await fetchItems()
+        if (typeof window !== 'undefined') {
+          window.dispatchEvent(new Event('content-updated'))
+        }
       }
     } catch (error) {
       console.error('Error deleting education:', error)
       alert('Failed to delete. Please try again.')
+    }
+  }
+
+  const handleDeleteAll = async () => {
+    if (items.length === 0) {
+      alert('No items to delete.')
+      return
+    }
+
+    const confirmMessage = `Are you sure you want to delete ALL ${items.length} education entries? This action cannot be undone!`
+    if (!confirm(confirmMessage)) return
+
+    try {
+      const deletePromises = items.map(item => 
+        item.id ? fetch(`/api/education/${item.id}`, { method: 'DELETE' }) : Promise.resolve()
+      )
+      
+      await Promise.all(deletePromises)
+      await fetchItems()
+      
+      if (typeof window !== 'undefined') {
+        window.dispatchEvent(new Event('content-updated'))
+      }
+      
+      alert(`Successfully deleted all ${items.length} education entries!`)
+    } catch (error) {
+      console.error('Error deleting all education:', error)
+      alert('Failed to delete all items. Please try again.')
     }
   }
 
@@ -113,13 +144,24 @@ export default function EducationManager() {
     <div className="space-y-6">
       <div className="flex justify-between items-center">
         <h2 className="text-2xl font-bold text-gray-900">Education</h2>
-        <button
-          onClick={handleCreate}
-          className="flex items-center gap-2 px-4 py-2 bg-primary-600 text-white rounded-lg hover:bg-primary-700 transition-colors"
-        >
-          <Plus className="w-4 h-4" />
-          Add New
-        </button>
+        <div className="flex gap-2">
+          {items.length > 0 && (
+            <button
+              onClick={handleDeleteAll}
+              className="flex items-center gap-2 px-4 py-2 bg-red-600 text-white rounded-lg hover:bg-red-700 transition-colors"
+            >
+              <Trash className="w-4 h-4" />
+              Delete All
+            </button>
+          )}
+          <button
+            onClick={handleCreate}
+            className="flex items-center gap-2 px-4 py-2 bg-primary-600 text-white rounded-lg hover:bg-primary-700 transition-colors"
+          >
+            <Plus className="w-4 h-4" />
+            Add New
+          </button>
+        </div>
       </div>
 
       {showForm && (

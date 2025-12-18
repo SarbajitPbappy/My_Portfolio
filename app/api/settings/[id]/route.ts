@@ -6,18 +6,12 @@ export async function PUT(
   { params }: { params: { id: string } }
 ) {
   try {
-    const token = request.cookies.get('admin_token')?.value
-    if (!token) {
-      return NextResponse.json(
-        { error: 'Unauthorized' },
-        { status: 401 }
-      )
-    }
-
+    // Allow public updates for theme/dark mode (no auth required)
     const body = await request.json()
-    const data = await db.updateNavbar(Number(params.id), body)
+    const data = await db.updateSettings(Number(params.id), body)
     return NextResponse.json(data)
   } catch (error: any) {
+    console.error('Error updating settings:', error)
     return NextResponse.json(
       { error: error.message },
       { status: 500 }

@@ -1,7 +1,7 @@
 'use client'
 
 import { useEffect, useState } from 'react'
-import { Plus, Edit, Trash2, Save, X } from 'lucide-react'
+import { Plus, Edit, Trash2, Save, X, Trash } from 'lucide-react'
 import type { Publication } from '@/lib/types'
 
 export default function PublicationsManager() {
@@ -81,10 +81,41 @@ export default function PublicationsManager() {
       const res = await fetch(`/api/publications/${id}`, { method: 'DELETE' })
       if (res.ok) {
         await fetchItems()
+        if (typeof window !== 'undefined') {
+          window.dispatchEvent(new Event('content-updated'))
+        }
       }
     } catch (error) {
       console.error('Error deleting publication:', error)
       alert('Failed to delete. Please try again.')
+    }
+  }
+
+  const handleDeleteAll = async () => {
+    if (items.length === 0) {
+      alert('No items to delete.')
+      return
+    }
+
+    const confirmMessage = `Are you sure you want to delete ALL ${items.length} publications? This action cannot be undone!`
+    if (!confirm(confirmMessage)) return
+
+    try {
+      const deletePromises = items.map(item => 
+        item.id ? fetch(`/api/publications/${item.id}`, { method: 'DELETE' }) : Promise.resolve()
+      )
+      
+      await Promise.all(deletePromises)
+      await fetchItems()
+      
+      if (typeof window !== 'undefined') {
+        window.dispatchEvent(new Event('content-updated'))
+      }
+      
+      alert(`Successfully deleted all ${items.length} publications!`)
+    } catch (error) {
+      console.error('Error deleting all publications:', error)
+      alert('Failed to delete all items. Please try again.')
     }
   }
 
@@ -96,35 +127,48 @@ export default function PublicationsManager() {
     <div className="space-y-6">
       <div className="flex justify-between items-center">
         <h2 className="text-2xl font-bold text-gray-900">Publications</h2>
-        <button
-          onClick={handleCreate}
-          className="flex items-center gap-2 px-4 py-2 bg-primary-600 text-white rounded-lg hover:bg-primary-700 transition-colors"
-        >
-          <Plus className="w-4 h-4" />
-          Add New
-        </button>
+        <div className="flex gap-2">
+          {items.length > 0 && (
+            <button
+              onClick={handleDeleteAll}
+              className="flex items-center gap-2 px-4 py-2 bg-red-600 text-white rounded-lg hover:bg-red-700 transition-colors"
+            >
+              <Trash className="w-4 h-4" />
+              Delete All
+            </button>
+          )}
+          <button
+            onClick={handleCreate}
+            className="flex items-center gap-2 px-4 py-2 bg-primary-600 text-white rounded-lg hover:bg-primary-700 transition-colors"
+          >
+            <Plus className="w-4 h-4" />
+            Add New
+          </button>
+        </div>
       </div>
 
       {showForm && (
         <div className="bg-white rounded-xl shadow-lg p-6 border border-gray-200">
           <div className="space-y-4">
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">Title *</label>
+              <label className="block text-sm font-medium text-gray-700 mb-1">Publication Title *</label>
               <input
                 type="text"
                 value={formData.title || ''}
                 onChange={(e) => setFormData({ ...formData, title: e.target.value })}
                 className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-transparent"
+                placeholder="Enter the full title of the publication..."
                 required
               />
             </div>
             <div>
               <label className="block text-sm font-medium text-gray-700 mb-1">Authors *</label>
-              <input
-                type="text"
+              <textarea
                 value={formData.authors || ''}
                 onChange={(e) => setFormData({ ...formData, authors: e.target.value })}
                 className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-transparent"
+                rows={2}
+                placeholder="Enter all authors separated by commas..."
                 required
               />
             </div>

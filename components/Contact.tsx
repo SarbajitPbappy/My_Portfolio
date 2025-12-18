@@ -2,7 +2,8 @@
 
 import { useEffect, useState } from 'react'
 import { motion } from 'framer-motion'
-import { Mail, Github, Linkedin, Send, Phone } from 'lucide-react'
+import { Send } from 'lucide-react'
+import { iconMap } from '@/lib/icons'
 import { useForm } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
 import * as z from 'zod'
@@ -25,13 +26,7 @@ const fadeIn = {
   transition: { duration: 0.35, ease: 'easeOut' },
 }
 
-// Icon map for dynamic icon rendering
-const iconMap: Record<string, any> = {
-  Mail,
-  Phone,
-  Github,
-  Linkedin,
-}
+// Use centralized icon mapping from lib/icons.ts
 
 // Fallback contact info
 const fallbackContactInfo = [
@@ -168,7 +163,7 @@ export default function Contact() {
               <h3 className="text-2xl font-bold mb-6 text-gray-900">Contact Information</h3>
               <div className="space-y-4">
                 {contactInfo.map((info, index) => {
-                  const Icon = info.icon && iconMap[info.icon] ? iconMap[info.icon] : Mail
+                  const Icon = info.icon && iconMap[info.icon] ? iconMap[info.icon] : iconMap.Mail
                   return (
                     <motion.div
                       key={index}

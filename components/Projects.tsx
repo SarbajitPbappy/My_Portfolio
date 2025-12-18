@@ -2,38 +2,7 @@
 
 import { useEffect, useState } from 'react'
 import { motion } from 'framer-motion'
-import { 
-  Github, Database, Mail, Cloud, Code, Sparkles, Split,
-  ShoppingBag, Store, Briefcase, ShoppingCart,
-  Package, Box, Layers, Server, Globe, Monitor,
-  Smartphone, Tablet, Laptop, Cpu, HardDrive,
-  Zap, Rocket, Target, Award, Star, Heart,
-  Music, Video, Image, FileText, Book, GraduationCap,
-  Building, Home, Car, Plane, Train, Bike,
-  Gamepad2, Palette, Camera, Mic, Headphones,
-  Wrench, Settings, Cog, Lock, Key, Shield,
-  Bell, MessageSquare, Phone, Users, User,
-  Search, Filter, Grid, List, Menu, X,
-  Check, Plus, Minus, Edit, Trash, Save,
-  Download, Upload, Share, ExternalLink,
-  Eye, EyeOff, ThumbsUp,
-  TrendingUp, BarChart, PieChart, LineChart,
-  DollarSign, CreditCard, Wallet, Receipt,
-  Calendar, Clock, Timer, AlarmClock,
-  Map, MapPin, Navigation, Compass, Flag,
-  Sun, Moon, CloudRain, CloudSnow, Wind,
-  Flame, Droplet, Leaf, Flower, Trees,
-  Bug, Code2, Terminal, Command, GitBranch,
-  GitCommit, GitMerge, GitPullRequest, GitCompare,
-  Folder, FolderOpen, File, FileCode, FileImage,
-  FileVideo, FileAudio, FileSpreadsheet,
-  Archive, FolderPlus, FilePlus, FolderMinus, FileMinus,
-  Scissors, Copy, Clipboard, ClipboardCheck, ClipboardCopy,
-  ClipboardList, ClipboardPaste, ClipboardX, ClipboardEdit,
-  BookOpen, BookMarked, BookText, Library, School,
-  Trophy, Medal, Badge,
-  Brain, Lightbulb
-} from 'lucide-react'
+import { iconMap, Github } from '@/lib/icons'
 import Link from 'next/link'
 import type { Project } from '@/lib/types'
 
@@ -44,169 +13,7 @@ const fadeIn = {
   transition: { duration: 0.35, ease: 'easeOut' },
 }
 
-// Icon map with all common Lucide icons
-const iconMap: Record<string, any> = {
-  // Original icons
-  Cloud,
-  Database,
-  Mail,
-  Code,
-  Split,
-  Github,
-  // Shopping/Bag icons - Map common names
-  Shop: Store,
-  ShoppingBag,
-  Bag: ShoppingBag, // Map "Bag" to ShoppingBag
-  Store,
-  ShoppingCart,
-  // Business/Work icons
-  Briefcase,
-  Package,
-  Box,
-  // Tech icons
-  Server,
-  Globe,
-  Monitor,
-  Smartphone,
-  Tablet,
-  Laptop,
-  Cpu,
-  HardDrive,
-  Layers,
-  // Action icons
-  Zap,
-  Rocket,
-  Target,
-  Award,
-  Star,
-  Heart,
-  // Media icons
-  Music,
-  Video,
-  Image,
-  Camera,
-  Mic,
-  Headphones,
-  // Creative icons
-  Palette,
-  Gamepad2,
-  // Tools icons
-  Wrench,
-  Settings,
-  Cog,
-  // Security icons
-  Lock,
-  Key,
-  Shield,
-  // Communication icons
-  Bell,
-  MessageSquare,
-  Phone,
-  Users,
-  User,
-  // UI icons
-  Search,
-  Filter,
-  Grid,
-  List,
-  Menu,
-  X,
-  Check,
-  Plus,
-  Minus,
-  Edit,
-  Trash,
-  Save,
-  Download,
-  Upload,
-  Share,
-  ExternalLink,
-  Eye,
-  EyeOff,
-  ThumbsUp,
-  // Chart icons
-  TrendingUp,
-  BarChart,
-  PieChart,
-  LineChart,
-  // Finance icons
-  DollarSign,
-  CreditCard,
-  Wallet,
-  Receipt,
-  // Time icons
-  Calendar,
-  Clock,
-  Timer,
-  AlarmClock,
-  // Location icons
-  Map,
-  MapPin,
-  Navigation,
-  Compass,
-  Flag,
-  // Weather icons
-  Sun,
-  Moon,
-  CloudRain,
-  CloudSnow,
-  Wind,
-  // Nature icons
-  Flame,
-  Droplet,
-  Leaf,
-  Flower,
-  Trees, // Note: Lucide uses "Trees" not "Tree"
-  // Development icons
-  Bug,
-  Code2,
-  Terminal,
-  Command,
-  GitBranch,
-  GitCommit,
-  GitMerge,
-  GitPullRequest,
-  GitCompare,
-  // File icons
-  Folder,
-  FolderOpen,
-  File,
-  FileCode,
-  FileImage,
-  FileVideo,
-  FileAudio,
-  FileSpreadsheet,
-  FileText,
-  Archive,
-  FolderPlus,
-  FilePlus,
-  FolderMinus,
-  FileMinus,
-  // Clipboard icons
-  Scissors,
-  Copy,
-  Clipboard,
-  ClipboardCheck,
-  ClipboardCopy,
-  ClipboardList,
-  ClipboardPaste,
-  ClipboardX,
-  ClipboardEdit,
-  // Education icons
-  BookOpen,
-  BookMarked,
-  BookText,
-  Library,
-  School,
-  GraduationCap,
-  Trophy,
-  Medal,
-  Badge,
-  // Brain/Thinking icons
-  Brain,
-  Lightbulb,
-  Sparkles,
-}
+// Use centralized icon mapping from lib/icons.ts
 
 // Fallback projects
 const fallbackProjects: Project[] = [
@@ -336,7 +143,7 @@ export default function Projects() {
             >
               <div className={`w-14 h-14 rounded-2xl bg-gradient-to-br ${project.gradient} flex items-center justify-center mb-4 text-white shadow-lg`}>
                 {(() => {
-                  const Icon = project.icon && iconMap[project.icon] ? iconMap[project.icon] : Code
+                  const Icon = project.icon && iconMap[project.icon] ? iconMap[project.icon] : iconMap.Code
                   return <Icon className="w-7 h-7" />
                 })()}
               </div>

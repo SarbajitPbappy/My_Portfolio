@@ -120,12 +120,13 @@ export default function AboutManager() {
         <div className="bg-white rounded-xl shadow-lg p-6 border border-gray-200">
           <div className="space-y-4">
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">Title *</label>
+              <label className="block text-sm font-medium text-gray-700 mb-1">Section Title *</label>
               <input
                 type="text"
                 value={formData.title || ''}
                 onChange={(e) => setFormData({ ...formData, title: e.target.value })}
                 className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-transparent"
+                placeholder="e.g., About Me, About"
                 required
               />
             </div>
@@ -135,7 +136,8 @@ export default function AboutManager() {
                 value={formData.description || ''}
                 onChange={(e) => setFormData({ ...formData, description: e.target.value })}
                 className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-transparent"
-                rows={4}
+                rows={6}
+                placeholder="Enter a detailed description about yourself..."
                 required
               />
             </div>
@@ -144,16 +146,40 @@ export default function AboutManager() {
               <label className="block text-sm font-medium text-gray-700 mb-2">Values</label>
               <div className="space-y-2 mb-3">
                 {formData.values?.map((value, index) => (
-                  <div key={index} className="flex items-start gap-2 p-3 bg-gray-50 rounded-lg">
-                    <div className="flex-1">
-                      <p className="font-semibold text-gray-900">{value.title}</p>
-                      <p className="text-sm text-gray-600">{value.description}</p>
+                  <div key={index} className="p-3 bg-gray-50 rounded-lg border border-gray-200">
+                    <div className="space-y-2">
+                      <div>
+                        <label className="block text-xs font-medium text-gray-600 mb-1">Value Title</label>
+                        <input
+                          type="text"
+                          value={value.title}
+                          onChange={(e) => {
+                            const values = [...(formData.values || [])]
+                            values[index] = { ...value, title: e.target.value }
+                            setFormData({ ...formData, values })
+                          }}
+                          className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-transparent text-sm"
+                        />
+                      </div>
+                      <div>
+                        <label className="block text-xs font-medium text-gray-600 mb-1">Value Description</label>
+                        <textarea
+                          value={value.description}
+                          onChange={(e) => {
+                            const values = [...(formData.values || [])]
+                            values[index] = { ...value, description: e.target.value }
+                            setFormData({ ...formData, values })
+                          }}
+                          className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-transparent text-sm"
+                          rows={2}
+                        />
+                      </div>
                     </div>
                     <button
                       onClick={() => removeValue(index)}
-                      className="p-1 text-red-600 hover:bg-red-50 rounded"
+                      className="mt-2 px-3 py-1.5 bg-red-100 text-red-600 rounded-lg hover:bg-red-200 text-sm"
                     >
-                      <X className="w-4 h-4" />
+                      Remove
                     </button>
                   </div>
                 ))}
@@ -186,16 +212,40 @@ export default function AboutManager() {
               <label className="block text-sm font-medium text-gray-700 mb-2">Quick Facts</label>
               <div className="space-y-2 mb-3">
                 {formData.quick_facts?.map((fact, index) => (
-                  <div key={index} className="flex items-start gap-2 p-3 bg-gray-50 rounded-lg">
-                    <div className="flex-1">
-                      <p className="font-semibold text-gray-900">{fact.label}</p>
-                      <p className="text-sm text-gray-600">{fact.value}</p>
+                  <div key={index} className="p-3 bg-gray-50 rounded-lg border border-gray-200">
+                    <div className="grid grid-cols-2 gap-2">
+                      <div>
+                        <label className="block text-xs font-medium text-gray-600 mb-1">Fact Label</label>
+                        <input
+                          type="text"
+                          value={fact.label}
+                          onChange={(e) => {
+                            const facts = [...(formData.quick_facts || [])]
+                            facts[index] = { ...fact, label: e.target.value }
+                            setFormData({ ...formData, quick_facts: facts })
+                          }}
+                          className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-transparent text-sm"
+                        />
+                      </div>
+                      <div>
+                        <label className="block text-xs font-medium text-gray-600 mb-1">Fact Value</label>
+                        <input
+                          type="text"
+                          value={fact.value}
+                          onChange={(e) => {
+                            const facts = [...(formData.quick_facts || [])]
+                            facts[index] = { ...fact, value: e.target.value }
+                            setFormData({ ...formData, quick_facts: facts })
+                          }}
+                          className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-transparent text-sm"
+                        />
+                      </div>
                     </div>
                     <button
                       onClick={() => removeFact(index)}
-                      className="p-1 text-red-600 hover:bg-red-50 rounded"
+                      className="mt-2 px-3 py-1.5 bg-red-100 text-red-600 rounded-lg hover:bg-red-200 text-sm"
                     >
-                      <X className="w-4 h-4" />
+                      Remove
                     </button>
                   </div>
                 ))}

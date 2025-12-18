@@ -2,24 +2,15 @@
 
 import { useEffect, useState } from 'react'
 import { motion } from 'framer-motion'
-import { Brain, Microscope, Leaf, Eye, Sparkles, Layers, FileText, ExternalLink, CheckCircle, Clock } from 'lucide-react'
+import { ExternalLink, CheckCircle, Clock, FileText, Sparkles } from 'lucide-react'
 import type { ResearchArea, Publication } from '@/lib/types'
+import { iconMap } from '@/lib/icons'
 
 const fadeIn = {
   initial: { opacity: 0, y: 14 },
   whileInView: { opacity: 1, y: 0 },
   viewport: { once: true, margin: '-60px' },
   transition: { duration: 0.3, ease: 'easeOut' },
-}
-
-// Icon map
-const iconMap: Record<string, any> = {
-  Brain,
-  Eye,
-  Microscope,
-  Leaf,
-  Sparkles,
-  Layers,
 }
 
 // Fallback research areas
@@ -196,7 +187,7 @@ export default function ResearchAndPublications() {
             >
               <div className={`w-12 h-12 rounded-xl bg-gradient-to-br ${area.gradient} flex items-center justify-center text-white mb-4`}>
                 {(() => {
-                  const Icon = area.icon && iconMap[area.icon] ? iconMap[area.icon] : Brain
+                  const Icon = area.icon && iconMap[area.icon] ? iconMap[area.icon] : iconMap.Brain
                   return <Icon className="w-6 h-6" />
                 })()}
               </div>

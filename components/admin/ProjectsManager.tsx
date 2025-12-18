@@ -1,7 +1,7 @@
 'use client'
 
 import { useEffect, useState } from 'react'
-import { Plus, Edit, Trash2, Save, X } from 'lucide-react'
+import { Plus, Edit, Trash2, Save, X, Trash } from 'lucide-react'
 import type { Project } from '@/lib/types'
 
 export default function ProjectsManager() {
@@ -80,10 +80,41 @@ export default function ProjectsManager() {
       const res = await fetch(`/api/projects/${id}`, { method: 'DELETE' })
       if (res.ok) {
         await fetchItems()
+        if (typeof window !== 'undefined') {
+          window.dispatchEvent(new Event('content-updated'))
+        }
       }
     } catch (error) {
       console.error('Error deleting project:', error)
       alert('Failed to delete. Please try again.')
+    }
+  }
+
+  const handleDeleteAll = async () => {
+    if (items.length === 0) {
+      alert('No items to delete.')
+      return
+    }
+
+    const confirmMessage = `Are you sure you want to delete ALL ${items.length} projects? This action cannot be undone!`
+    if (!confirm(confirmMessage)) return
+
+    try {
+      const deletePromises = items.map(item => 
+        item.id ? fetch(`/api/projects/${item.id}`, { method: 'DELETE' }) : Promise.resolve()
+      )
+      
+      await Promise.all(deletePromises)
+      await fetchItems()
+      
+      if (typeof window !== 'undefined') {
+        window.dispatchEvent(new Event('content-updated'))
+      }
+      
+      alert(`Successfully deleted all ${items.length} projects!`)
+    } catch (error) {
+      console.error('Error deleting all projects:', error)
+      alert('Failed to delete all items. Please try again.')
     }
   }
 
@@ -113,13 +144,24 @@ export default function ProjectsManager() {
     <div className="space-y-6">
       <div className="flex justify-between items-center">
         <h2 className="text-2xl font-bold text-gray-900">Projects</h2>
-        <button
-          onClick={handleCreate}
-          className="flex items-center gap-2 px-4 py-2 bg-primary-600 text-white rounded-lg hover:bg-primary-700 transition-colors"
-        >
-          <Plus className="w-4 h-4" />
-          Add New
-        </button>
+        <div className="flex gap-2">
+          {items.length > 0 && (
+            <button
+              onClick={handleDeleteAll}
+              className="flex items-center gap-2 px-4 py-2 bg-red-600 text-white rounded-lg hover:bg-red-700 transition-colors"
+            >
+              <Trash className="w-4 h-4" />
+              Delete All
+            </button>
+          )}
+          <button
+            onClick={handleCreate}
+            className="flex items-center gap-2 px-4 py-2 bg-primary-600 text-white rounded-lg hover:bg-primary-700 transition-colors"
+          >
+            <Plus className="w-4 h-4" />
+            Add New
+          </button>
+        </div>
       </div>
 
       {showForm && (
@@ -147,12 +189,14 @@ export default function ProjectsManager() {
               <p className="text-xs text-gray-500 mt-1">Icon name from Lucide React (case-sensitive)</p>
             </div>
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">Description</label>
+              <label className="block text-sm font-medium text-gray-700 mb-1">Description *</label>
               <textarea
                 value={formData.description || ''}
                 onChange={(e) => setFormData({ ...formData, description: e.target.value })}
                 className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-transparent"
-                rows={4}
+                rows={5}
+                placeholder="Enter a detailed description of the project..."
+                required
               />
             </div>
             <div>

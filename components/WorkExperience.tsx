@@ -2,22 +2,14 @@
 
 import { useEffect, useState } from 'react'
 import { motion } from 'framer-motion'
-import { Award, Users, BookOpen, Briefcase } from 'lucide-react'
 import type { WorkExperience } from '@/lib/types'
+import { iconMap } from '@/lib/icons'
 
 const fadeIn = {
   initial: { opacity: 0, y: 16 },
   whileInView: { opacity: 1, y: 0 },
   viewport: { once: true, margin: '-60px' },
   transition: { duration: 0.3, ease: 'easeOut' },
-}
-
-// Icon map
-const iconMap: Record<string, any> = {
-  BookOpen,
-  Users,
-  Briefcase,
-  Award,
 }
 
 // Fallback work experience
@@ -130,7 +122,7 @@ export default function WorkExperience() {
                 <div className="flex items-start gap-4">
                   <div className={`w-12 h-12 rounded-xl bg-gradient-to-br ${role.gradient} flex items-center justify-center text-white shadow-md`}>
                     {(() => {
-                      const Icon = role.icon && iconMap[role.icon] ? iconMap[role.icon] : Briefcase
+                      const Icon = role.icon && iconMap[role.icon] ? iconMap[role.icon] : iconMap.Briefcase
                       return <Icon className="w-6 h-6" />
                     })()}
                   </div>

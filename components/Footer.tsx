@@ -1,17 +1,10 @@
 'use client'
 
 import { useEffect, useState } from 'react'
-import { Github, Linkedin, Mail } from 'lucide-react'
 import Link from 'next/link'
 import { motion } from 'framer-motion'
 import type { Footer } from '@/lib/types'
-
-// Icon map
-const iconMap: Record<string, any> = {
-  Github,
-  Linkedin,
-  Mail,
-}
+import { iconMap } from '@/lib/icons'
 
 // Fallback footer
 const fallbackFooter: Footer = {
@@ -123,7 +116,7 @@ export default function Footer() {
               <h4 className="text-lg font-semibold text-white mb-4">Connect</h4>
               <div className="flex space-x-4">
                 {footerData.social_links.map((social, i) => {
-                  const Icon = social.icon && iconMap[social.icon] ? iconMap[social.icon] : Mail
+                  const Icon = social.icon && iconMap[social.icon] ? iconMap[social.icon] : iconMap.Mail
                   return (
                     <motion.a
                       key={i}

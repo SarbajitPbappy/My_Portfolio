@@ -1,10 +1,9 @@
 import type { Metadata } from 'next'
-import { Inter } from 'next/font/google'
 import './globals.css'
 import Navbar from '@/components/Navbar'
 import Footer from '@/components/Footer'
-
-const inter = Inter({ subsets: ['latin'] })
+import { ThemeProvider } from '@/components/ThemeProvider'
+import ThemeSwitcher from '@/components/ThemeSwitcher'
 
 export const metadata: Metadata = {
   title: 'Sarbajit Paul Bappy | AI/ML Researcher',
@@ -18,16 +17,18 @@ export default function RootLayout({
   children: React.ReactNode
 }) {
   return (
-    <html lang="en">
+    <html lang="en" suppressHydrationWarning>
       <head>
         <link rel="shortcut icon" href="/icon.png" type="image/x-icon" />
       </head>
-      <body className={inter.className}>
-        <Navbar />
-        <main>{children}</main>
-        <Footer />
+      <body>
+        <ThemeProvider>
+          <Navbar />
+          <main>{children}</main>
+          <Footer />
+          <ThemeSwitcher />
+        </ThemeProvider>
       </body>
     </html>
   )
 }
-

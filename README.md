@@ -5,6 +5,7 @@ A modern, fully customizable portfolio website built with Next.js, TypeScript, T
 ## 🚀 Features
 
 - **Fully Editable Content** - Manage Hero, About, Education, Work Experience, Projects, Publications, Research Areas, Courses, Contact, Footer, and Navbar through admin panel
+- **Dynamic Pages** - Create unlimited custom pages with HTML, JSX, or TSX content
 - **Icon Support** - Add icons to Education, Projects, Work Experience, and Research Areas
 - **Auto-Refresh** - Frontend automatically updates when you save changes in admin panel
 - **Responsive Design** - Beautiful, modern UI that works on all devices
@@ -163,7 +164,8 @@ After deployment, make sure your Supabase database is set up:
 - ✅ Research Areas Management (with icon support)
 - ✅ Contact Information Management
 - ✅ Footer Management
-- ✅ Navbar Management
+- ✅ Navbar Management (with automatic page creation)
+- ✅ Dynamic Pages Management (HTML/JSX/TSX support)
 
 ## 📝 Managing Content
 
@@ -298,6 +300,11 @@ To enable the contact form:
    - `RESEND_API_KEY`
    - `FROM_EMAIL` (verified domain email)
    - `TO_EMAIL` (where to receive emails)
+
+## 📚 Documentation
+
+- **[Quick Guide: Add Navbar Page](./QUICK_GUIDE_ADD_NAVBAR_PAGE.md)** - Step-by-step guide for adding a navbar item that creates a page (e.g., "Skills")
+- **[Navbar & Pages Guide](./NAVBAR_AND_PAGES_GUIDE.md)** - Complete guide on creating navbar items and dynamic pages with HTML/JSX/TSX support
 
 ## 🎨 Customization
 

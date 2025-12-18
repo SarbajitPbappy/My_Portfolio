@@ -21,6 +21,8 @@
     "react": "^18.3.0",
     "react-dom": "^18.3.0",
     "react-hook-form": "^7.50.0",
+    "react-jsx-parser": "^2.4.1",
+    "react-markdown": "^10.1.0",
     "resend": "^3.5.0",
     "sweetalert2": "^11.26.10",
     "zod": "^3.22.0"

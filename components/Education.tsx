@@ -2,14 +2,8 @@
 
 import { useEffect, useState } from 'react'
 import { motion } from 'framer-motion'
-import { GraduationCap, Globe, Award } from 'lucide-react'
 import type { Education, Course } from '@/lib/types'
-
-const iconMap: Record<string, any> = {
-  GraduationCap,
-  Globe,
-  Award,
-}
+import { iconMap } from '@/lib/icons'
 
 const fadeIn = {
   initial: { opacity: 0, y: 14 },
@@ -165,7 +159,7 @@ export default function Education() {
                   >
                     <div className={`w-20 h-20 rounded-2xl bg-gradient-to-br ${edu.gradient} flex items-center justify-center shadow-lg`}>
                       {(() => {
-                        const Icon = edu.icon && iconMap[edu.icon] ? iconMap[edu.icon] : GraduationCap
+                        const Icon = edu.icon && iconMap[edu.icon] ? iconMap[edu.icon] : iconMap.GraduationCap
                         return <Icon className="w-10 h-10 text-white" />
                       })()}
                     </div>

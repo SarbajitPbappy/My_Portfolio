@@ -1,7 +1,7 @@
 'use client'
 
 import { useState } from 'react'
-import { LogOut, GraduationCap, FileText, Briefcase, FolderKanban, Brain, BookOpen, Home, User, Mail, Menu, File } from 'lucide-react'
+import { LogOut, GraduationCap, FileText, Briefcase, FolderKanban, Brain, BookOpen, Home, User, Mail, Code, Settings } from 'lucide-react'
 import Link from 'next/link'
 import EducationManager from './admin/EducationManager'
 import PublicationsManager from './admin/PublicationsManager'
@@ -13,14 +13,14 @@ import HeroManager from './admin/HeroManager'
 import AboutManager from './admin/AboutManager'
 import ContactManager from './admin/ContactManager'
 import FooterManager from './admin/FooterManager'
-import NavbarManager from './admin/NavbarManager'
-import PagesManager from './admin/PagesManager'
+import SkillsManager from './admin/SkillsManager'
+import SettingsManager from './admin/SettingsManager'
 
 interface AdminDashboardProps {
   onLogout: () => void
 }
 
-type TabType = 'hero' | 'about' | 'education' | 'publications' | 'work' | 'projects' | 'research' | 'courses' | 'contact' | 'footer' | 'navbar' | 'pages'
+type TabType = 'hero' | 'about' | 'education' | 'publications' | 'work' | 'projects' | 'research' | 'courses' | 'skills' | 'contact' | 'footer' | 'settings'
 
 export default function AdminDashboard({ onLogout }: AdminDashboardProps) {
   const [activeTab, setActiveTab] = useState<TabType>('hero')
@@ -39,10 +39,10 @@ export default function AdminDashboard({ onLogout }: AdminDashboardProps) {
     { id: 'projects' as TabType, label: 'Projects', icon: FolderKanban },
     { id: 'research' as TabType, label: 'Research Areas', icon: Brain },
     { id: 'courses' as TabType, label: 'Courses', icon: BookOpen },
+    { id: 'skills' as TabType, label: 'Skills', icon: Code },
     { id: 'contact' as TabType, label: 'Contact', icon: Mail },
     { id: 'footer' as TabType, label: 'Footer', icon: FileText },
-    { id: 'navbar' as TabType, label: 'Navbar', icon: Menu },
-    { id: 'pages' as TabType, label: 'Pages', icon: File },
+    { id: 'settings' as TabType, label: 'Settings', icon: Settings },
   ]
 
   return (
@@ -109,10 +109,10 @@ export default function AdminDashboard({ onLogout }: AdminDashboardProps) {
         {activeTab === 'projects' && <ProjectsManager />}
         {activeTab === 'research' && <ResearchAreasManager />}
         {activeTab === 'courses' && <CoursesManager />}
+        {activeTab === 'skills' && <SkillsManager />}
         {activeTab === 'contact' && <ContactManager />}
         {activeTab === 'footer' && <FooterManager />}
-        {activeTab === 'navbar' && <NavbarManager />}
-        {activeTab === 'pages' && <PagesManager />}
+        {activeTab === 'settings' && <SettingsManager />}
       </main>
     </div>
   )

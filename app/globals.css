@@ -1,6 +1,263 @@
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=Playfair+Display:ital,wght@0,400;0,500;0,600;0,700;1,400&family=Source+Serif+4:ital,opsz,wght@0,8..60,300;0,8..60,400;0,8..60,500;0,8..60,600;0,8..60,700;1,8..60,400&family=JetBrains+Mono:wght@400;500;600&family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;0,9..40,600;0,9..40,700;1,9..40,400&family=Crimson+Pro:ital,wght@0,300;0,400;0,500;0,600;0,700;1,400&display=swap');
+
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
+/* ============================================
+   THEME CSS VARIABLES
+   ============================================ */
+
+:root {
+  /* Default to Modern theme */
+  --font-heading: 'DM Sans', sans-serif;
+  --font-body: 'Inter', sans-serif;
+  --font-mono: 'JetBrains Mono', monospace;
+  
+  /* Color palette - Light mode defaults */
+  --color-primary: 14 165 233;
+  --color-primary-hover: 2 132 199;
+  --color-accent: 20 184 166;
+  --color-background: 248 251 255;
+  --color-surface: 255 255 255;
+  --color-surface-elevated: 255 255 255;
+  --color-text: 17 24 39;
+  --color-text-muted: 107 114 128;
+  --color-border: 229 231 235;
+  --color-border-subtle: 243 244 246;
+  
+  /* Spacing & Radius */
+  --radius-sm: 0.375rem;
+  --radius-md: 0.75rem;
+  --radius-lg: 1rem;
+  --radius-xl: 1.5rem;
+  --radius-full: 9999px;
+  
+  /* Shadows */
+  --shadow-sm: 0 1px 2px 0 rgb(0 0 0 / 0.05);
+  --shadow-md: 0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.1);
+  --shadow-lg: 0 10px 15px -3px rgb(0 0 0 / 0.1), 0 4px 6px -4px rgb(0 0 0 / 0.1);
+  --shadow-xl: 0 20px 25px -5px rgb(0 0 0 / 0.1), 0 8px 10px -6px rgb(0 0 0 / 0.1);
+  
+  /* Animation */
+  --transition-fast: 150ms;
+  --transition-base: 300ms;
+  --transition-slow: 500ms;
+}
+
+/* ============================================
+   MINIMAL THEME - Clean, simple, monochromatic
+   ============================================ */
+
+[data-theme="minimal"] {
+  --font-heading: 'Inter', sans-serif;
+  --font-body: 'Inter', sans-serif;
+  
+  --color-primary: 23 23 23;
+  --color-primary-hover: 64 64 64;
+  --color-accent: 82 82 82;
+  --color-background: 255 255 255;
+  --color-surface: 250 250 250;
+  --color-surface-elevated: 255 255 255;
+  --color-text: 23 23 23;
+  --color-text-muted: 115 115 115;
+  --color-border: 229 229 229;
+  --color-border-subtle: 245 245 245;
+  
+  --radius-sm: 0.25rem;
+  --radius-md: 0.375rem;
+  --radius-lg: 0.5rem;
+  --radius-xl: 0.75rem;
+  
+  --shadow-sm: none;
+  --shadow-md: 0 1px 3px 0 rgb(0 0 0 / 0.05);
+  --shadow-lg: 0 4px 6px -1px rgb(0 0 0 / 0.05);
+  --shadow-xl: 0 10px 15px -3px rgb(0 0 0 / 0.05);
+}
+
+.dark[data-theme="minimal"] {
+  --color-primary: 245 245 245;
+  --color-primary-hover: 212 212 212;
+  --color-accent: 163 163 163;
+  --color-background: 10 10 10;
+  --color-surface: 23 23 23;
+  --color-surface-elevated: 38 38 38;
+  --color-text: 250 250 250;
+  --color-text-muted: 163 163 163;
+  --color-border: 64 64 64;
+  --color-border-subtle: 38 38 38;
+}
+
+/* ============================================
+   MODERN THEME - Gradients, glass, vibrant
+   ============================================ */
+
+[data-theme="modern"] {
+  --font-heading: 'DM Sans', sans-serif;
+  --font-body: 'Inter', sans-serif;
+  
+  --color-primary: 14 165 233;
+  --color-primary-hover: 2 132 199;
+  --color-accent: 20 184 166;
+  --color-background: 248 251 255;
+  --color-surface: 255 255 255;
+  --color-surface-elevated: 255 255 255;
+  --color-text: 15 23 42;
+  --color-text-muted: 100 116 139;
+  --color-border: 226 232 240;
+  --color-border-subtle: 241 245 249;
+  
+  --radius-sm: 0.5rem;
+  --radius-md: 0.75rem;
+  --radius-lg: 1rem;
+  --radius-xl: 1.5rem;
+}
+
+.dark[data-theme="modern"] {
+  --color-primary: 56 189 248;
+  --color-primary-hover: 125 211 252;
+  --color-accent: 45 212 191;
+  --color-background: 15 23 42;
+  --color-surface: 30 41 59;
+  --color-surface-elevated: 51 65 85;
+  --color-text: 248 250 252;
+  --color-text-muted: 148 163 184;
+  --color-border: 51 65 85;
+  --color-border-subtle: 30 41 59;
+}
+
+/* ============================================
+   AESTHETIC THEME - Soft, pastel, dreamy
+   ============================================ */
+
+[data-theme="aesthetic"] {
+  --font-heading: 'Playfair Display', serif;
+  --font-body: 'DM Sans', sans-serif;
+  
+  --color-primary: 244 114 182;
+  --color-primary-hover: 236 72 153;
+  --color-accent: 192 132 252;
+  --color-background: 253 251 253;
+  --color-surface: 255 255 255;
+  --color-surface-elevated: 254 249 255;
+  --color-text: 88 28 135;
+  --color-text-muted: 147 51 234;
+  --color-border: 245 208 254;
+  --color-border-subtle: 250 232 255;
+  
+  --radius-sm: 0.75rem;
+  --radius-md: 1rem;
+  --radius-lg: 1.5rem;
+  --radius-xl: 2rem;
+  
+  --shadow-sm: 0 2px 8px -2px rgb(244 114 182 / 0.15);
+  --shadow-md: 0 4px 12px -2px rgb(244 114 182 / 0.2);
+  --shadow-lg: 0 8px 24px -4px rgb(192 132 252 / 0.25);
+  --shadow-xl: 0 16px 40px -8px rgb(192 132 252 / 0.3);
+}
+
+.dark[data-theme="aesthetic"] {
+  --color-primary: 249 168 212;
+  --color-primary-hover: 244 114 182;
+  --color-accent: 216 180 254;
+  --color-background: 24 17 34;
+  --color-surface: 35 25 50;
+  --color-surface-elevated: 50 38 68;
+  --color-text: 253 244 255;
+  --color-text-muted: 216 180 254;
+  --color-border: 76 29 149;
+  --color-border-subtle: 50 38 68;
+}
+
+/* ============================================
+   PROFESSIONAL THEME - Corporate, serious
+   ============================================ */
+
+[data-theme="professional"] {
+  --font-heading: 'Inter', sans-serif;
+  --font-body: 'Inter', sans-serif;
+  
+  --color-primary: 30 58 138;
+  --color-primary-hover: 29 78 216;
+  --color-accent: 22 101 52;
+  --color-background: 249 250 251;
+  --color-surface: 255 255 255;
+  --color-surface-elevated: 255 255 255;
+  --color-text: 17 24 39;
+  --color-text-muted: 75 85 99;
+  --color-border: 209 213 219;
+  --color-border-subtle: 229 231 235;
+  
+  --radius-sm: 0.25rem;
+  --radius-md: 0.375rem;
+  --radius-lg: 0.5rem;
+  --radius-xl: 0.75rem;
+  
+  --shadow-sm: 0 1px 2px 0 rgb(0 0 0 / 0.05);
+  --shadow-md: 0 1px 3px 0 rgb(0 0 0 / 0.1), 0 1px 2px -1px rgb(0 0 0 / 0.1);
+  --shadow-lg: 0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.1);
+  --shadow-xl: 0 10px 15px -3px rgb(0 0 0 / 0.1), 0 4px 6px -4px rgb(0 0 0 / 0.1);
+}
+
+.dark[data-theme="professional"] {
+  --color-primary: 96 165 250;
+  --color-primary-hover: 147 197 253;
+  --color-accent: 74 222 128;
+  --color-background: 17 24 39;
+  --color-surface: 31 41 55;
+  --color-surface-elevated: 55 65 81;
+  --color-text: 249 250 251;
+  --color-text-muted: 156 163 175;
+  --color-border: 55 65 81;
+  --color-border-subtle: 31 41 55;
+}
+
+/* ============================================
+   ACADEMIC THEME - Scholarly, research-focused
+   ============================================ */
+
+[data-theme="academic"] {
+  --font-heading: 'Source Serif 4', serif;
+  --font-body: 'Crimson Pro', serif;
+  
+  --color-primary: 127 29 29;
+  --color-primary-hover: 153 27 27;
+  --color-accent: 120 53 15;
+  --color-background: 254 252 249;
+  --color-surface: 255 255 255;
+  --color-surface-elevated: 255 251 245;
+  --color-text: 41 37 36;
+  --color-text-muted: 87 83 78;
+  --color-border: 214 211 209;
+  --color-border-subtle: 231 229 228;
+  
+  --radius-sm: 0.125rem;
+  --radius-md: 0.25rem;
+  --radius-lg: 0.375rem;
+  --radius-xl: 0.5rem;
+  
+  --shadow-sm: 0 1px 2px 0 rgb(41 37 36 / 0.05);
+  --shadow-md: 0 2px 4px -1px rgb(41 37 36 / 0.1);
+  --shadow-lg: 0 4px 8px -2px rgb(41 37 36 / 0.1);
+  --shadow-xl: 0 8px 16px -4px rgb(41 37 36 / 0.1);
+}
+
+.dark[data-theme="academic"] {
+  --color-primary: 248 113 113;
+  --color-primary-hover: 252 165 165;
+  --color-accent: 251 191 36;
+  --color-background: 28 25 23;
+  --color-surface: 41 37 36;
+  --color-surface-elevated: 57 53 52;
+  --color-text: 250 250 249;
+  --color-text-muted: 168 162 158;
+  --color-border: 68 64 60;
+  --color-border-subtle: 41 37 36;
+}
+
+/* ============================================
+   BASE STYLES
+   ============================================ */
 
 @layer base {
   html {
@@ -9,75 +266,198 @@
   }
   
   body {
-    @apply bg-gray-50 text-gray-900 antialiased;
-    font-feature-settings: 'kern' 1;
-    text-rendering: optimizeLegibility;
+    font-family: var(--font-body);
+    background-color: rgb(var(--color-background));
+    color: rgb(var(--color-text));
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
-    background-image:
-      radial-gradient(1200px circle at 20% 20%, rgba(14, 165, 233, 0.14), transparent 40%),
-      radial-gradient(1100px circle at 80% 10%, rgba(96, 165, 250, 0.12), transparent 40%),
-      radial-gradient(1000px circle at 60% 80%, rgba(20, 184, 166, 0.12), transparent 42%),
-      linear-gradient(180deg, #f8fbff 0%, #f5f7fb 30%, #f8fbff 100%);
-    position: relative;
+    transition: background-color var(--transition-base) ease, color var(--transition-base) ease;
   }
 
-  body::before {
+  h1, h2, h3, h4, h5, h6 {
+    font-family: var(--font-heading);
+  }
+
+  code, pre {
+    font-family: var(--font-mono);
+  }
+
+  /* ============================================
+     THEME-SPECIFIC BACKGROUNDS
+     ============================================ */
+
+  /* Minimal Theme Background */
+  [data-theme="minimal"] body {
+    background: rgb(var(--color-background));
+  }
+
+  .dark[data-theme="minimal"] body {
+    background: rgb(var(--color-background));
+  }
+
+  /* Modern Theme Background */
+  [data-theme="modern"] body {
+    background-image:
+      radial-gradient(1200px circle at 20% 20%, rgba(14, 165, 233, 0.12), transparent 40%),
+      radial-gradient(1100px circle at 80% 10%, rgba(96, 165, 250, 0.1), transparent 40%),
+      radial-gradient(1000px circle at 60% 80%, rgba(20, 184, 166, 0.1), transparent 42%),
+      linear-gradient(180deg, rgb(248, 251, 255) 0%, rgb(245, 247, 251) 30%, rgb(248, 251, 255) 100%);
+  }
+
+  .dark[data-theme="modern"] body {
+    background-image:
+      radial-gradient(1200px circle at 20% 20%, rgba(14, 165, 233, 0.08), transparent 40%),
+      radial-gradient(1100px circle at 80% 10%, rgba(96, 165, 250, 0.06), transparent 40%),
+      radial-gradient(1000px circle at 60% 80%, rgba(20, 184, 166, 0.06), transparent 42%),
+      linear-gradient(180deg, rgb(15, 23, 42) 0%, rgb(30, 41, 59) 30%, rgb(15, 23, 42) 100%);
+  }
+
+  /* Aesthetic Theme Background */
+  [data-theme="aesthetic"] body {
+    background-image:
+      radial-gradient(1400px circle at 0% 0%, rgba(244, 114, 182, 0.15), transparent 50%),
+      radial-gradient(1200px circle at 100% 0%, rgba(192, 132, 252, 0.12), transparent 50%),
+      radial-gradient(1000px circle at 50% 100%, rgba(251, 191, 36, 0.08), transparent 50%),
+      linear-gradient(180deg, rgb(253, 251, 253) 0%, rgb(254, 249, 255) 100%);
+  }
+
+  .dark[data-theme="aesthetic"] body {
+    background-image:
+      radial-gradient(1400px circle at 0% 0%, rgba(244, 114, 182, 0.1), transparent 50%),
+      radial-gradient(1200px circle at 100% 0%, rgba(192, 132, 252, 0.08), transparent 50%),
+      radial-gradient(1000px circle at 50% 100%, rgba(251, 191, 36, 0.05), transparent 50%),
+      linear-gradient(180deg, rgb(24, 17, 34) 0%, rgb(35, 25, 50) 100%);
+  }
+
+  /* Professional Theme Background */
+  [data-theme="professional"] body {
+    background: linear-gradient(180deg, rgb(249, 250, 251) 0%, rgb(243, 244, 246) 100%);
+  }
+
+  .dark[data-theme="professional"] body {
+    background: linear-gradient(180deg, rgb(17, 24, 39) 0%, rgb(31, 41, 55) 100%);
+  }
+
+  /* Academic Theme Background */
+  [data-theme="academic"] body {
+    background-image:
+      linear-gradient(180deg, rgb(254, 252, 249) 0%, rgb(255, 251, 245) 100%);
+  }
+
+  .dark[data-theme="academic"] body {
+    background-image:
+      linear-gradient(180deg, rgb(28, 25, 23) 0%, rgb(41, 37, 36) 100%);
+  }
+
+  /* Pattern overlays for themes */
+  [data-theme="modern"] body::before {
     content: '';
     position: fixed;
     inset: 0;
     pointer-events: none;
     background-image:
-      radial-gradient(circle at 10% 20%, rgba(14, 165, 233, 0.12) 0, transparent 18%),
-      radial-gradient(circle at 90% 10%, rgba(59, 130, 246, 0.1) 0, transparent 18%),
-      radial-gradient(circle at 40% 70%, rgba(16, 185, 129, 0.08) 0, transparent 20%),
-      linear-gradient(90deg, rgba(255, 255, 255, 0.45) 1px, transparent 1px),
-      linear-gradient(180deg, rgba(255, 255, 255, 0.45) 1px, transparent 1px);
-    background-size:
-      600px 600px,
-      480px 480px,
-      520px 520px,
-      120px 120px,
-      120px 120px;
-    mix-blend-mode: soft-light;
-    opacity: 0.6;
+      radial-gradient(circle at 10% 20%, rgba(14, 165, 233, 0.08) 0, transparent 18%),
+      radial-gradient(circle at 90% 10%, rgba(59, 130, 246, 0.06) 0, transparent 18%),
+      radial-gradient(circle at 40% 70%, rgba(16, 185, 129, 0.05) 0, transparent 20%);
     z-index: 0;
+    opacity: 0.8;
+  }
+
+  .dark[data-theme="modern"] body::before {
+    opacity: 0.4;
+  }
+
+  [data-theme="aesthetic"] body::before {
+    content: '';
+    position: fixed;
+    inset: 0;
+    pointer-events: none;
+    background-image:
+      radial-gradient(600px circle at 30% 20%, rgba(244, 114, 182, 0.06) 0, transparent 50%),
+      radial-gradient(500px circle at 70% 60%, rgba(192, 132, 252, 0.05) 0, transparent 50%);
+    z-index: 0;
+  }
+
+  [data-theme="academic"] body::before {
+    content: '';
+    position: fixed;
+    inset: 0;
+    pointer-events: none;
+    background-image: 
+      repeating-linear-gradient(
+        0deg,
+        transparent,
+        transparent 24px,
+        rgba(127, 29, 29, 0.02) 24px,
+        rgba(127, 29, 29, 0.02) 25px
+      );
+    z-index: 0;
+  }
+
+  .dark[data-theme="academic"] body::before {
+    background-image: 
+      repeating-linear-gradient(
+        0deg,
+        transparent,
+        transparent 24px,
+        rgba(248, 113, 113, 0.02) 24px,
+        rgba(248, 113, 113, 0.02) 25px
+      );
   }
   
   /* Custom scrollbar */
   ::-webkit-scrollbar {
-    width: 12px;
+    width: 10px;
   }
   
   ::-webkit-scrollbar-track {
-    @apply bg-gray-100;
+    background: rgb(var(--color-surface));
   }
   
   ::-webkit-scrollbar-thumb {
-    @apply bg-gradient-to-b from-primary-400 to-primary-600 rounded-full;
+    background: rgb(var(--color-primary) / 0.3);
+    border-radius: var(--radius-full);
     border: 2px solid transparent;
     background-clip: padding-box;
   }
   
   ::-webkit-scrollbar-thumb:hover {
-    @apply from-primary-500 to-primary-700;
+    background: rgb(var(--color-primary) / 0.5);
   }
 
   /* Remove focus outlines for mouse users, keep for keyboard */
   *:focus:not(:focus-visible) {
     outline: none;
   }
+
+  *:focus-visible {
+    outline: 2px solid rgb(var(--color-primary));
+    outline-offset: 2px;
+  }
 }
+
+/* ============================================
+   COMPONENT STYLES
+   ============================================ */
 
 @layer components {
   .section-container {
     @apply max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 sm:py-12;
   }
-  
+
+  /* Gradient text that adapts to theme */
   .gradient-text {
-    @apply bg-gradient-to-r from-primary-600 via-primary-500 to-primary-400 bg-clip-text text-transparent;
+    background: linear-gradient(
+      135deg,
+      rgb(var(--color-primary)) 0%,
+      rgb(var(--color-accent)) 50%,
+      rgb(var(--color-primary-hover)) 100%
+    );
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
     background-size: 200% 200%;
-    animation: gradient-shift 3s ease infinite;
+    animation: gradient-shift 4s ease infinite;
   }
 
   @keyframes gradient-shift {
@@ -88,57 +468,283 @@
       background-position: 100% 50%;
     }
   }
-  
+
+  /* Theme-aware card */
   .card {
-    @apply bg-white/80 backdrop-blur-sm rounded-2xl shadow-xl p-6 border border-gray-100/50;
-    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    background-color: rgb(var(--color-surface) / 0.85);
+    backdrop-filter: blur(12px);
+    border-radius: var(--radius-xl);
+    box-shadow: var(--shadow-lg);
+    padding: 1.5rem;
+    border: 1px solid rgb(var(--color-border) / 0.5);
+    transition: all var(--transition-base) cubic-bezier(0.4, 0, 0.2, 1);
   }
 
   .card:hover {
-    @apply shadow-2xl border-primary-200/50;
+    box-shadow: var(--shadow-xl);
+    border-color: rgb(var(--color-primary) / 0.3);
     transform: translateY(-2px);
   }
 
+  /* Minimal theme cards - no hover effects */
+  [data-theme="minimal"] .card {
+    box-shadow: var(--shadow-sm);
+    backdrop-filter: none;
+  }
+
+  [data-theme="minimal"] .card:hover {
+    box-shadow: var(--shadow-md);
+    transform: none;
+    border-color: rgb(var(--color-border));
+  }
+
+  /* Professional theme cards - subtle */
+  [data-theme="professional"] .card {
+    backdrop-filter: none;
+  }
+
+  /* Academic theme cards - paper-like */
+  [data-theme="academic"] .card {
+    backdrop-filter: none;
+    box-shadow: var(--shadow-md), inset 0 1px 0 0 rgb(var(--color-surface-elevated));
+  }
+
+  /* Frosted card for glass effect */
   .frosted-card {
     position: relative;
     overflow: hidden;
-    @apply bg-white/75 backdrop-blur-lg border border-white/60 shadow-xl rounded-2xl;
+    background-color: rgb(var(--color-surface) / 0.75);
+    backdrop-filter: blur(16px);
+    border: 1px solid rgb(var(--color-border) / 0.6);
+    box-shadow: var(--shadow-xl);
+    border-radius: var(--radius-xl);
   }
 
   .frosted-card::before {
     content: '';
     position: absolute;
     inset: 0;
-    background: linear-gradient(135deg, rgba(14, 165, 233, 0.16), rgba(56, 189, 248, 0));
+    background: linear-gradient(135deg, rgb(var(--color-primary) / 0.1), transparent);
     opacity: 0;
-    transition: opacity 0.35s ease;
+    transition: opacity var(--transition-base) ease;
   }
 
   .frosted-card:hover::before {
     opacity: 1;
   }
 
+  /* Pills/badges */
   .pill {
-    @apply inline-flex items-center gap-2 px-3 py-1 rounded-full text-xs font-semibold bg-gray-100 text-gray-700 border border-gray-200;
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 0.25rem 0.75rem;
+    border-radius: var(--radius-full);
+    font-size: 0.75rem;
+    font-weight: 600;
+    background-color: rgb(var(--color-surface));
+    color: rgb(var(--color-text));
+    border: 1px solid rgb(var(--color-border));
+    transition: all var(--transition-fast) ease;
   }
 
+  .pill:hover {
+    border-color: rgb(var(--color-primary) / 0.5);
+    background-color: rgb(var(--color-primary) / 0.1);
+  }
+
+  /* Theme-specific pill styles */
+  [data-theme="aesthetic"] .pill {
+    background: linear-gradient(135deg, rgb(var(--color-surface)), rgb(var(--color-surface-elevated)));
+    border-color: rgb(var(--color-primary) / 0.3);
+  }
+
+  [data-theme="academic"] .pill {
+    border-radius: var(--radius-sm);
+    font-family: var(--font-mono);
+    font-size: 0.7rem;
+    letter-spacing: 0.025em;
+  }
+
+  /* Soft divider */
   .soft-divider {
-    @apply h-px w-full bg-gradient-to-r from-transparent via-gray-200 to-transparent;
+    height: 1px;
+    width: 100%;
+    background: linear-gradient(
+      to right,
+      transparent,
+      rgb(var(--color-border)),
+      transparent
+    );
   }
 
-  /* Glassmorphism effect */
+  /* Primary button */
+  .btn-primary {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.5rem;
+    padding: 0.75rem 1.5rem;
+    background-color: rgb(var(--color-primary));
+    color: white;
+    font-weight: 500;
+    border-radius: var(--radius-lg);
+    box-shadow: var(--shadow-md);
+    transition: all var(--transition-fast) ease;
+  }
+
+  .btn-primary:hover {
+    background-color: rgb(var(--color-primary-hover));
+    box-shadow: var(--shadow-lg);
+    transform: translateY(-1px);
+  }
+
+  /* Secondary button */
+  .btn-secondary {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.5rem;
+    padding: 0.75rem 1.5rem;
+    background-color: transparent;
+    color: rgb(var(--color-text));
+    font-weight: 500;
+    border: 2px solid rgb(var(--color-border));
+    border-radius: var(--radius-lg);
+    transition: all var(--transition-fast) ease;
+  }
+
+  .btn-secondary:hover {
+    border-color: rgb(var(--color-primary));
+    color: rgb(var(--color-primary));
+    background-color: rgb(var(--color-primary) / 0.05);
+  }
+
+  /* Input field */
+  .input-field {
+    width: 100%;
+    padding: 0.75rem 1rem;
+    background-color: rgb(var(--color-surface));
+    color: rgb(var(--color-text));
+    border: 1px solid rgb(var(--color-border));
+    border-radius: var(--radius-md);
+    transition: all var(--transition-fast) ease;
+  }
+
+  .input-field:focus {
+    outline: none;
+    border-color: rgb(var(--color-primary));
+    box-shadow: 0 0 0 3px rgb(var(--color-primary) / 0.1);
+  }
+
+  .input-field::placeholder {
+    color: rgb(var(--color-text-muted));
+  }
+
+  /* Glass effect (modern/aesthetic themes) */
   .glass {
-    @apply bg-white/70 backdrop-blur-md border border-white/20;
+    background-color: rgb(var(--color-surface) / 0.7);
+    backdrop-filter: blur(12px);
+    border: 1px solid rgb(var(--color-border) / 0.3);
   }
 
-  /* Gradient backgrounds */
-  .gradient-bg {
-    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  /* Section heading */
+  .section-heading {
+    font-family: var(--font-heading);
+    font-weight: 700;
+    color: rgb(var(--color-text));
+    margin-bottom: 0.5rem;
+  }
+
+  .section-subheading {
+    color: rgb(var(--color-text-muted));
+    font-size: 1.125rem;
+  }
+
+  /* Link styles */
+  .link {
+    color: rgb(var(--color-primary));
+    transition: color var(--transition-fast) ease;
+  }
+
+  .link:hover {
+    color: rgb(var(--color-primary-hover));
+  }
+
+  /* Theme-specific link underline styles */
+  [data-theme="academic"] .link {
+    text-decoration: underline;
+    text-decoration-thickness: 1px;
+    text-underline-offset: 2px;
+  }
+
+  [data-theme="minimal"] .link {
+    text-decoration: none;
+  }
+
+  [data-theme="minimal"] .link:hover {
+    text-decoration: underline;
   }
 }
+
+/* ============================================
+   UTILITIES
+   ============================================ */
 
 @layer utilities {
   .text-balance {
     text-wrap: balance;
+  }
+
+  /* Theme-aware text colors */
+  .text-theme-primary {
+    color: rgb(var(--color-primary));
+  }
+
+  .text-theme-muted {
+    color: rgb(var(--color-text-muted));
+  }
+
+  /* Theme-aware background colors */
+  .bg-theme-surface {
+    background-color: rgb(var(--color-surface));
+  }
+
+  .bg-theme-elevated {
+    background-color: rgb(var(--color-surface-elevated));
+  }
+
+  /* Theme-aware borders */
+  .border-theme {
+    border-color: rgb(var(--color-border));
+  }
+
+  .border-theme-subtle {
+    border-color: rgb(var(--color-border-subtle));
+  }
+
+  /* Animation delays for staggered animations */
+  .animation-delay-100 { animation-delay: 100ms; }
+  .animation-delay-200 { animation-delay: 200ms; }
+  .animation-delay-300 { animation-delay: 300ms; }
+  .animation-delay-400 { animation-delay: 400ms; }
+  .animation-delay-500 { animation-delay: 500ms; }
+}
+
+/* ============================================
+   DARK MODE UTILITY CLASSES (Tailwind compat)
+   ============================================ */
+
+/* These ensure tailwind dark: classes still work alongside our theme system */
+.dark {
+  color-scheme: dark;
+}
+
+/* Fallback for components using tailwind dark mode */
+@media (prefers-color-scheme: dark) {
+  :root:not([class*="dark"]):not([data-theme]) {
+    --color-background: 15 23 42;
+    --color-surface: 30 41 59;
+    --color-text: 248 250 252;
   }
 }

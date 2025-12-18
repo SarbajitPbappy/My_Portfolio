@@ -148,7 +148,8 @@ export default function HeroManager() {
                 value={formData.description || ''}
                 onChange={(e) => setFormData({ ...formData, description: e.target.value })}
                 className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-transparent"
-                rows={3}
+                rows={4}
+                placeholder="Enter a brief description about yourself..."
               />
             </div>
             <div className="grid grid-cols-2 gap-4">

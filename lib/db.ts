@@ -1,5 +1,5 @@
 import { supabase } from './supabase'
-import type { Education, Publication, WorkExperience, Project, ResearchArea, Course, Hero, About, ContactInfo, Footer, Navbar, Page } from './types'
+import type { Education, Publication, WorkExperience, Project, ResearchArea, Course, Hero, About, ContactInfo, Footer, Skill, Settings } from './types'
 
 // Education CRUD
 export async function getEducation() {
@@ -334,6 +334,56 @@ export async function deleteCourse(id: number) {
   if (error) throw error
 }
 
+// Skills CRUD
+export async function getSkills() {
+  if (!process.env.NEXT_PUBLIC_SUPABASE_URL || !process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY) {
+    return []
+  }
+  
+  const { data, error } = await supabase
+    .from('skills')
+    .select('*')
+    .order('order', { ascending: true })
+  
+  if (error) {
+    console.error('Supabase error:', error)
+    return []
+  }
+  return (data || []) as Skill[]
+}
+
+export async function createSkill(skill: Omit<Skill, 'id' | 'created_at' | 'updated_at'>) {
+  const { data, error } = await supabase
+    .from('skills')
+    .insert(skill)
+    .select()
+    .single()
+  
+  if (error) throw error
+  return data as Skill
+}
+
+export async function updateSkill(id: number, skill: Partial<Skill>) {
+  const { data, error } = await supabase
+    .from('skills')
+    .update({ ...skill, updated_at: new Date().toISOString() })
+    .eq('id', id)
+    .select()
+    .single()
+  
+  if (error) throw error
+  return data as Skill
+}
+
+export async function deleteSkill(id: number) {
+  const { error } = await supabase
+    .from('skills')
+    .delete()
+    .eq('id', id)
+  
+  if (error) throw error
+}
+
 // Hero CRUD
 export async function getHero() {
   if (!process.env.NEXT_PUBLIC_SUPABASE_URL || !process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY) {
@@ -512,113 +562,62 @@ export async function updateFooter(id: number, footer: Partial<Footer>) {
   return data as Footer
 }
 
-// Navbar CRUD
-export async function getNavbar() {
+export async function deleteFooter(id: number) {
+  const { error } = await supabase
+    .from('footer')
+    .delete()
+    .eq('id', id)
+  
+  if (error) throw error
+}
+
+// Settings CRUD
+export async function getSettings() {
   if (!process.env.NEXT_PUBLIC_SUPABASE_URL || !process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY) {
-    return null
+    return { dark_mode: false, theme: 'modern' as const }
   }
   
   const { data, error } = await supabase
-    .from('navbar')
+    .from('settings')
     .select('*')
     .limit(1)
     .maybeSingle()
   
   if (error) {
     console.error('Supabase error:', error)
-    return null
+    return { dark_mode: false, theme: 'modern' as const }
   }
-  return data as Navbar | null
+  
+  if (!data) {
+    // Create default settings if none exist
+    const defaultSettings = await createSettings({ dark_mode: false, theme: 'modern' })
+    return defaultSettings
+  }
+  
+  return data as Settings
 }
 
-export async function createNavbar(navbar: Omit<Navbar, 'id' | 'created_at' | 'updated_at'>) {
+export async function createSettings(settings: Omit<Settings, 'id' | 'created_at' | 'updated_at'>) {
   const { data, error } = await supabase
-    .from('navbar')
-    .insert(navbar)
+    .from('settings')
+    .insert(settings)
     .select()
     .single()
   
   if (error) throw error
-  return data as Navbar
+  return data as Settings
 }
 
-export async function updateNavbar(id: number, navbar: Partial<Navbar>) {
+export async function updateSettings(id: number, settings: Partial<Settings>) {
   const { data, error } = await supabase
-    .from('navbar')
-    .update({ ...navbar, updated_at: new Date().toISOString() })
+    .from('settings')
+    .update({ ...settings, updated_at: new Date().toISOString() })
     .eq('id', id)
     .select()
     .single()
   
   if (error) throw error
-  return data as Navbar
+  return data as Settings
 }
 
-// Pages CRUD
-export async function getPages() {
-  if (!process.env.NEXT_PUBLIC_SUPABASE_URL || !process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY) {
-    return []
-  }
-  
-  const { data, error } = await supabase
-    .from('pages')
-    .select('*')
-    .order('created_at', { ascending: false })
-  
-  if (error) {
-    console.error('Supabase error:', error)
-    return []
-  }
-  return (data || []) as Page[]
-}
-
-export async function getPageBySlug(slug: string) {
-  if (!process.env.NEXT_PUBLIC_SUPABASE_URL || !process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY) {
-    return null
-  }
-  
-  const { data, error } = await supabase
-    .from('pages')
-    .select('*')
-    .eq('slug', slug)
-    .maybeSingle()
-  
-  if (error) {
-    console.error('Supabase error:', error)
-    return null
-  }
-  return data as Page | null
-}
-
-export async function createPage(page: Omit<Page, 'id' | 'created_at' | 'updated_at'>) {
-  const { data, error } = await supabase
-    .from('pages')
-    .insert(page)
-    .select()
-    .single()
-  
-  if (error) throw error
-  return data as Page
-}
-
-export async function updatePage(id: number, page: Partial<Page>) {
-  const { data, error } = await supabase
-    .from('pages')
-    .update({ ...page, updated_at: new Date().toISOString() })
-    .eq('id', id)
-    .select()
-    .single()
-  
-  if (error) throw error
-  return data as Page
-}
-
-export async function deletePage(id: number) {
-  const { error } = await supabase
-    .from('pages')
-    .delete()
-    .eq('id', id)
-  
-  if (error) throw error
-}
 

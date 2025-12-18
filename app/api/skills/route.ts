@@ -3,11 +3,11 @@ import * as db from '@/lib/db'
 
 export async function GET() {
   try {
-    const data = await db.getNavbar()
-    return NextResponse.json(data)
+    const data = await db.getSkills()
+    return NextResponse.json(data || [])
   } catch (error: any) {
-    console.error('Error fetching navbar:', error)
-    return NextResponse.json(null)
+    console.error('Error fetching skills:', error)
+    return NextResponse.json([])
   }
 }
 
@@ -22,7 +22,7 @@ export async function POST(request: NextRequest) {
     }
 
     const body = await request.json()
-    const data = await db.createNavbar(body)
+    const data = await db.createSkill(body)
     return NextResponse.json(data, { status: 201 })
   } catch (error: any) {
     return NextResponse.json(

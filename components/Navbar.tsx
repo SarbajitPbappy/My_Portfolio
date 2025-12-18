@@ -4,15 +4,15 @@ import { useState, useEffect } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
 import { Menu, X } from 'lucide-react'
 import Link from 'next/link'
-import type { Navbar } from '@/lib/types'
 
-// Fallback navbar
-const fallbackNavbar: Navbar = {
+// Static navbar configuration
+const navbarConfig = {
   name: 'Sarbajit Paul Bappy',
   nav_items: [
     { name: 'Home', href: '#home' },
     { name: 'About', href: '#about' },
     { name: 'Education', href: '#education' },
+    { name: 'Skills', href: '#skills' },
     { name: 'Work Experience', href: '#experience' },
     { name: 'Research', href: '#research' },
     { name: 'Projects', href: '#projects' },
@@ -21,44 +21,19 @@ const fallbackNavbar: Navbar = {
 }
 
 export default function Navbar() {
-  const [navbar, setNavbar] = useState<Navbar | null>(null)
   const [isScrolled, setIsScrolled] = useState(false)
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false)
   const [activeSection, setActiveSection] = useState('home')
 
-  useEffect(() => {
-    fetchNavbar()
-    
-    const handleUpdate = () => {
-      fetchNavbar()
-    }
-    window.addEventListener('content-updated', handleUpdate)
-    
-    return () => {
-      window.removeEventListener('content-updated', handleUpdate)
-    }
-  }, [])
-
-  const fetchNavbar = async () => {
-    try {
-      const res = await fetch('/api/navbar')
-      const data = await res.json()
-      setNavbar(data || fallbackNavbar)
-    } catch (error) {
-      console.error('Error fetching navbar:', error)
-      setNavbar(fallbackNavbar)
-    }
-  }
-
-  const navbarData = navbar || fallbackNavbar
-  const navItems = navbarData.nav_items || []
+  const navItems = navbarConfig.nav_items
 
   useEffect(() => {
     const handleScroll = () => {
       setIsScrolled(window.scrollY > 20)
       
-      // Update active section based on scroll position
-      const sections = navItems.map(item => item.href.substring(1))
+      // Update active section based on scroll position (only for hash links)
+      const hashLinks = navItems.filter(item => item.href.startsWith('#'))
+      const sections = hashLinks.map(item => item.href.substring(1))
       const scrollPosition = window.scrollY + 100
 
       for (const section of sections) {
@@ -75,7 +50,7 @@ export default function Navbar() {
 
     window.addEventListener('scroll', handleScroll)
     return () => window.removeEventListener('scroll', handleScroll)
-  }, [])
+  }, [navItems])
 
   const handleLinkClick = (e: React.MouseEvent<HTMLAnchorElement>, href: string) => {
     // If it's a page route (starts with /), use Next.js router
@@ -121,7 +96,7 @@ export default function Navbar() {
             onClick={(e) => handleLinkClick(e, '#home')}
             className="flex items-center h-full text-2xl font-bold gradient-text leading-none"
           >
-            {navbarData.name}
+            {navbarConfig.name}
           </Link>
 
           {/* Desktop Menu */}
@@ -135,7 +110,9 @@ export default function Navbar() {
                   <Link
                     key={item.name}
                     href={item.href}
-                    onClick={() => setIsMobileMenuOpen(false)}
+                    onClick={() => {
+                      setIsMobileMenuOpen(false)
+                    }}
                     className="transition-colors font-medium text-gray-700 hover:text-primary-600"
                   >
                     {item.name}
@@ -197,7 +174,9 @@ export default function Navbar() {
                     <Link
                       key={item.name}
                       href={item.href}
-                      onClick={() => setIsMobileMenuOpen(false)}
+                      onClick={() => {
+                        setIsMobileMenuOpen(false)
+                      }}
                       className="block transition-colors font-medium text-gray-700 hover:text-primary-600"
                     >
                       {item.name}

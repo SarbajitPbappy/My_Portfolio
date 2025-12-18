@@ -4,6 +4,7 @@ import Education from '@/components/Education'
 import WorkExperience from '@/components/WorkExperience'
 import ResearchAndPublications from '@/components/ResearchAndPublications'
 import Projects from '@/components/Projects'
+import Skills from '@/components/Skills'
 import Contact from '@/components/Contact'
 
 export default function Home() {
@@ -12,6 +13,7 @@ export default function Home() {
       <Hero />
       <About />
       <Education />
+      <Skills />
       <WorkExperience />
       <ResearchAndPublications />
       <Projects />

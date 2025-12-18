@@ -151,3 +151,24 @@ export interface Page {
   updated_at?: string
 }
 
+export interface Skill {
+  id?: number
+  name: string
+  category: string
+  level?: string
+  icon?: string
+  order: number
+  created_at?: string
+  updated_at?: string
+}
+
+export type Theme = 'minimal' | 'modern' | 'aesthetic' | 'professional' | 'academic'
+
+export interface Settings {
+  id?: number
+  dark_mode: boolean
+  theme: Theme
+  created_at?: string
+  updated_at?: string
+}
+
