@@ -294,6 +294,84 @@ const coursesData = [
   },
 ]
 
+// Complete About Data - Extracted from About.tsx
+const aboutData = {
+  title: 'About Me',
+  description: 'Final-year Computer Science and Engineering student at Daffodil International University with an Erasmus+ exchange at Mälardalen University, Sweden. I focus on deep learning, computer vision, and explainable AI for healthcare and agriculture, pairing academic rigor with clear communication.',
+  values: [
+    {
+      title: 'Research-Driven',
+      description: 'I connect theory with practice, validating ideas through experiments, benchmarks, and peer feedback.',
+    },
+    {
+      title: 'Systems Thinker',
+      description: 'I design end-to-end solutions: data readiness, modeling, evaluation, deployment, and monitoring.',
+    },
+    {
+      title: 'Community-Focused',
+      description: 'Teaching, mentoring, and leading IEEE initiatives keep me grounded and collaborative.',
+    },
+  ],
+  quick_facts: [
+    { label: 'Specialties', value: 'Deep Learning, Computer Vision, XAI' },
+    { label: 'Stack', value: 'PyTorch, TensorFlow, Python, SQL' },
+    { label: 'Current Goal', value: 'Graduate studies in AI/ML research' },
+  ],
+  order: 0,
+}
+
+// Complete Hero Data - Extracted from Hero.tsx
+const heroData = {
+  name: 'Sarbajit Paul Bappy',
+  title: 'Final-year CSE Student & Teaching Assistant @ DIU',
+  subtitle: '',
+  description: 'Passionate about Deep Learning, Computer Vision, and Explainable AI for healthcare and agriculture.',
+  email: 'bappy15-6155@s.diu.edu.bd',
+  phone: '+880 1315352270',
+  cv_url: '/Bappy_CV_Official.pdf',
+  github_url: 'https://github.com/SarbajitPbappy',
+  linkedin_url: 'https://linkedin.com/in/iamsarbajit',
+  profile_image_url: '/profile.jpg',
+  focus_tags: ['Computer Vision', 'Explainable AI', 'Medical Imaging', 'Agritech'],
+  order: 0,
+}
+
+// Complete Contact Info Data - Extracted from Contact.tsx
+const contactInfoData = [
+  { icon: 'Mail', text: 'bappy15-6155@s.diu.edu.bd', href: 'mailto:bappy15-6155@s.diu.edu.bd', gradient: 'from-blue-500 to-cyan-500', is_external: false, order: 0 },
+  { icon: 'Mail', text: 'sarbajit2001@gmail.com', href: 'mailto:sarbajit2001@gmail.com', gradient: 'from-purple-500 to-pink-500', is_external: false, order: 1 },
+  { icon: 'Phone', text: '+880 1315352270', href: 'tel:+8801315352270', gradient: 'from-green-500 to-emerald-500', is_external: false, order: 2 },
+  { icon: 'Github', text: 'github.com/SarbajitPbappy', href: 'https://github.com/SarbajitPbappy', gradient: 'from-gray-700 to-gray-900', is_external: true, order: 3 },
+  { icon: 'Linkedin', text: 'linkedin.com/in/iamsarbajit', href: 'https://linkedin.com/in/iamsarbajit', gradient: 'from-blue-600 to-blue-800', is_external: true, order: 4 },
+]
+
+// Complete Footer Data - Extracted from Footer.tsx
+const footerData = {
+  name: 'Sarbajit Paul Bappy',
+  description: 'Final-year Computer Science student passionate about Deep Learning, Computer Vision, and Explainable AI',
+  quick_links: ['About', 'Education', 'Research', 'Publications', 'Projects', 'Contact'],
+  social_links: [
+    { icon: 'Github', href: 'https://github.com/SarbajitPbappy', label: 'GitHub' },
+    { icon: 'Linkedin', href: 'https://linkedin.com/in/iamsarbajit', label: 'LinkedIn' },
+    { icon: 'Mail', href: 'mailto:sarbajit2001@gmail.com', label: 'Email' },
+  ],
+  copyright_text: `© ${new Date().getFullYear()} Sarbajit Paul Bappy. All rights reserved.`,
+}
+
+// Complete Navbar Data - Extracted from Navbar.tsx
+const navbarData = {
+  name: 'Sarbajit Paul Bappy',
+  nav_items: [
+    { name: 'Home', href: '#home' },
+    { name: 'About', href: '#about' },
+    { name: 'Education', href: '#education' },
+    { name: 'Work Experience', href: '#experience' },
+    { name: 'Research', href: '#research' },
+    { name: 'Projects', href: '#projects' },
+    { name: 'Contact', href: '#contact' },
+  ],
+}
+
 // Helper function to check if record exists and insert only if not exists
 async function insertIfNotExists(table, records, uniqueField = 'title') {
   const results = []
@@ -340,6 +418,11 @@ async function migrateData() {
   console.log(`   - Projects: ${projectsData.length} entries`)
   console.log(`   - Research Areas: ${researchAreasData.length} entries`)
   console.log(`   - Courses: ${coursesData.length} entries`)
+  console.log(`   - About: 1 entry`)
+  console.log(`   - Hero: 1 entry`)
+  console.log(`   - Contact Info: ${contactInfoData.length} entries`)
+  console.log(`   - Footer: 1 entry`)
+  console.log(`   - Navbar: 1 entry`)
   console.log('')
   console.log('🔄 Checking for existing records to avoid duplicates...\n')
 
@@ -462,6 +545,134 @@ async function migrateData() {
       } else if (skipped > 0) {
         console.log(`⏭️  All ${skipped} courses already exist, skipped`)
       }
+    }
+
+    // Migrate About (single record, check if exists)
+    const { data: existingAbout } = await supabase
+      .from('about')
+      .select('id')
+      .limit(1)
+
+    if (!existingAbout || existingAbout.length === 0) {
+      const { data, error } = await supabase
+        .from('about')
+        .insert(aboutData)
+        .select()
+        .single()
+
+      if (error) {
+        console.error(`❌ Error inserting about:`, error.message)
+      } else {
+        console.log(`✅ Migrated About section`)
+      }
+    } else {
+      console.log(`⏭️  About section already exists, skipped`)
+    }
+
+    // Migrate Hero (single record, check if exists)
+    const { data: existingHero } = await supabase
+      .from('hero')
+      .select('id')
+      .limit(1)
+
+    if (!existingHero || existingHero.length === 0) {
+      const { data, error } = await supabase
+        .from('hero')
+        .insert(heroData)
+        .select()
+        .single()
+
+      if (error) {
+        console.error(`❌ Error inserting hero:`, error.message)
+      } else {
+        console.log(`✅ Migrated Hero section`)
+      }
+    } else {
+      console.log(`⏭️  Hero section already exists, skipped`)
+    }
+
+    // Migrate Contact Info (multiple records, check for duplicates)
+    if (contactInfoData.length > 0) {
+      const results = []
+      let inserted = 0
+      let skipped = 0
+
+      for (const contact of contactInfoData) {
+        const { data: existing } = await supabase
+          .from('contact_info')
+          .select('id')
+          .eq('text', contact.text)
+          .eq('href', contact.href)
+          .limit(1)
+
+        if (existing && existing.length > 0) {
+          skipped++
+          continue
+        }
+
+        const { data, error } = await supabase
+          .from('contact_info')
+          .insert(contact)
+          .select()
+          .single()
+
+        if (error) {
+          console.error(`Error inserting contact info:`, error.message)
+        } else {
+          results.push(data)
+          inserted++
+        }
+      }
+
+      if (inserted > 0) {
+        console.log(`✅ Migrated ${inserted} contact info entries${skipped > 0 ? ` (${skipped} already existed, skipped)` : ''}`)
+      } else if (skipped > 0) {
+        console.log(`⏭️  All ${skipped} contact info entries already exist, skipped`)
+      }
+    }
+
+    // Migrate Footer (single record, check if exists)
+    const { data: existingFooter } = await supabase
+      .from('footer')
+      .select('id')
+      .limit(1)
+
+    if (!existingFooter || existingFooter.length === 0) {
+      const { data, error } = await supabase
+        .from('footer')
+        .insert(footerData)
+        .select()
+        .single()
+
+      if (error) {
+        console.error(`❌ Error inserting footer:`, error.message)
+      } else {
+        console.log(`✅ Migrated Footer section`)
+      }
+    } else {
+      console.log(`⏭️  Footer section already exists, skipped`)
+    }
+
+    // Migrate Navbar (single record, check if exists)
+    const { data: existingNavbar } = await supabase
+      .from('navbar')
+      .select('id')
+      .limit(1)
+
+    if (!existingNavbar || existingNavbar.length === 0) {
+      const { data, error } = await supabase
+        .from('navbar')
+        .insert(navbarData)
+        .select()
+        .single()
+
+      if (error) {
+        console.error(`❌ Error inserting navbar:`, error.message)
+      } else {
+        console.log(`✅ Migrated Navbar section`)
+      }
+    } else {
+      console.log(`⏭️  Navbar section already exists, skipped`)
     }
 
     console.log('\n✨ Migration complete!')

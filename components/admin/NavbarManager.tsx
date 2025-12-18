@@ -9,7 +9,8 @@ export default function NavbarManager() {
   const [loading, setLoading] = useState(true)
   const [formData, setFormData] = useState<Partial<Navbar>>({})
   const [showForm, setShowForm] = useState(false)
-  const [newNavItem, setNewNavItem] = useState({ name: '', href: '' })
+  const [newNavItem, setNewNavItem] = useState({ name: '', href: '', linkType: 'hash' as 'hash' | 'page' })
+  const [creatingPage, setCreatingPage] = useState(false)
 
   useEffect(() => {
     fetchItem()
@@ -71,14 +72,66 @@ export default function NavbarManager() {
     }
   }
 
-  const addNavItem = () => {
-    if (newNavItem.name && newNavItem.href) {
-      setFormData({
-        ...formData,
-        nav_items: [...(formData.nav_items || []), { ...newNavItem }],
-      })
-      setNewNavItem({ name: '', href: '' })
+  const addNavItem = async () => {
+    if (!newNavItem.name) {
+      alert('Please enter a name for the navigation item')
+      return
     }
+
+    let href = newNavItem.href
+
+    // If creating a page, generate slug from name and create the page
+    if (newNavItem.linkType === 'page') {
+      if (!newNavItem.href) {
+        // Generate slug from name
+        href = '/' + newNavItem.name.toLowerCase().replace(/\s+/g, '-').replace(/[^a-z0-9-]/g, '')
+      } else {
+        // Ensure it starts with /
+        href = newNavItem.href.startsWith('/') ? newNavItem.href : '/' + newNavItem.href
+      }
+
+      // Check if page already exists
+      try {
+        const checkRes = await fetch(`/api/pages/slug/${href.substring(1)}`)
+        if (checkRes.status === 404) {
+          // Create the page
+          setCreatingPage(true)
+          const pageRes = await fetch('/api/pages', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+              slug: href.substring(1),
+              title: newNavItem.name,
+              content: `<h2>${newNavItem.name}</h2><p>This is a new page. Edit it from the admin panel.</p>`,
+              meta_description: `Page about ${newNavItem.name}`,
+            }),
+          })
+
+          if (!pageRes.ok) {
+            const error = await pageRes.json()
+            throw new Error(error.error || 'Failed to create page')
+          }
+        }
+      } catch (error: any) {
+        console.error('Error creating page:', error)
+        alert(`Failed to create page: ${error.message}`)
+        setCreatingPage(false)
+        return
+      }
+      setCreatingPage(false)
+    } else {
+      // Hash link - ensure it starts with #
+      if (!href.startsWith('#')) {
+        href = '#' + href
+      }
+    }
+
+    // Add to nav items
+    setFormData({
+      ...formData,
+      nav_items: [...(formData.nav_items || []), { name: newNavItem.name, href }],
+    })
+    setNewNavItem({ name: '', href: '', linkType: 'hash' })
   }
 
   const removeNavItem = (index: number) => {
@@ -126,7 +179,12 @@ export default function NavbarManager() {
                   <div key={index} className="flex items-center justify-between p-3 bg-gray-50 rounded-lg">
                     <div>
                       <p className="font-semibold text-gray-900">{navItem.name}</p>
-                      <p className="text-sm text-gray-600">{navItem.href}</p>
+                      <p className="text-sm text-gray-600">
+                        {navItem.href}
+                        <span className="ml-2 text-xs text-gray-500">
+                          ({navItem.href.startsWith('/') ? 'Page' : 'Section'})
+                        </span>
+                      </p>
                     </div>
                     <button
                       onClick={() => removeNavItem(index)}
@@ -137,28 +195,78 @@ export default function NavbarManager() {
                   </div>
                 ))}
               </div>
-              <div className="grid grid-cols-2 gap-2 mb-2">
-                <input
-                  type="text"
-                  value={newNavItem.name}
-                  onChange={(e) => setNewNavItem({ ...newNavItem, name: e.target.value })}
-                  placeholder="Item name (e.g., Home)"
-                  className="px-3 py-2 border border-gray-300 rounded-lg"
-                />
-                <input
-                  type="text"
-                  value={newNavItem.href}
-                  onChange={(e) => setNewNavItem({ ...newNavItem, href: e.target.value })}
-                  placeholder="Link (e.g., #home)"
-                  className="px-3 py-2 border border-gray-300 rounded-lg"
-                />
+              
+              <div className="bg-blue-50 border border-blue-200 rounded-lg p-4 mb-4">
+                <p className="text-sm text-blue-800 mb-2">
+                  <strong>Add Navigation Item:</strong>
+                </p>
+                <div className="space-y-3">
+                  <div>
+                    <label className="block text-sm font-medium text-gray-700 mb-1">Link Type</label>
+                    <div className="flex gap-2">
+                      <button
+                        type="button"
+                        onClick={() => setNewNavItem({ ...newNavItem, linkType: 'hash' })}
+                        className={`px-4 py-2 rounded-lg text-sm font-medium transition-colors ${
+                          newNavItem.linkType === 'hash'
+                            ? 'bg-primary-600 text-white'
+                            : 'bg-gray-200 text-gray-700 hover:bg-gray-300'
+                        }`}
+                      >
+                        Section Link (#home)
+                      </button>
+                      <button
+                        type="button"
+                        onClick={() => setNewNavItem({ ...newNavItem, linkType: 'page' })}
+                        className={`px-4 py-2 rounded-lg text-sm font-medium transition-colors ${
+                          newNavItem.linkType === 'page'
+                            ? 'bg-primary-600 text-white'
+                            : 'bg-gray-200 text-gray-700 hover:bg-gray-300'
+                        }`}
+                      >
+                        New Page (/about)
+                      </button>
+                    </div>
+                  </div>
+                  
+                  <div>
+                    <label className="block text-sm font-medium text-gray-700 mb-1">Item Name *</label>
+                    <input
+                      type="text"
+                      value={newNavItem.name}
+                      onChange={(e) => setNewNavItem({ ...newNavItem, name: e.target.value })}
+                      placeholder="e.g., Home, About, Blog"
+                      className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-transparent"
+                    />
+                  </div>
+                  
+                  <div>
+                    <label className="block text-sm font-medium text-gray-700 mb-1">
+                      {newNavItem.linkType === 'hash' ? 'Section ID (without #)' : 'Page Slug (optional, auto-generated from name)'}
+                    </label>
+                    <input
+                      type="text"
+                      value={newNavItem.href}
+                      onChange={(e) => setNewNavItem({ ...newNavItem, href: e.target.value })}
+                      placeholder={newNavItem.linkType === 'hash' ? 'e.g., home, about, contact' : 'e.g., about, blog, portfolio'}
+                      className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-transparent"
+                    />
+                    {newNavItem.linkType === 'page' && (
+                      <p className="text-xs text-gray-500 mt-1">
+                        If left empty, slug will be generated from the name (e.g., "My Blog" → "/my-blog")
+                      </p>
+                    )}
+                  </div>
+                  
+                  <button
+                    onClick={addNavItem}
+                    disabled={creatingPage || !newNavItem.name}
+                    className="w-full px-4 py-2 bg-primary-600 text-white rounded-lg hover:bg-primary-700 disabled:bg-gray-400 disabled:cursor-not-allowed transition-colors"
+                  >
+                    {creatingPage ? 'Creating Page...' : '+ Add Navigation Item'}
+                  </button>
+                </div>
               </div>
-              <button
-                onClick={addNavItem}
-                className="px-4 py-2 bg-gray-100 text-gray-700 rounded-lg hover:bg-gray-200"
-              >
-                + Add Navigation Item
-              </button>
             </div>
 
             <div className="flex gap-2 pt-4 border-t">

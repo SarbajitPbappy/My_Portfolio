@@ -141,3 +141,13 @@ export interface Navbar {
   updated_at?: string
 }
 
+export interface Page {
+  id?: number
+  slug: string
+  title: string
+  content: string
+  meta_description?: string
+  created_at?: string
+  updated_at?: string
+}
+

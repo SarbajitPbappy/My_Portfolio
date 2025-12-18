@@ -78,19 +78,29 @@ export default function Navbar() {
   }, [])
 
   const handleLinkClick = (e: React.MouseEvent<HTMLAnchorElement>, href: string) => {
-    e.preventDefault()
-    const targetId = href.substring(1)
-    const element = document.getElementById(targetId)
+    // If it's a page route (starts with /), use Next.js router
+    if (href.startsWith('/')) {
+      // Let Next.js handle the navigation
+      setIsMobileMenuOpen(false)
+      return
+    }
     
-    if (element) {
-      const offset = 80 // Navbar height
-      const elementPosition = element.getBoundingClientRect().top
-      const offsetPosition = elementPosition + window.pageYOffset - offset
+    // If it's a hash link (starts with #), handle smooth scroll
+    if (href.startsWith('#')) {
+      e.preventDefault()
+      const targetId = href.substring(1)
+      const element = document.getElementById(targetId)
+      
+      if (element) {
+        const offset = 80 // Navbar height
+        const elementPosition = element.getBoundingClientRect().top
+        const offsetPosition = elementPosition + window.pageYOffset - offset
 
-      window.scrollTo({
-        top: offsetPosition,
-        behavior: 'smooth'
-      })
+        window.scrollTo({
+          top: offsetPosition,
+          behavior: 'smooth'
+        })
+      }
     }
     
     setIsMobileMenuOpen(false)
@@ -117,7 +127,22 @@ export default function Navbar() {
           {/* Desktop Menu */}
           <div className="hidden md:flex items-center space-x-8">
             {navItems.map((item) => {
-              const sectionId = item.href.substring(1)
+              const sectionId = item.href.startsWith('#') ? item.href.substring(1) : null
+              const isPageRoute = item.href.startsWith('/')
+              
+              if (isPageRoute) {
+                return (
+                  <Link
+                    key={item.name}
+                    href={item.href}
+                    onClick={() => setIsMobileMenuOpen(false)}
+                    className="transition-colors font-medium text-gray-700 hover:text-primary-600"
+                  >
+                    {item.name}
+                  </Link>
+                )
+              }
+              
               return (
                 <a
                   key={item.name}
@@ -164,7 +189,22 @@ export default function Navbar() {
           >
             <div className="px-4 py-4 space-y-4">
               {navItems.map((item) => {
-                const sectionId = item.href.substring(1)
+                const sectionId = item.href.startsWith('#') ? item.href.substring(1) : null
+                const isPageRoute = item.href.startsWith('/')
+                
+                if (isPageRoute) {
+                  return (
+                    <Link
+                      key={item.name}
+                      href={item.href}
+                      onClick={() => setIsMobileMenuOpen(false)}
+                      className="block transition-colors font-medium text-gray-700 hover:text-primary-600"
+                    >
+                      {item.name}
+                    </Link>
+                  )
+                }
+                
                 return (
                   <a
                     key={item.name}

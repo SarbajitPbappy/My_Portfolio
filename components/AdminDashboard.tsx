@@ -1,7 +1,7 @@
 'use client'
 
 import { useState } from 'react'
-import { LogOut, GraduationCap, FileText, Briefcase, FolderKanban, Brain, BookOpen, Home, User, Mail, Menu } from 'lucide-react'
+import { LogOut, GraduationCap, FileText, Briefcase, FolderKanban, Brain, BookOpen, Home, User, Mail, Menu, File } from 'lucide-react'
 import Link from 'next/link'
 import EducationManager from './admin/EducationManager'
 import PublicationsManager from './admin/PublicationsManager'
@@ -14,12 +14,13 @@ import AboutManager from './admin/AboutManager'
 import ContactManager from './admin/ContactManager'
 import FooterManager from './admin/FooterManager'
 import NavbarManager from './admin/NavbarManager'
+import PagesManager from './admin/PagesManager'
 
 interface AdminDashboardProps {
   onLogout: () => void
 }
 
-type TabType = 'hero' | 'about' | 'education' | 'publications' | 'work' | 'projects' | 'research' | 'courses' | 'contact' | 'footer' | 'navbar'
+type TabType = 'hero' | 'about' | 'education' | 'publications' | 'work' | 'projects' | 'research' | 'courses' | 'contact' | 'footer' | 'navbar' | 'pages'
 
 export default function AdminDashboard({ onLogout }: AdminDashboardProps) {
   const [activeTab, setActiveTab] = useState<TabType>('hero')
@@ -41,6 +42,7 @@ export default function AdminDashboard({ onLogout }: AdminDashboardProps) {
     { id: 'contact' as TabType, label: 'Contact', icon: Mail },
     { id: 'footer' as TabType, label: 'Footer', icon: FileText },
     { id: 'navbar' as TabType, label: 'Navbar', icon: Menu },
+    { id: 'pages' as TabType, label: 'Pages', icon: File },
   ]
 
   return (
@@ -110,6 +112,7 @@ export default function AdminDashboard({ onLogout }: AdminDashboardProps) {
         {activeTab === 'contact' && <ContactManager />}
         {activeTab === 'footer' && <FooterManager />}
         {activeTab === 'navbar' && <NavbarManager />}
+        {activeTab === 'pages' && <PagesManager />}
       </main>
     </div>
   )

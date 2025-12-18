@@ -1,5 +1,5 @@
 import { supabase } from './supabase'
-import type { Education, Publication, WorkExperience, Project, ResearchArea, Course, Hero, About, ContactInfo, Footer, Navbar } from './types'
+import type { Education, Publication, WorkExperience, Project, ResearchArea, Course, Hero, About, ContactInfo, Footer, Navbar, Page } from './types'
 
 // Education CRUD
 export async function getEducation() {
@@ -552,5 +552,73 @@ export async function updateNavbar(id: number, navbar: Partial<Navbar>) {
   
   if (error) throw error
   return data as Navbar
+}
+
+// Pages CRUD
+export async function getPages() {
+  if (!process.env.NEXT_PUBLIC_SUPABASE_URL || !process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY) {
+    return []
+  }
+  
+  const { data, error } = await supabase
+    .from('pages')
+    .select('*')
+    .order('created_at', { ascending: false })
+  
+  if (error) {
+    console.error('Supabase error:', error)
+    return []
+  }
+  return (data || []) as Page[]
+}
+
+export async function getPageBySlug(slug: string) {
+  if (!process.env.NEXT_PUBLIC_SUPABASE_URL || !process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY) {
+    return null
+  }
+  
+  const { data, error } = await supabase
+    .from('pages')
+    .select('*')
+    .eq('slug', slug)
+    .maybeSingle()
+  
+  if (error) {
+    console.error('Supabase error:', error)
+    return null
+  }
+  return data as Page | null
+}
+
+export async function createPage(page: Omit<Page, 'id' | 'created_at' | 'updated_at'>) {
+  const { data, error } = await supabase
+    .from('pages')
+    .insert(page)
+    .select()
+    .single()
+  
+  if (error) throw error
+  return data as Page
+}
+
+export async function updatePage(id: number, page: Partial<Page>) {
+  const { data, error } = await supabase
+    .from('pages')
+    .update({ ...page, updated_at: new Date().toISOString() })
+    .eq('id', id)
+    .select()
+    .single()
+  
+  if (error) throw error
+  return data as Page
+}
+
+export async function deletePage(id: number) {
+  const { error } = await supabase
+    .from('pages')
+    .delete()
+    .eq('id', id)
+  
+  if (error) throw error
 }
 

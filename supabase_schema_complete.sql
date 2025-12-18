@@ -166,6 +166,17 @@ CREATE TABLE IF NOT EXISTS navbar (
   updated_at TIMESTAMPTZ DEFAULT NOW()
 );
 
+-- Pages Table (for dynamic pages)
+CREATE TABLE IF NOT EXISTS pages (
+  id BIGSERIAL PRIMARY KEY,
+  slug TEXT NOT NULL UNIQUE,
+  title TEXT NOT NULL,
+  content TEXT NOT NULL,
+  meta_description TEXT,
+  created_at TIMESTAMPTZ DEFAULT NOW(),
+  updated_at TIMESTAMPTZ DEFAULT NOW()
+);
+
 -- ============================================
 -- INDEXES
 -- ============================================
@@ -177,6 +188,7 @@ CREATE INDEX IF NOT EXISTS idx_projects_order ON projects("order");
 CREATE INDEX IF NOT EXISTS idx_research_areas_order ON research_areas("order");
 CREATE INDEX IF NOT EXISTS idx_courses_order ON courses("order");
 CREATE INDEX IF NOT EXISTS idx_hero_order ON hero("order");
+CREATE INDEX IF NOT EXISTS idx_pages_slug ON pages(slug);
 CREATE INDEX IF NOT EXISTS idx_about_order ON about("order");
 CREATE INDEX IF NOT EXISTS idx_contact_info_order ON contact_info("order");
 
