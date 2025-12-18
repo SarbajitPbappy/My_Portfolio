@@ -166,14 +166,14 @@ export default function ThemeSwitcher() {
                         whileTap={{ scale: 0.98 }}
                         className={`w-full flex items-center gap-3 p-3 rounded-xl transition-all duration-200 ${
                           isSelected 
-                            ? 'ring-2' 
+                            ? '' 
                             : 'hover:bg-gray-50 dark:hover:bg-gray-700/50'
                         }`}
                         style={{
                           backgroundColor: isSelected 
                             ? `rgb(var(--color-primary) / 0.1)` 
                             : 'transparent',
-                          ringColor: isSelected ? `rgb(var(--color-primary))` : 'transparent',
+                          boxShadow: isSelected ? `0 0 0 2px rgb(var(--color-primary))` : 'none',
                         }}
                       >
                         {/* Color preview */}
