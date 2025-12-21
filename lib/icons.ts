@@ -1,196 +1,228 @@
 /**
- * Comprehensive Lucide Icon Mapping
- * This file exports all available Lucide React icons for use throughout the application
+ * Lucide Icon Registry
+ * ------------------------------------------------------------
+ * - Centralized icon imports
+ * - Static exports for tree-shaking
+ * - Dynamic lookup by string
+ * - Alias support
+ * - Strict TypeScript safety
+ * ------------------------------------------------------------
  */
 
-// Import all icons first
+import type { LucideIcon } from 'lucide-react'
+
 import {
-  // Navigation & UI
+  /* =========================
+     Navigation & UI
+  ========================= */
   Home, Menu, X, Search, Filter, Grid, List, Settings, Cog, Wrench,
-  ChevronDown, ChevronUp, ChevronLeft, ChevronRight, ChevronsDown, ChevronsUp,
+  ChevronDown, ChevronUp, ChevronLeft, ChevronRight,
+  ChevronsDown, ChevronsUp,
   ArrowLeft, ArrowRight, ArrowUp, ArrowDown, ArrowUpDown,
   Plus, Minus, Check, Circle, Square, Triangle,
-  
-  // Actions
+
+  /* =========================
+     Actions & Status
+  ========================= */
   Edit, Trash, Trash2, Save, Download, Upload, Share, Copy, Clipboard,
-  Eye, EyeOff, Lock, Unlock, Key, Shield, AlertCircle, AlertTriangle,
-  Info, HelpCircle, CheckCircle, XCircle,
-  
-  // Social & Communication
-  Mail, Phone, MessageSquare, MessageCircle, Send, Bell, BellOff,
+  Eye, EyeOff, Lock, Unlock, Key, Shield,
+  AlertCircle, AlertTriangle, Info, HelpCircle,
+  CheckCircle, CheckCircle2, XCircle,
+
+  /* =========================
+     Social & Communication
+  ========================= */
+  Mail, Phone, MessageSquare, MessageCircle, Send,
+  Bell, BellOff,
   Users, User, UserPlus, UserMinus, UserCheck, UserX,
   Github, Linkedin, Twitter, Facebook, Instagram, Youtube, Globe,
-  
-  // Files & Documents
+
+  /* =========================
+     Files & Documents
+  ========================= */
   File, FileText, FileCode, FileImage, FileVideo, FileAudio, FileSpreadsheet,
-  Folder, FolderOpen, FolderPlus, FolderMinus, Archive, Book, BookOpen,
-  BookMarked, BookText, Library, School, GraduationCap,
-  
-  // Business & Work
-  Briefcase, Building, Building2, Store, ShoppingBag, ShoppingCart,
-  Package, Box, Layers, Server, Database, HardDrive, Cpu,
-  DollarSign, CreditCard, Wallet, Receipt, TrendingUp, BarChart, PieChart,
-  LineChart, Activity, Target, Award, Trophy, Medal, Badge, Star,
-  
-  // Technology
-  Code, Code2, Terminal, Command, Monitor, Laptop, Smartphone, Tablet,
+  Folder, FolderOpen, FolderPlus, FolderMinus,
+  Archive, Book, BookOpen, BookMarked, BookText,
+  Library, School, GraduationCap, Inbox,
+
+  /* =========================
+     Business & Finance
+  ========================= */
+  Briefcase, Building, Building2, Store,
+  ShoppingBag, ShoppingCart,
+  Package, Box, Layers,
+  Server, Database, HardDrive, Cpu,
+  DollarSign, CreditCard, Wallet, Receipt,
+  TrendingUp, BarChart, BarChart3, PieChart, LineChart,
+  Activity, Target, Award, Trophy, Medal, Badge, Star,
+
+  /* =========================
+     Technology
+  ========================= */
+  Code, Code2, Terminal, Command,
+  Monitor, Laptop, Smartphone, Tablet,
   Wifi, Radio, Bluetooth,
   Zap, Rocket,
   GitBranch, GitCommit, GitMerge, GitPullRequest, GitCompare,
-  
-  // Media & Creative
-  Image, Video, Music, Mic, Headphones, Camera, Film, Palette, Brush,
-  Scissors, Crop, Maximize, Minimize, Move, RotateCw, RotateCcw,
-  
-  // Time & Calendar
-  Calendar, Clock, Timer, AlarmClock, Watch, CalendarDays, CalendarCheck,
-  
-  // Location & Travel
-  Map, MapPin, Navigation, Compass, Flag, Plane, Car, Train, Bike, Ship,
-  
-  // Nature & Weather
-  Sun, Moon, Cloud, CloudRain, CloudSnow, CloudLightning, Wind, Droplet,
-  Flame, Leaf, Flower, Trees, Mountain, Waves,
-  
-  // Miscellaneous
+  Network, Fingerprint, Scan,
+
+  /* =========================
+     Media & Creative
+  ========================= */
+  Image, Video, Music, Mic, Headphones,
+  Camera, Film, Palette, Brush,
+  Scissors, Crop, Maximize, Minimize,
+  Move, RotateCw, RotateCcw,
+  Sparkles, Wand2,
+
+  /* =========================
+     Time & Calendar
+  ========================= */
+  Calendar, Clock, Timer, AlarmClock, Watch,
+  CalendarDays, CalendarCheck,
+
+  /* =========================
+     Location & Travel
+  ========================= */
+  Map, MapPin, Navigation, Navigation2,
+  Compass, Flag, Plane, Car, Train, Bike, Ship,
+
+  /* =========================
+     Nature & Weather
+  ========================= */
+  Sun, Moon, Cloud, CloudRain, CloudSnow, CloudLightning,
+  Wind, Droplet, Flame, Leaf, Flower, Trees, Mountain, Waves,
+
+  /* =========================
+     Layout & Panels
+  ========================= */
+  Layout, LayoutGrid, LayoutList,
+  Sidebar, PanelLeft, PanelRight,
+  Columns, Rows, Split,
+  AlignLeft, AlignRight, AlignCenter,
+
+  /* =========================
+     Miscellaneous
+  ========================= */
   Heart, ThumbsUp, ThumbsDown, Smile, Frown,
   Coffee, Utensils, Gamepad2, Puzzle, Dice1,
-  Lightbulb, Brain, Sparkles, Wand2,
-  
-  // Additional icons
-  Navigation2, CheckCircle2, Network, ExternalLink, Link, Unlink,
-  Layout, LayoutGrid, LayoutList, Sidebar, PanelLeft, PanelRight,
-  Columns, Rows, Split, AlignLeft, AlignRight, AlignCenter,
-  BarChart3, Fingerprint, Scan, Inbox,
+  ExternalLink, Link, Unlink,
+  Lightbulb, Brain,
 } from 'lucide-react'
 
-// Re-export all icons
+/* ============================================================
+   STATIC EXPORTS (for direct imports & tree-shaking)
+============================================================ */
+
 export {
-  // Navigation & UI
-  Home, Menu, X, Search, Filter, Grid, List, Settings, Cog, Wrench,
-  ChevronDown, ChevronUp, ChevronLeft, ChevronRight, ChevronsDown, ChevronsUp,
-  ArrowLeft, ArrowRight, ArrowUp, ArrowDown, ArrowUpDown,
-  Plus, Minus, Check, Circle, Square, Triangle,
-  
-  // Actions
-  Edit, Trash, Trash2, Save, Download, Upload, Share, Copy, Clipboard,
-  Eye, EyeOff, Lock, Unlock, Key, Shield, AlertCircle, AlertTriangle,
-  Info, HelpCircle, CheckCircle, XCircle,
-  
-  // Social & Communication
-  Mail, Phone, MessageSquare, MessageCircle, Send, Bell, BellOff,
-  Users, User, UserPlus, UserMinus, UserCheck, UserX,
-  Github, Linkedin, Twitter, Facebook, Instagram, Youtube, Globe,
-  
-  // Files & Documents
-  File, FileText, FileCode, FileImage, FileVideo, FileAudio, FileSpreadsheet,
-  Folder, FolderOpen, FolderPlus, FolderMinus, Archive, Book, BookOpen,
-  BookMarked, BookText, Library, School, GraduationCap,
-  
-  // Business & Work
-  Briefcase, Building, Building2, Store, ShoppingBag, ShoppingCart,
-  Package, Box, Layers, Server, Database, HardDrive, Cpu,
-  DollarSign, CreditCard, Wallet, Receipt, TrendingUp, BarChart, PieChart,
-  LineChart, Activity, Target, Award, Trophy, Medal, Badge, Star,
-  
-  // Technology
-  Code, Code2, Terminal, Command, Monitor, Laptop, Smartphone, Tablet,
-  Wifi, Radio, Bluetooth,
-  Zap, Rocket,
-  GitBranch, GitCommit, GitMerge, GitPullRequest, GitCompare,
-  
-  // Media & Creative
-  Image, Video, Music, Mic, Headphones, Camera, Film, Palette, Brush,
-  Scissors, Crop, Maximize, Minimize, Move, RotateCw, RotateCcw,
-  
-  // Time & Calendar
-  Calendar, Clock, Timer, AlarmClock, Watch, CalendarDays, CalendarCheck,
-  
-  // Location & Travel
-  Map, MapPin, Navigation, Compass, Flag, Plane, Car, Train, Bike, Ship,
-  
-  // Nature & Weather
-  Sun, Moon, Cloud, CloudRain, CloudSnow, CloudLightning, Wind, Droplet,
-  Flame, Leaf, Flower, Trees, Mountain, Waves,
-  
-  // Miscellaneous
-  Heart, ThumbsUp, ThumbsDown, Smile, Frown,
-  Coffee, Utensils, Gamepad2, Puzzle, Dice1,
-  Lightbulb, Brain, Sparkles, Wand2,
-  
-  // Additional icons
-  Navigation2, CheckCircle2, Network, ExternalLink, Link, Unlink,
-  Layout, LayoutGrid, LayoutList, Sidebar, PanelLeft, PanelRight,
-  Columns, Rows, Split, AlignLeft, AlignRight, AlignCenter,
-  BarChart3, Fingerprint, Scan, Inbox,
+  Home, Menu, X, Search, Filter, Grid, List, Settings,
+  ChevronDown, ChevronUp, ChevronLeft, ChevronRight,
+  ArrowLeft, ArrowRight, ArrowUp, ArrowDown,
+  Plus, Minus, Check,
+
+  Edit, Trash, Save, Download, Upload, Share,
+
+  Mail, Phone, Users, User,
+
+  File, Folder, Book, GraduationCap,
+
+  Briefcase, Store, ShoppingCart,
+
+  Code, Terminal, Monitor,
+
+  Calendar, Clock,
+
+  Map, Sun, Moon,
 }
 
-// Icon mapping for dynamic rendering
-// This allows components to get icons by string name
-export const iconMap: Record<string, any> = {
-  // Navigation & UI
+/* ============================================================
+   DYNAMIC ICON MAP
+============================================================ */
+
+export const iconMap: Record<string, LucideIcon> = {
+  /* Core */
   Home, Menu, X, Search, Filter, Grid, List, Settings, Cog, Wrench,
-  ChevronDown, ChevronUp, ChevronLeft, ChevronRight, ChevronsDown, ChevronsUp,
+  ChevronDown, ChevronUp, ChevronLeft, ChevronRight,
+  ChevronsDown, ChevronsUp,
   ArrowLeft, ArrowRight, ArrowUp, ArrowDown, ArrowUpDown,
   Plus, Minus, Check, Circle, Square, Triangle,
-  
-  // Actions
+
+  /* Actions */
   Edit, Trash, Trash2, Save, Download, Upload, Share, Copy, Clipboard,
-  Eye, EyeOff, Lock, Unlock, Key, Shield, AlertCircle, AlertTriangle,
-  Info, HelpCircle, CheckCircle, XCircle,
-  
-  // Social & Communication
-  Mail, Phone, MessageSquare, MessageCircle, Send, Bell, BellOff,
+  Eye, EyeOff, Lock, Unlock, Key, Shield,
+  AlertCircle, AlertTriangle, Info, HelpCircle,
+  CheckCircle, CheckCircle2, XCircle,
+
+  /* Social */
+  Mail, Phone, MessageSquare, MessageCircle, Send,
+  Bell, BellOff,
   Users, User, UserPlus, UserMinus, UserCheck, UserX,
   Github, Linkedin, Twitter, Facebook, Instagram, Youtube, Globe,
-  
-  // Files & Documents
+
+  /* Files */
   File, FileText, FileCode, FileImage, FileVideo, FileAudio, FileSpreadsheet,
-  Folder, FolderOpen, FolderPlus, FolderMinus, Archive, Book, BookOpen,
-  BookMarked, BookText, Library, School, GraduationCap,
-  
-  // Business & Work
-  Briefcase, Building, Building2, Store, ShoppingBag, ShoppingCart,
-  Package, Box, Layers, Server, Database, HardDrive, Cpu,
-  DollarSign, CreditCard, Wallet, Receipt, TrendingUp, BarChart, PieChart,
-  LineChart, Activity, Target, Award, Trophy, Medal, Badge, Star,
-  
-  // Technology
-  Code, Code2, Terminal, Command, Monitor, Laptop, Smartphone, Tablet,
+  Folder, FolderOpen, FolderPlus, FolderMinus,
+  Archive, Book, BookOpen, BookMarked, BookText,
+  Library, School, GraduationCap, Inbox,
+
+  /* Business */
+  Briefcase, Building, Building2, Store,
+  ShoppingBag, ShoppingCart,
+  Package, Box, Layers,
+  Server, Database, HardDrive, Cpu,
+  DollarSign, CreditCard, Wallet, Receipt,
+  TrendingUp, BarChart, BarChart3, PieChart, LineChart,
+  Activity, Target, Award, Trophy, Medal, Badge, Star,
+
+  /* Technology */
+  Code, Code2, Terminal, Command,
+  Monitor, Laptop, Smartphone, Tablet,
   Wifi, Radio, Bluetooth,
   Zap, Rocket,
   GitBranch, GitCommit, GitMerge, GitPullRequest, GitCompare,
-  
-  // Media & Creative
-  Image, Video, Music, Mic, Headphones, Camera, Film, Palette, Brush,
-  Scissors, Crop, Maximize, Minimize, Move, RotateCw, RotateCcw,
-  
-  // Time & Calendar
-  Calendar, Clock, Timer, AlarmClock, Watch, CalendarDays, CalendarCheck,
-  
-  // Location & Travel
-  Map, MapPin, Navigation, Compass, Flag, Plane, Car, Train, Bike, Ship,
-  
-  // Nature & Weather
-  Sun, Moon, Cloud, CloudRain, CloudSnow, CloudLightning, Wind, Droplet,
-  Flame, Leaf, Flower, Trees, Mountain, Waves,
-  
-  // Miscellaneous
+  Network, Fingerprint, Scan,
+
+  /* Media */
+  Image, Video, Music, Mic, Headphones,
+  Camera, Film, Palette, Brush,
+  Scissors, Crop, Maximize, Minimize,
+  Move, RotateCw, RotateCcw,
+  Sparkles, Wand2,
+
+  /* Time */
+  Calendar, Clock, Timer, AlarmClock, Watch,
+  CalendarDays, CalendarCheck,
+
+  /* Location */
+  Map, MapPin, Navigation, Navigation2,
+  Compass, Flag, Plane, Car, Train, Bike, Ship,
+
+  /* Nature */
+  Sun, Moon, Cloud, CloudRain, CloudSnow, CloudLightning,
+  Wind, Droplet, Flame, Leaf, Flower, Trees, Mountain, Waves,
+
+  /* Layout */
+  Layout, LayoutGrid, LayoutList,
+  Sidebar, PanelLeft, PanelRight,
+  Columns, Rows, Split,
+  AlignLeft, AlignRight, AlignCenter,
+
+  /* Misc */
   Heart, ThumbsUp, ThumbsDown, Smile, Frown,
   Coffee, Utensils, Gamepad2, Puzzle, Dice1,
-  Lightbulb, Brain, Sparkles, Wand2,
-  
-  // Aliases for common variations
+  ExternalLink, Link, Unlink,
+  Lightbulb, Brain,
+
+  /* ==================================================
+     ALIASES (semantic + legacy + CMS friendly)
+  ================================================== */
   Shop: Store,
-  Bag: ShoppingBag,
   Cart: ShoppingCart,
+  Bag: ShoppingBag,
   Email: Mail,
   Envelope: Mail,
-  UserIcon: User,
   People: Users,
   Group: Users,
-  FolderIcon: Folder,
-  FileIcon: File,
   Document: FileText,
   CodeIcon: Code,
   TerminalIcon: Terminal,
@@ -201,15 +233,6 @@ export const iconMap: Record<string, any> = {
   VideoIcon: Video,
   MusicIcon: Music,
   CameraIcon: Camera,
-  MailIcon: Mail,
-  PhoneIcon: Phone,
-  GithubIcon: Github,
-  LinkedinIcon: Linkedin,
-  TwitterIcon: Twitter,
-  FacebookIcon: Facebook,
-  InstagramIcon: Instagram,
-  YoutubeIcon: Youtube,
-  GlobeIcon: Globe,
   HomeIcon: Home,
   MenuIcon: Menu,
   SettingsIcon: Settings,
@@ -219,120 +242,34 @@ export const iconMap: Record<string, any> = {
   DownloadIcon: Download,
   UploadIcon: Upload,
   ShareIcon: Share,
-  CopyIcon: Copy,
-  EyeIcon: Eye,
   LockIcon: Lock,
-  KeyIcon: Key,
   ShieldIcon: Shield,
-  CheckIcon: Check,
-  XIcon: X,
   AlertIcon: AlertCircle,
   InfoIcon: Info,
   HelpIcon: HelpCircle,
-  StarIcon: Star,
-  HeartIcon: Heart,
-  ThumbsUpIcon: ThumbsUp,
-  ThumbsDownIcon: ThumbsDown,
   CalendarIcon: Calendar,
   ClockIcon: Clock,
-  TimerIcon: Timer,
-  AlarmClockIcon: AlarmClock,
-  WatchIcon: Watch,
-  CalendarDaysIcon: CalendarDays,
-  CalendarCheckIcon: CalendarCheck,
   MapIcon: Map,
-  MapPinIcon: MapPin,
-  NavigationIcon: Navigation,
-  CompassIcon: Compass,
-  FlagIcon: Flag,
-  PlaneIcon: Plane,
-  CarIcon: Car,
-  TrainIcon: Train,
-  BikeIcon: Bike,
-  ShipIcon: Ship,
   SunIcon: Sun,
   MoonIcon: Moon,
-  LeafIcon: Leaf,
-  FlowerIcon: Flower,
-  LightbulbIcon: Lightbulb,
-  BrainIcon: Brain,
-  SparklesIcon: Sparkles,
-  GraduationCapIcon: GraduationCap,
-  BookIcon: Book,
-  SchoolIcon: School,
-  LibraryIcon: Library,
-  BriefcaseIcon: Briefcase,
-  BuildingIcon: Building,
-  StoreIcon: Store,
-  ShoppingBagIcon: ShoppingBag,
-  ShoppingCartIcon: ShoppingCart,
-  PackageIcon: Package,
-  BoxIcon: Box,
-  LayersIcon: Layers,
-  HardDriveIcon: HardDrive,
-  CpuIcon: Cpu,
-  MonitorIcon: Monitor,
-  LaptopIcon: Laptop,
-  SmartphoneIcon: Smartphone,
-  TabletIcon: Tablet,
-  CommandIcon: Command,
-  WifiIcon: Wifi,
-  RadioIcon: Radio,
-  BluetoothIcon: Bluetooth,
-  ZapIcon: Zap,
-  RocketIcon: Rocket,
-  GitBranchIcon: GitBranch,
-  GitCommitIcon: GitCommit,
-  GitMergeIcon: GitMerge,
-  GitPullRequestIcon: GitPullRequest,
-  GitCompareIcon: GitCompare,
-  MicIcon: Mic,
-  HeadphonesIcon: Headphones,
-  FilmIcon: Film,
-  PaletteIcon: Palette,
-  BrushIcon: Brush,
-  ScissorsIcon: Scissors,
-  CropIcon: Crop,
-  MaximizeIcon: Maximize,
-  MinimizeIcon: Minimize,
-  MoveIcon: Move,
-  RotateCwIcon: RotateCw,
-  RotateCcwIcon: RotateCcw,
-  CloudRainIcon: CloudRain,
-  CloudSnowIcon: CloudSnow,
-  CloudLightningIcon: CloudLightning,
-  WindIcon: Wind,
-  DropletIcon: Droplet,
-  FlameIcon: Flame,
-  TreesIcon: Trees,
-  MountainIcon: Mountain,
-  WavesIcon: Waves,
-  SmileIcon: Smile,
-  FrownIcon: Frown,
-  CoffeeIcon: Coffee,
-  UtensilsIcon: Utensils,
-  GamepadIcon: Gamepad2,
-  PuzzleIcon: Puzzle,
-  DiceIcon: Dice1,
   MagicIcon: Wand2,
   WandIcon: Wand2,
 }
 
+/* ============================================================
+   HELPERS
+============================================================ */
+
 /**
- * Get an icon component by name
- * @param name - The name of the icon (case-sensitive)
- * @returns The icon component or null if not found
+ * Get icon by name (safe)
  */
-export function getIcon(name: string): any {
-  return iconMap[name] || null
+export function getIcon(name: string): LucideIcon | null {
+  return iconMap[name] ?? null
 }
 
 /**
- * Check if an icon exists in the mapping
- * @param name - The name of the icon
- * @returns True if the icon exists
+ * Check icon existence
  */
 export function hasIcon(name: string): boolean {
   return name in iconMap
 }
-
