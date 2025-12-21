@@ -1,275 +1,207 @@
 /**
- * Lucide Icon Registry
- * ------------------------------------------------------------
- * - Centralized icon imports
- * - Static exports for tree-shaking
- * - Dynamic lookup by string
- * - Alias support
- * - Strict TypeScript safety
- * ------------------------------------------------------------
+ * Central Lucide Icon Registry
+ * Next.js 14 / TypeScript / Vercel safe
  */
 
 import type { LucideIcon } from 'lucide-react'
 
 import {
-  /* =========================
-     Navigation & UI
-  ========================= */
-  Home, Menu, X, Search, Filter, Grid, List, Settings, Cog, Wrench,
+  /* UI */
+  Home, Menu, X, Search, Filter, Grid, List, Settings, Cog,
   ChevronDown, ChevronUp, ChevronLeft, ChevronRight,
-  ChevronsDown, ChevronsUp,
-  ArrowLeft, ArrowRight, ArrowUp, ArrowDown, ArrowUpDown,
-  Plus, Minus, Check, Circle, Square, Triangle,
+  ArrowLeft, ArrowRight, ArrowUp, ArrowDown,
 
-  /* =========================
-     Actions & Status
-  ========================= */
-  Edit, Trash, Trash2, Save, Download, Upload, Share, Copy, Clipboard,
-  Eye, EyeOff, Lock, Unlock, Key, Shield,
+  /* Actions */
+  Plus, Minus, Check, Edit, Trash, Trash2, Save,
+  Download, Upload, Share, Copy, Clipboard,
+
+  /* Status */
   AlertCircle, AlertTriangle, Info, HelpCircle,
-  CheckCircle, CheckCircle2, XCircle,
+  CheckCircle, XCircle, Eye, EyeOff, Lock, Unlock, Shield, Key,
 
-  /* =========================
-     Social & Communication
-  ========================= */
-  Mail, Phone, MessageSquare, MessageCircle, Send,
-  Bell, BellOff,
-  Users, User, UserPlus, UserMinus, UserCheck, UserX,
+  /* Social */
   Github, Linkedin, Twitter, Facebook, Instagram, Youtube, Globe,
+  Mail, Phone, MessageSquare, Send, Bell,
 
-  /* =========================
-     Files & Documents
-  ========================= */
-  File, FileText, FileCode, FileImage, FileVideo, FileAudio, FileSpreadsheet,
-  Folder, FolderOpen, FolderPlus, FolderMinus,
-  Archive, Book, BookOpen, BookMarked, BookText,
-  Library, School, GraduationCap, Inbox,
+  /* Users */
+  User, Users, UserPlus, UserMinus, UserCheck,
 
-  /* =========================
-     Business & Finance
-  ========================= */
-  Briefcase, Building, Building2, Store,
-  ShoppingBag, ShoppingCart,
+  /* Files */
+  File, FileText, FileCode, Folder, FolderOpen, Archive, Inbox,
+
+  /* Business */
+  Briefcase, Building, Store, ShoppingCart, ShoppingBag,
   Package, Box, Layers,
-  Server, Database, HardDrive, Cpu,
   DollarSign, CreditCard, Wallet, Receipt,
-  TrendingUp, BarChart, BarChart3, PieChart, LineChart,
-  Activity, Target, Award, Trophy, Medal, Badge, Star,
 
-  /* =========================
-     Technology
-  ========================= */
+  /* Tech / Dev */
   Code, Code2, Terminal, Command,
   Monitor, Laptop, Smartphone, Tablet,
-  Wifi, Radio, Bluetooth,
-  Zap, Rocket,
-  GitBranch, GitCommit, GitMerge, GitPullRequest, GitCompare,
-  Network, Fingerprint, Scan,
+  Cpu, Server, Database, HardDrive,
+  Wifi, Bluetooth, Radio,
+  GitBranch, GitCommit, GitMerge, GitPullRequest,
 
-  /* =========================
-     Media & Creative
-  ========================= */
-  Image, Video, Music, Mic, Headphones,
-  Camera, Film, Palette, Brush,
-  Scissors, Crop, Maximize, Minimize,
-  Move, RotateCw, RotateCcw,
-  Sparkles, Wand2,
+  /* Charts */
+  BarChart, BarChart3, PieChart, LineChart, TrendingUp,
 
-  /* =========================
-     Time & Calendar
-  ========================= */
-  Calendar, Clock, Timer, AlarmClock, Watch,
-  CalendarDays, CalendarCheck,
+  /* Media */
+  Image, Video, Music, Camera, Film, Mic, Headphones,
 
-  /* =========================
-     Location & Travel
-  ========================= */
-  Map, MapPin, Navigation, Navigation2,
-  Compass, Flag, Plane, Car, Train, Bike, Ship,
+  /* Time */
+  Calendar, Clock, Timer,
 
-  /* =========================
-     Nature & Weather
-  ========================= */
-  Sun, Moon, Cloud, CloudRain, CloudSnow, CloudLightning,
-  Wind, Droplet, Flame, Leaf, Flower, Trees, Mountain, Waves,
+  /* Location */
+  Map, MapPin, Compass, Navigation,
 
-  /* =========================
-     Layout & Panels
-  ========================= */
-  Layout, LayoutGrid, LayoutList,
-  Sidebar, PanelLeft, PanelRight,
-  Columns, Rows, Split,
-  AlignLeft, AlignRight, AlignCenter,
+  /* Nature */
+  Sun, Moon, Cloud, CloudRain, Wind, Flame, Leaf,
 
-  /* =========================
-     Miscellaneous
-  ========================= */
-  Heart, ThumbsUp, ThumbsDown, Smile, Frown,
-  Coffee, Utensils, Gamepad2, Puzzle, Dice1,
-  ExternalLink, Link, Unlink,
-  Lightbulb, Brain,
+  /* Education */
+  Book, BookOpen, Library, School, GraduationCap,
+
+  /* Misc */
+  Heart, Star, Coffee, Lightbulb, Brain, Sparkles, Wand2,
 } from 'lucide-react'
 
-/* ============================================================
-   STATIC EXPORTS (for direct imports & tree-shaking)
-============================================================ */
+/* ======================================================
+   EXPLICIT EXPORTS (FIXES YOUR BUILD ERROR)
+====================================================== */
 
 export {
   Home, Menu, X, Search, Filter, Grid, List, Settings,
   ChevronDown, ChevronUp, ChevronLeft, ChevronRight,
   ArrowLeft, ArrowRight, ArrowUp, ArrowDown,
-  Plus, Minus, Check,
 
-  Edit, Trash, Save, Download, Upload, Share,
+  Plus, Minus, Check, Edit, Trash, Save,
+  Download, Upload, Share,
 
-  Mail, Phone, Users, User,
+  Github, Linkedin, Twitter, Facebook, Instagram, Youtube, Globe,
+  Mail, Phone,
 
-  File, Folder, Book, GraduationCap,
+  User, Users,
+
+  File, FileText, Folder,
 
   Briefcase, Store, ShoppingCart,
 
-  Code, Terminal, Monitor,
+  Code, Code2, Terminal,
 
   Calendar, Clock,
 
-  Map, Sun, Moon,
+  Book, GraduationCap,
 }
 
-/* ============================================================
-   DYNAMIC ICON MAP
-============================================================ */
+/* ======================================================
+   DYNAMIC ICON MAP (CMS / DB / JSON SAFE)
+====================================================== */
 
 export const iconMap: Record<string, LucideIcon> = {
   /* Core */
-  Home, Menu, X, Search, Filter, Grid, List, Settings, Cog, Wrench,
+  Home, Menu, X, Search, Filter, Grid, List, Settings, Cog,
   ChevronDown, ChevronUp, ChevronLeft, ChevronRight,
-  ChevronsDown, ChevronsUp,
-  ArrowLeft, ArrowRight, ArrowUp, ArrowDown, ArrowUpDown,
-  Plus, Minus, Check, Circle, Square, Triangle,
+  ArrowLeft, ArrowRight, ArrowUp, ArrowDown,
 
   /* Actions */
-  Edit, Trash, Trash2, Save, Download, Upload, Share, Copy, Clipboard,
-  Eye, EyeOff, Lock, Unlock, Key, Shield,
+  Plus, Minus, Check, Edit, Trash, Trash2, Save,
+  Download, Upload, Share, Copy, Clipboard,
+
+  /* Status */
   AlertCircle, AlertTriangle, Info, HelpCircle,
-  CheckCircle, CheckCircle2, XCircle,
+  CheckCircle, XCircle, Eye, EyeOff,
+  Lock, Unlock, Shield, Key,
 
   /* Social */
-  Mail, Phone, MessageSquare, MessageCircle, Send,
-  Bell, BellOff,
-  Users, User, UserPlus, UserMinus, UserCheck, UserX,
   Github, Linkedin, Twitter, Facebook, Instagram, Youtube, Globe,
+  Mail, Phone, MessageSquare, Send, Bell,
+
+  /* Users */
+  User, Users, UserPlus, UserMinus, UserCheck,
 
   /* Files */
-  File, FileText, FileCode, FileImage, FileVideo, FileAudio, FileSpreadsheet,
-  Folder, FolderOpen, FolderPlus, FolderMinus,
-  Archive, Book, BookOpen, BookMarked, BookText,
-  Library, School, GraduationCap, Inbox,
+  File, FileText, FileCode,
+  Folder, FolderOpen, Archive, Inbox,
 
   /* Business */
-  Briefcase, Building, Building2, Store,
-  ShoppingBag, ShoppingCart,
+  Briefcase, Building, Store,
+  ShoppingCart, ShoppingBag,
   Package, Box, Layers,
-  Server, Database, HardDrive, Cpu,
   DollarSign, CreditCard, Wallet, Receipt,
-  TrendingUp, BarChart, BarChart3, PieChart, LineChart,
-  Activity, Target, Award, Trophy, Medal, Badge, Star,
 
-  /* Technology */
+  /* Tech */
   Code, Code2, Terminal, Command,
   Monitor, Laptop, Smartphone, Tablet,
-  Wifi, Radio, Bluetooth,
-  Zap, Rocket,
-  GitBranch, GitCommit, GitMerge, GitPullRequest, GitCompare,
-  Network, Fingerprint, Scan,
+  Cpu, Server, Database, HardDrive,
+  Wifi, Bluetooth, Radio,
+  GitBranch, GitCommit, GitMerge, GitPullRequest,
+
+  /* Charts */
+  BarChart, BarChart3, PieChart, LineChart, TrendingUp,
 
   /* Media */
-  Image, Video, Music, Mic, Headphones,
-  Camera, Film, Palette, Brush,
-  Scissors, Crop, Maximize, Minimize,
-  Move, RotateCw, RotateCcw,
-  Sparkles, Wand2,
+  Image, Video, Music, Camera, Film, Mic, Headphones,
 
   /* Time */
-  Calendar, Clock, Timer, AlarmClock, Watch,
-  CalendarDays, CalendarCheck,
+  Calendar, Clock, Timer,
 
   /* Location */
-  Map, MapPin, Navigation, Navigation2,
-  Compass, Flag, Plane, Car, Train, Bike, Ship,
+  Map, MapPin, Compass, Navigation,
 
   /* Nature */
-  Sun, Moon, Cloud, CloudRain, CloudSnow, CloudLightning,
-  Wind, Droplet, Flame, Leaf, Flower, Trees, Mountain, Waves,
+  Sun, Moon, Cloud, CloudRain, Wind, Flame, Leaf,
 
-  /* Layout */
-  Layout, LayoutGrid, LayoutList,
-  Sidebar, PanelLeft, PanelRight,
-  Columns, Rows, Split,
-  AlignLeft, AlignRight, AlignCenter,
+  /* Education */
+  Book, BookOpen, Library, School, GraduationCap,
 
   /* Misc */
-  Heart, ThumbsUp, ThumbsDown, Smile, Frown,
-  Coffee, Utensils, Gamepad2, Puzzle, Dice1,
-  ExternalLink, Link, Unlink,
-  Lightbulb, Brain,
+  Heart, Star, Coffee, Lightbulb, Brain, Sparkles, Wand2,
 
   /* ==================================================
-     ALIASES (semantic + legacy + CMS friendly)
+     PROGRAMMING LANGUAGE ALIASES (REQUESTED)
   ================================================== */
-  Shop: Store,
-  Cart: ShoppingCart,
-  Bag: ShoppingBag,
-  Email: Mail,
-  Envelope: Mail,
-  People: Users,
-  Group: Users,
-  Document: FileText,
-  CodeIcon: Code,
-  TerminalIcon: Terminal,
-  ServerIcon: Server,
-  DatabaseIcon: Database,
-  CloudIcon: Cloud,
-  ImageIcon: Image,
-  VideoIcon: Video,
-  MusicIcon: Music,
-  CameraIcon: Camera,
-  HomeIcon: Home,
-  MenuIcon: Menu,
-  SettingsIcon: Settings,
-  EditIcon: Edit,
-  TrashIcon: Trash,
-  SaveIcon: Save,
-  DownloadIcon: Download,
-  UploadIcon: Upload,
-  ShareIcon: Share,
-  LockIcon: Lock,
-  ShieldIcon: Shield,
-  AlertIcon: AlertCircle,
-  InfoIcon: Info,
-  HelpIcon: HelpCircle,
-  CalendarIcon: Calendar,
-  ClockIcon: Clock,
-  MapIcon: Map,
-  SunIcon: Sun,
-  MoonIcon: Moon,
-  MagicIcon: Wand2,
-  WandIcon: Wand2,
+
+  Python: Code,
+  PythonIcon: Code,
+
+  C: Cpu,
+  CIcon: Cpu,
+
+  CPP: Code2,
+  Cpp: Code2,
+  CPlusPlus: Code2,
+
+  Java: Coffee,
+  JavaIcon: Coffee,
+
+  JavaScript: Code,
+  JS: Code,
+
+  TypeScript: Code2,
+  TS: Code2,
+
+  Flutter: Smartphone,
+  FlutterIcon: Smartphone,
+
+  Firebase: Database,
+  FirebaseIcon: Database,
+
+  Docker: Package,
+  DockerIcon: Package,
+
+  Linux: Terminal,
+  LinuxIcon: Terminal,
+
+  React: Code,
+  NextJS: Code,
 }
 
-/* ============================================================
+/* ======================================================
    HELPERS
-============================================================ */
+====================================================== */
 
-/**
- * Get icon by name (safe)
- */
 export function getIcon(name: string): LucideIcon | null {
   return iconMap[name] ?? null
 }
 
-/**
- * Check icon existence
- */
 export function hasIcon(name: string): boolean {
   return name in iconMap
 }
