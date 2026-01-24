@@ -236,21 +236,50 @@ export default function ResearchAndPublications() {
                       {pub.volume && <span className="text-gray-500">{pub.volume}</span>}
                     </div>
                     <div className="flex items-center gap-3 text-xs font-semibold">
-                      {pub.status === 'Published' && (
-                        <span className="inline-flex items-center gap-1 px-3 py-1 rounded-full bg-green-100 text-green-700">
-                          <CheckCircle className="w-3.5 h-3.5" /> Published
-                        </span>
-                      )}
-                      {pub.status === 'Major Revision' && (
-                        <span className="inline-flex items-center gap-1 px-3 py-1 rounded-full bg-amber-100 text-amber-800">
-                          <Clock className="w-3.5 h-3.5" /> Major Revision
-                        </span>
-                      )}
-                      {pub.status === 'Published (Abstract)' && (
-                        <span className="inline-flex items-center gap-1 px-3 py-1 rounded-full bg-blue-100 text-blue-800">
-                          <Sparkles className="w-3.5 h-3.5" /> Abstract
-                        </span>
-                      )}
+                      {(() => {
+                        const status = pub.status?.trim() || ''
+                        if (status === 'Published') {
+                          return (
+                            <span className="inline-flex items-center gap-1 px-3 py-1 rounded-full bg-green-100 text-green-700">
+                              <CheckCircle className="w-3.5 h-3.5" /> Published
+                            </span>
+                          )
+                        }
+                        if (status === 'Major Revision') {
+                          return (
+                            <span className="inline-flex items-center gap-1 px-3 py-1 rounded-full bg-amber-100 text-amber-800">
+                              <Clock className="w-3.5 h-3.5" /> Major Revision
+                            </span>
+                          )
+                        }
+                        if (status === 'Published (Abstract)') {
+                          return (
+                            <span className="inline-flex items-center gap-1 px-3 py-1 rounded-full bg-blue-100 text-blue-800">
+                              <Sparkles className="w-3.5 h-3.5" /> Abstract
+                            </span>
+                          )
+                        }
+                        if (status === 'Under Review') {
+                          return (
+                            <span className="inline-flex items-center gap-1 px-3 py-1 rounded-full bg-purple-100 text-purple-800">
+                              <Clock className="w-3.5 h-3.5" /> Under Review
+                            </span>
+                          )
+                        }
+                        if (status === 'Draft') {
+                          return (
+                            <span className="inline-flex items-center gap-1 px-3 py-1 rounded-full bg-gray-100 text-gray-800">
+                              <FileText className="w-3.5 h-3.5" /> Draft
+                            </span>
+                          )
+                        }
+                        // Fallback for any other status
+                        return (
+                          <span className="inline-flex items-center gap-1 px-3 py-1 rounded-full bg-gray-100 text-gray-800">
+                            <FileText className="w-3.5 h-3.5" /> {status || 'Unknown'}
+                          </span>
+                        )
+                      })()}
                     </div>
                   </div>
                   {pub.link && pub.link !== '#' && (
