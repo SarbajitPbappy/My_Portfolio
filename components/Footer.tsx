@@ -14,6 +14,7 @@ const fallbackFooter: Footer = {
   social_links: [
     { icon: 'Github', href: 'https://github.com/SarbajitPbappy', label: 'GitHub' },
     { icon: 'Linkedin', href: 'https://linkedin.com/in/iamsarbajit', label: 'LinkedIn' },
+    { icon: 'Globe', href: 'https://orcid.org/0009-0006-7551-0461', label: 'ORCID' },
     { icon: 'Mail', href: 'mailto:sarbajit2001@gmail.com', label: 'Email' },
   ],
   copyright_text: `© ${new Date().getFullYear()} Sarbajit Paul Bappy. All rights reserved.`,

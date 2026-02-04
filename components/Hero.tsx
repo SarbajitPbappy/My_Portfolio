@@ -2,7 +2,7 @@
 
 import { useEffect, useState } from 'react'
 import { motion } from 'framer-motion'
-import { Download, Github, Linkedin, Mail, Phone, ArrowDown, Sparkles, GraduationCap } from 'lucide-react'
+import { Download, Github, Linkedin, Mail, Phone, ArrowDown, Sparkles, GraduationCap, Globe } from 'lucide-react'
 import Link from 'next/link'
 import Image from 'next/image'
 import type { Hero } from '@/lib/types'
@@ -207,6 +207,17 @@ export default function Hero() {
                   </Link>
                 </motion.div>
               )}
+              <motion.div whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }}>
+                <Link
+                  href="https://orcid.org/0009-0006-7551-0461"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="flex items-center gap-2 border-2 border-gray-300 text-gray-700 px-6 py-3 rounded-lg hover:border-primary-600 hover:text-primary-600 transition-colors shadow-lg"
+                >
+                  <Globe size={20} />
+                  ORCID
+                </Link>
+              </motion.div>
             </motion.div>
           </motion.div>
 
