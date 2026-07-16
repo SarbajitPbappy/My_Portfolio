@@ -162,7 +162,7 @@ export interface Skill {
   updated_at?: string
 }
 
-export type Theme = 'minimal' | 'modern' | 'aesthetic' | 'professional' | 'academic'
+export type Theme = 'minimal' | 'modern' | 'aesthetic' | 'professional' | 'academic' | 'neural' | 'creative'
 
 export interface Settings {
   id?: number

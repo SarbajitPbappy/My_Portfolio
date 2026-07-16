@@ -5,6 +5,7 @@ import { motion } from 'framer-motion'
 import { ExternalLink, CheckCircle, Clock, FileText, Sparkles } from 'lucide-react'
 import type { ResearchArea, Publication } from '@/lib/types'
 import { iconMap } from '@/lib/icons'
+import { staggerContainer, staggerItem, viewportOnce, springSnappy } from '@/lib/motion'
 
 const fadeIn = {
   initial: { opacity: 0, y: 14 },
@@ -156,12 +157,12 @@ export default function ResearchAndPublications() {
   if (loading) {
     return (
       <section id="research" className="section-container">
-        <div className="text-center py-12 text-gray-600">Loading...</div>
+        <div className="text-center py-12 text-theme-text-muted">Loading...</div>
       </section>
     )
   }
   return (
-    <section id="research" className="section-container bg-gradient-to-b from-gray-50 via-white to-gray-50 relative overflow-hidden">
+    <section id="research" className="section-container relative overflow-hidden">
       <div className="absolute inset-0 overflow-hidden pointer-events-none">
         <div className="absolute top-10 right-10 w-80 h-80 bg-primary-200/12 rounded-full blur-3xl" />
         <div className="absolute bottom-10 left-10 w-96 h-96 bg-primary-300/12 rounded-full blur-3xl" />
@@ -172,32 +173,39 @@ export default function ResearchAndPublications() {
           <h2 className="text-4xl md:text-5xl font-bold mb-4">
             Research Interests & <span className="gradient-text">Publications</span>
           </h2>
-          <p className="text-lg text-gray-600">
+          <p className="text-lg text-theme-text-muted">
             Areas of focus and key research contributions
           </p>
         </motion.div>
 
-        <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
-          {researchAreas.map((area, idx) => (
+        <motion.div
+          variants={staggerContainer(0.07)}
+          initial="hidden"
+          whileInView="visible"
+          viewport={viewportOnce}
+          className="grid md:grid-cols-2 lg:grid-cols-3 gap-6"
+        >
+          {researchAreas.map((area) => (
             <motion.div
               key={area.title}
-              {...fadeIn}
-              transition={{ ...fadeIn.transition, delay: idx * 0.05 }}
-              className="bg-white border border-gray-100 rounded-2xl p-5 shadow-sm hover:shadow-md transition-all hover:-translate-y-1"
+              variants={staggerItem}
+              whileHover={{ y: -6 }}
+              transition={springSnappy}
+              className="group bg-theme-surface border border-theme-border rounded-2xl p-5 shadow-sm hover:shadow-xl transition-shadow"
             >
-              <div className={`w-12 h-12 rounded-xl bg-gradient-to-br ${area.gradient} flex items-center justify-center text-white mb-4`}>
+              <div className={`w-12 h-12 rounded-xl bg-gradient-to-br ${area.gradient} flex items-center justify-center text-white mb-4 transition-transform duration-300 group-hover:scale-110 group-hover:-rotate-3`}>
                 {(() => {
                   const Icon = area.icon && iconMap[area.icon] ? iconMap[area.icon] : iconMap.Brain
                   return <Icon className="w-6 h-6" />
                 })()}
               </div>
-              <h3 className="text-xl font-semibold text-gray-900 mb-2">{area.title}</h3>
-              <p className="text-sm text-gray-700 leading-relaxed mb-3">{area.description}</p>
+              <h3 className="text-xl font-semibold text-theme-text mb-2">{area.title}</h3>
+              <p className="text-sm text-theme-text-muted leading-relaxed mb-3">{area.description}</p>
               <div className="flex flex-wrap gap-2">
                 {area.technologies.map((tech) => (
                   <span
                     key={tech}
-                    className="px-3 py-1 text-xs bg-gray-50 text-gray-700 border border-gray-200 rounded-lg"
+                    className="px-3 py-1 text-xs bg-theme-surface-elevated text-theme-text-muted border border-theme-border rounded-lg"
                   >
                     {tech}
                   </span>
@@ -205,35 +213,42 @@ export default function ResearchAndPublications() {
               </div>
             </motion.div>
           ))}
-        </div>
+        </motion.div>
 
         <div className="space-y-4">
           <motion.div {...fadeIn} className="text-center">
-            <h3 className="text-3xl font-bold text-gray-900 mb-2">Selected Publications</h3>
-            <p className="text-gray-600">Recent publications and manuscripts in progress</p>
+            <h3 className="text-3xl font-bold text-theme-text mb-2">Selected Publications</h3>
+            <p className="text-theme-text-muted">Recent publications and manuscripts in progress</p>
           </motion.div>
 
-          <div className="space-y-4">
-            {publications.map((pub, idx) => (
+          <motion.div
+            variants={staggerContainer(0.06)}
+            initial="hidden"
+            whileInView="visible"
+            viewport={viewportOnce}
+            className="space-y-4"
+          >
+            {publications.map((pub) => (
               <motion.div
                 key={pub.title}
-                {...fadeIn}
-                transition={{ ...fadeIn.transition, delay: idx * 0.05 }}
-                className="bg-white border border-gray-100 rounded-2xl p-6 shadow-sm hover:shadow-md transition-all hover:-translate-y-1"
+                variants={staggerItem}
+                whileHover={{ x: 6 }}
+                transition={springSnappy}
+                className="bg-theme-surface border border-theme-border rounded-2xl p-6 shadow-sm hover:shadow-xl transition-shadow"
               >
                 <div className="flex items-start gap-4">
                   <div className={`w-10 h-10 rounded-xl bg-gradient-to-br ${pub.gradient} flex items-center justify-center text-white`}>
                     <FileText className="w-5 h-5" />
                   </div>
                   <div className="flex-1 space-y-2">
-                    <h4 className="text-lg font-semibold text-gray-900 leading-snug">{pub.title}</h4>
-                    <p className="text-sm text-gray-600">{pub.authors}</p>
+                    <h4 className="text-lg font-semibold text-theme-text leading-snug">{pub.title}</h4>
+                    <p className="text-sm text-theme-text-muted">{pub.authors}</p>
                     <div className="flex flex-wrap gap-2 text-sm">
-                      <span className="px-3 py-1 bg-gray-100 text-gray-700 rounded-lg font-medium">{pub.type}</span>
-                      {pub.journal && <span className="text-primary-700 font-semibold">{pub.journal}</span>}
-                      {pub.year && <span className="text-gray-500">({pub.year})</span>}
-                      {pub.doi && <span className="px-3 py-1 bg-primary-50 text-primary-700 rounded-lg font-medium">DOI: {pub.doi}</span>}
-                      {pub.volume && <span className="text-gray-500">{pub.volume}</span>}
+                      <span className="px-3 py-1 bg-theme-surface-elevated text-theme-text-muted rounded-lg font-medium">{pub.type}</span>
+                      {pub.journal && <span className="text-theme-primary font-semibold">{pub.journal}</span>}
+                      {pub.year && <span className="text-theme-text-muted">({pub.year})</span>}
+                      {pub.doi && <span className="px-3 py-1 bg-theme-primary/10 text-theme-primary rounded-lg font-medium">DOI: {pub.doi}</span>}
+                      {pub.volume && <span className="text-theme-text-muted">{pub.volume}</span>}
                     </div>
                     <div className="flex items-center gap-3 text-xs font-semibold">
                       {(() => {
@@ -268,14 +283,14 @@ export default function ResearchAndPublications() {
                         }
                         if (status === 'Draft') {
                           return (
-                            <span className="inline-flex items-center gap-1 px-3 py-1 rounded-full bg-gray-100 text-gray-800">
+                            <span className="inline-flex items-center gap-1 px-3 py-1 rounded-full bg-theme-surface-elevated text-theme-text">
                               <FileText className="w-3.5 h-3.5" /> Draft
                             </span>
                           )
                         }
                         // Fallback for any other status
                         return (
-                          <span className="inline-flex items-center gap-1 px-3 py-1 rounded-full bg-gray-100 text-gray-800">
+                          <span className="inline-flex items-center gap-1 px-3 py-1 rounded-full bg-theme-surface-elevated text-theme-text">
                             <FileText className="w-3.5 h-3.5" /> {status || 'Unknown'}
                           </span>
                         )
@@ -287,7 +302,7 @@ export default function ResearchAndPublications() {
                       href={pub.link}
                       target="_blank"
                       rel="noopener noreferrer"
-                      className="flex-shrink-0 w-9 h-9 flex items-center justify-center rounded-lg text-primary-600 hover:bg-primary-50 transition-colors"
+                      className="flex-shrink-0 w-9 h-9 flex items-center justify-center rounded-lg text-theme-primary hover:bg-theme-primary/10 transition-colors"
                     >
                       <ExternalLink className="w-5 h-5" />
                     </a>
@@ -295,7 +310,7 @@ export default function ResearchAndPublications() {
                 </div>
               </motion.div>
             ))}
-          </div>
+          </motion.div>
         </div>
       </div>
     </section>

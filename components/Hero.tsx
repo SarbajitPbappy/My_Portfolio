@@ -6,6 +6,7 @@ import { Download, Github, Linkedin, Mail, Phone, ArrowDown, Sparkles, Graduatio
 import Link from 'next/link'
 import Image from 'next/image'
 import type { Hero } from '@/lib/types'
+import Magnetic from '@/components/motion/Magnetic'
 
 const fadeIn = {
   initial: { opacity: 0, y: 16 },
@@ -17,16 +18,16 @@ const fadeIn = {
 // Fallback data
 const fallbackHero: Hero = {
   name: 'Sarbajit Paul Bappy',
-  title: 'Final-year CSE Student & Teaching Assistant @ DIU',
+  title: 'Lecturer, Dept. of CSE @ Daffodil International University',
   subtitle: '',
-  description: 'Passionate about Deep Learning, Computer Vision, and Explainable AI for healthcare and agriculture.',
-  email: 'bappy15-6155@s.diu.edu.bd',
+  description: 'AI/ML researcher and lecturer working on deep learning, computer vision, explainable AI, and federated learning for medical and agricultural imaging.',
+  email: 'sarbajit2001@gmail.com',
   phone: '+880 1315352270',
   cv_url: '/Bappy_CV_Official.pdf',
   github_url: 'https://github.com/SarbajitPbappy',
   linkedin_url: 'https://linkedin.com/in/iamsarbajit',
   profile_image_url: '/profile.jpg',
-  focus_tags: ['Computer Vision', 'Explainable AI', 'Medical Imaging', 'Agritech'],
+  focus_tags: ['Computer Vision', 'Explainable AI', 'Federated Learning', 'Medical Imaging'],
   order: 0,
 }
 
@@ -64,14 +65,14 @@ export default function Hero() {
   if (loading) {
     return (
       <section id="home" className="min-h-[80vh] flex items-center justify-center">
-        <div className="text-gray-600">Loading...</div>
+        <div className="text-theme-text-muted">Loading...</div>
       </section>
     )
   }
 
   const heroData = hero || fallbackHero
   return (
-    <section id="home" className="min-h-[80vh] flex items-center justify-center bg-gradient-to-br from-primary-50 via-white to-primary-50 pt-16 relative overflow-hidden">
+    <section id="home" className="min-h-[80vh] flex items-center justify-center pt-16 relative overflow-hidden">
       {/* Animated background elements */}
       <div className="absolute inset-0 overflow-hidden">
         <motion.div
@@ -105,41 +106,48 @@ export default function Hero() {
       <div className="section-container relative z-10">
         <div className="grid md:grid-cols-2 gap-10 items-center">
           {/* Left Content */}
-          <motion.div {...fadeIn} className="space-y-6">
+          <motion.div className="space-y-6">
 
-            <div className="space-y-2">
-              <motion.div {...fadeIn}>
-                <h1 className="text-5xl md:text-6xl font-bold leading-tight">
-                  Hi, I'm{' '}
-                  <span className="gradient-text">{heroData.name}</span>
-                </h1>
-              </motion.div>
-            </div>
-            
-            <motion.div {...fadeIn} transition={{ ...fadeIn.transition, delay: 0.1 }}>
+            <motion.div
+              initial={{ opacity: 0, y: 22 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.55, ease: [0.22, 1, 0.36, 1], delay: 0.05 }}
+              className="space-y-2"
+            >
+              <h1 className="text-5xl md:text-6xl font-bold leading-tight">
+                Hi, I'm{' '}
+                <span className="gradient-text">{heroData.name}</span>
+              </h1>
+            </motion.div>
+
+            <motion.div
+              initial={{ opacity: 0, y: 22 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.55, ease: [0.22, 1, 0.36, 1], delay: 0.15 }}
+            >
               {heroData.title && (
-                <div className="inline-flex items-center gap-3 px-4 py-2 rounded-xl bg-white/70 border border-primary-100 shadow-sm mb-4">
-                  <GraduationCap className="w-5 h-5 text-primary-600" />
-                  <div className="text-sm text-gray-700">
+                <div className="inline-flex items-center gap-3 px-4 py-2 rounded-xl bg-theme-surface/70 border border-theme-border shadow-sm mb-4">
+                  <GraduationCap className="w-5 h-5 text-theme-primary" />
+                  <div className="text-sm text-theme-text-muted">
                     {heroData.title}
                   </div>
                 </div>
               )}
 
               {heroData.description && (
-                <p className="text-lg text-gray-600 mb-4">
+                <p className="text-lg text-theme-text-muted mb-4">
                   {heroData.description}
                 </p>
               )}
 
-              <div className="space-y-2 text-gray-600 mb-6">
+              <div className="space-y-2 text-theme-text-muted mb-6">
                 {heroData.email && (
                   <motion.div 
                     className="flex items-center gap-2"
                     whileHover={{ x: 7 }}
                   >
                     <Mail className="w-4 h-4" />
-                    <a href={`mailto:${heroData.email}`} className="hover:text-primary-600">{heroData.email}</a>
+                    <a href={`mailto:${heroData.email}`} className="hover:text-theme-primary">{heroData.email}</a>
                   </motion.div>
                 )}
                 {heroData.phone && (
@@ -155,31 +163,44 @@ export default function Hero() {
             </motion.div>
 
             {heroData.focus_tags && heroData.focus_tags.length > 0 && (
-              <motion.div {...fadeIn} transition={{ ...fadeIn.transition, delay: 0.25 }} className="flex flex-wrap gap-2">
+              <motion.div
+                initial={{ opacity: 0, y: 22 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ duration: 0.55, ease: [0.22, 1, 0.36, 1], delay: 0.25 }}
+                className="flex flex-wrap gap-2"
+              >
                 {heroData.focus_tags.map((tag) => (
-                  <span key={tag} className="pill bg-white/70 text-gray-700 border-gray-200 shadow-sm">
+                  <motion.span
+                    key={tag}
+                    whileHover={{ y: -3, scale: 1.05 }}
+                    transition={{ type: 'spring', stiffness: 320, damping: 20 }}
+                    className="pill bg-theme-surface/70 text-theme-text-muted border-theme-border shadow-sm"
+                  >
                     {tag}
-                  </span>
+                  </motion.span>
                 ))}
               </motion.div>
             )}
 
-            <motion.div {...fadeIn} transition={{ ...fadeIn.transition, delay: 0.3 }} className="grid sm:grid-cols-3 gap-4">
-            
-            </motion.div>
-
-            <motion.div {...fadeIn} transition={{ ...fadeIn.transition, delay: 0.2 }} className="flex flex-wrap gap-4">
+            <motion.div
+              initial={{ opacity: 0, y: 22 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.55, ease: [0.22, 1, 0.36, 1], delay: 0.32 }}
+              className="flex flex-wrap gap-4"
+            >
               {heroData.cv_url && (
-                <motion.a
-                  href={heroData.cv_url}
-                  download
-                  whileHover={{ scale: 1.05 }}
-                  whileTap={{ scale: 0.95 }}
-                  className="flex items-center gap-2 bg-primary-600 text-white px-6 py-3 rounded-lg hover:bg-primary-700 transition-colors font-medium shadow-lg"
-                >
-                  <Download size={20} />
-                  Download CV
-                </motion.a>
+                <Magnetic strength={0.4}>
+                  <motion.a
+                    href={heroData.cv_url}
+                    download
+                    whileHover={{ scale: 1.05 }}
+                    whileTap={{ scale: 0.95 }}
+                    className="flex items-center gap-2 bg-theme-primary text-white px-6 py-3 rounded-lg hover:bg-theme-primary-hover transition-colors font-medium shadow-lg"
+                  >
+                    <Download size={20} />
+                    Download CV
+                  </motion.a>
+                </Magnetic>
               )}
               {heroData.github_url && (
                 <motion.div whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }}>
@@ -187,7 +208,7 @@ export default function Hero() {
                     href={heroData.github_url}
                     target="_blank"
                     rel="noopener noreferrer"
-                    className="flex items-center gap-2 border-2 border-gray-300 text-gray-700 px-6 py-3 rounded-lg hover:border-primary-600 hover:text-primary-600 transition-colors shadow-lg"
+                    className="flex items-center gap-2 border-2 border-theme-border text-theme-text-muted px-6 py-3 rounded-lg hover:border-theme-primary hover:text-theme-primary transition-colors shadow-lg"
                   >
                     <Github size={20} />
                     GitHub
@@ -200,7 +221,7 @@ export default function Hero() {
                     href={heroData.linkedin_url}
                     target="_blank"
                     rel="noopener noreferrer"
-                    className="flex items-center gap-2 border-2 border-gray-300 text-gray-700 px-6 py-3 rounded-lg hover:border-primary-600 hover:text-primary-600 transition-colors shadow-lg"
+                    className="flex items-center gap-2 border-2 border-theme-border text-theme-text-muted px-6 py-3 rounded-lg hover:border-theme-primary hover:text-theme-primary transition-colors shadow-lg"
                   >
                     <Linkedin size={20} />
                     LinkedIn
@@ -212,7 +233,7 @@ export default function Hero() {
                   href="https://orcid.org/0009-0006-7551-0461"
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="flex items-center gap-2 border-2 border-gray-300 text-gray-700 px-6 py-3 rounded-lg hover:border-primary-600 hover:text-primary-600 transition-colors shadow-lg"
+                  className="flex items-center gap-2 border-2 border-theme-border text-theme-text-muted px-6 py-3 rounded-lg hover:border-theme-primary hover:text-theme-primary transition-colors shadow-lg"
                 >
                   <Globe size={20} />
                   ORCID
@@ -265,7 +286,7 @@ export default function Hero() {
             href="#about"
             animate={{ y: [0, 10, 0] }}
             transition={{ duration: 2, repeat: Infinity }}
-            className="flex flex-col items-center text-gray-600 hover:text-primary-600 transition-colors"
+            className="flex flex-col items-center text-theme-text-muted hover:text-theme-primary transition-colors"
           >
             <span className="text-sm mb-2">Scroll to explore</span>
             <ArrowDown className="w-6 h-6" />

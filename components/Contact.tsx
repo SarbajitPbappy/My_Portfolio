@@ -79,7 +79,7 @@ export default function Contact() {
   if (loading) {
     return (
       <section id="contact" className="section-container">
-        <div className="text-center py-12 text-gray-600">Loading...</div>
+        <div className="text-center py-12 text-theme-text-muted">Loading...</div>
       </section>
     )
   }
@@ -136,7 +136,7 @@ export default function Contact() {
   }
 
   return (
-    <section id="contact" className="section-container bg-gradient-to-b from-white via-gray-50 to-white relative overflow-hidden">
+    <section id="contact" className="section-container relative overflow-hidden">
       {/* Decorative background */}
       <div className="absolute inset-0 overflow-hidden pointer-events-none">
         <div className="absolute top-20 left-10 w-96 h-96 bg-primary-200/10 rounded-full blur-3xl"></div>
@@ -148,7 +148,7 @@ export default function Contact() {
           <h2 className="text-5xl md:text-6xl font-bold mb-6">
             Get In <span className="gradient-text">Touch</span>
           </h2>
-          <p className="text-xl text-gray-600 max-w-2xl mx-auto">
+          <p className="text-xl text-theme-text-muted max-w-2xl mx-auto">
             Let's collaborate on research or discuss opportunities
           </p>
         </motion.div>
@@ -159,8 +159,8 @@ export default function Contact() {
             {...fadeIn}
             className="space-y-6"
           >
-            <div className="card bg-white/80 backdrop-blur-sm border-primary-200/50">
-              <h3 className="text-2xl font-bold mb-6 text-gray-900">Contact Information</h3>
+            <div className="card bg-theme-surface/80 backdrop-blur-sm border-primary-200/50">
+              <h3 className="text-2xl font-bold mb-6 text-theme-text">Contact Information</h3>
               <div className="space-y-4">
                 {contactInfo.map((info, index) => {
                   const Icon = info.icon && iconMap[info.icon] ? iconMap[info.icon] : iconMap.Mail
@@ -175,22 +175,22 @@ export default function Contact() {
                           href={info.href}
                           target="_blank"
                           rel="noopener noreferrer"
-                          className="flex items-center gap-4 p-3 rounded-xl bg-gray-50 hover:bg-gradient-to-r hover:from-primary-50 hover:to-primary-100/50 transition-all group"
+                          className="flex items-center gap-4 p-3 rounded-xl bg-theme-surface-elevated hover:bg-gradient-to-r hover:from-primary-50 hover:to-primary-100/50 transition-all group"
                         >
                           <div className={`w-10 h-10 rounded-lg bg-gradient-to-br ${info.gradient} flex items-center justify-center shadow-md group-hover:scale-110 transition-transform`}>
                             <Icon className="w-5 h-5 text-white" />
                           </div>
-                          <span className="text-gray-700 font-medium group-hover:text-primary-600 transition-colors">{info.text}</span>
+                          <span className="text-theme-text-muted font-medium group-hover:text-theme-primary transition-colors">{info.text}</span>
                         </Link>
                       ) : (
                         <motion.a
                           href={info.href}
-                          className="flex items-center gap-4 p-3 rounded-xl bg-gray-50 hover:bg-gradient-to-r hover:from-primary-50 hover:to-primary-100/50 transition-all group"
+                          className="flex items-center gap-4 p-3 rounded-xl bg-theme-surface-elevated hover:bg-gradient-to-r hover:from-primary-50 hover:to-primary-100/50 transition-all group"
                         >
                           <div className={`w-10 h-10 rounded-lg bg-gradient-to-br ${info.gradient} flex items-center justify-center shadow-md group-hover:scale-110 transition-transform`}>
                             <Icon className="w-5 h-5 text-white" />
                           </div>
-                          <span className="text-gray-700 font-medium group-hover:text-primary-600 transition-colors">{info.text}</span>
+                          <span className="text-theme-text-muted font-medium group-hover:text-theme-primary transition-colors">{info.text}</span>
                         </motion.a>
                       )}
                     </motion.div>
@@ -204,17 +204,17 @@ export default function Contact() {
           <motion.div
             {...fadeIn}
           >
-            <div className="card bg-white/80 backdrop-blur-sm border-primary-200/50">
+            <div className="card bg-theme-surface/80 backdrop-blur-sm border-primary-200/50">
               <form onSubmit={handleSubmit(onSubmit)} className="space-y-5">
                 <div>
-                  <label htmlFor="name" className="block text-sm font-semibold text-gray-700 mb-2">
+                  <label htmlFor="name" className="block text-sm font-semibold text-theme-text-muted mb-2">
                     Name
                   </label>
                   <input
                     {...register('name')}
                     type="text"
                     id="name"
-                    className="w-full px-4 py-3 border-2 border-gray-200 rounded-xl focus:ring-2 focus:ring-primary-500 focus:border-primary-500 transition-all bg-white"
+                    className="w-full px-4 py-3 border-2 border-theme-border rounded-xl focus:ring-2 focus:ring-primary-500 focus:border-theme-primary transition-all bg-theme-surface"
                     placeholder="Your name"
                   />
                   {errors.name && (
@@ -229,14 +229,14 @@ export default function Contact() {
                 </div>
 
                 <div>
-                  <label htmlFor="email" className="block text-sm font-semibold text-gray-700 mb-2">
+                  <label htmlFor="email" className="block text-sm font-semibold text-theme-text-muted mb-2">
                     Email
                   </label>
                   <input
                     {...register('email')}
                     type="email"
                     id="email"
-                    className="w-full px-4 py-3 border-2 border-gray-200 rounded-xl focus:ring-2 focus:ring-primary-500 focus:border-primary-500 transition-all bg-white"
+                    className="w-full px-4 py-3 border-2 border-theme-border rounded-xl focus:ring-2 focus:ring-primary-500 focus:border-theme-primary transition-all bg-theme-surface"
                     placeholder="your.email@example.com"
                   />
                   {errors.email && (
@@ -251,14 +251,14 @@ export default function Contact() {
                 </div>
 
                 <div>
-                  <label htmlFor="subject" className="block text-sm font-semibold text-gray-700 mb-2">
+                  <label htmlFor="subject" className="block text-sm font-semibold text-theme-text-muted mb-2">
                     Subject
                   </label>
                   <input
                     {...register('subject')}
                     type="text"
                     id="subject"
-                    className="w-full px-4 py-3 border-2 border-gray-200 rounded-xl focus:ring-2 focus:ring-primary-500 focus:border-primary-500 transition-all bg-white"
+                    className="w-full px-4 py-3 border-2 border-theme-border rounded-xl focus:ring-2 focus:ring-primary-500 focus:border-theme-primary transition-all bg-theme-surface"
                     placeholder="What's this about?"
                   />
                   {errors.subject && (
@@ -273,14 +273,14 @@ export default function Contact() {
                 </div>
 
                 <div>
-                  <label htmlFor="message" className="block text-sm font-semibold text-gray-700 mb-2">
+                  <label htmlFor="message" className="block text-sm font-semibold text-theme-text-muted mb-2">
                     Message
                   </label>
                   <textarea
                     {...register('message')}
                     id="message"
                     rows={5}
-                    className="w-full px-4 py-3 border-2 border-gray-200 rounded-xl focus:ring-2 focus:ring-primary-500 focus:border-primary-500 resize-none transition-all bg-white"
+                    className="w-full px-4 py-3 border-2 border-theme-border rounded-xl focus:ring-2 focus:ring-primary-500 focus:border-theme-primary resize-none transition-all bg-theme-surface"
                     placeholder="Tell me about your project or inquiry..."
                   />
                   {errors.message && (

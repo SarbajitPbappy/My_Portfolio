@@ -14,7 +14,7 @@ const fadeIn = {
 // Fallback data
 const fallbackAbout: About = {
   title: 'About Me',
-  description: 'Final-year Computer Science and Engineering student at Daffodil International University with an Erasmus+ exchange at Mälardalen University, Sweden. I focus on deep learning, computer vision, and explainable AI for healthcare and agriculture, pairing academic rigor with clear communication.',
+  description: 'Lecturer in the Department of CSE at Daffodil International University and an AI/ML researcher (CGPA 3.95/4.00, Batch First) with Erasmus+ exchange experience at Mälardalen University, Sweden. I focus on deep learning, computer vision, explainable AI, and federated learning for healthcare and agriculture, pairing academic rigor with clear communication.',
   values: [
     {
       title: 'Research-Driven',
@@ -70,14 +70,14 @@ export default function About() {
   if (loading) {
     return (
       <section id="about" className="section-container">
-        <div className="text-center py-12 text-gray-600">Loading...</div>
+        <div className="text-center py-12 text-theme-text-muted">Loading...</div>
       </section>
     )
   }
 
   const aboutData = about || fallbackAbout
   return (
-    <section id="about" className="section-container bg-gradient-to-b from-white via-gray-50 to-white relative overflow-hidden">
+    <section id="about" className="section-container relative overflow-hidden">
       <div className="absolute inset-0 overflow-hidden pointer-events-none">
         <div className="absolute top-10 left-10 w-80 h-80 bg-primary-200/12 rounded-full blur-3xl" />
         <div className="absolute bottom-10 right-10 w-96 h-96 bg-primary-300/12 rounded-full blur-3xl" />
@@ -88,7 +88,7 @@ export default function About() {
           <h2 className="text-5xl md:text-6xl font-bold mb-4">
             {aboutData.title?.split(' ')[0] || 'About'} <span className="gradient-text">{aboutData.title?.split(' ').slice(1).join(' ') || 'Me'}</span>
           </h2>
-          <p className="text-lg text-gray-700 leading-relaxed max-w-3xl mx-auto">
+          <p className="text-lg text-theme-text-muted leading-relaxed max-w-3xl mx-auto">
             {aboutData.description}
           </p>
         </div>
@@ -96,8 +96,8 @@ export default function About() {
         <div className="grid md:grid-cols-2 gap-8 items-start">
           <motion.div {...fadeIn} className="space-y-4">
             <div className="frosted-card p-6">
-              <h3 className="text-2xl font-bold text-gray-900 mb-3">What drives me</h3>
-              <p className="text-gray-700 leading-relaxed">
+              <h3 className="text-2xl font-bold text-theme-text mb-3">What drives me</h3>
+              <p className="text-theme-text-muted leading-relaxed">
                 I love translating complex ideas into accessible, reliable systems. Whether mentoring students or iterating on research, I prioritize clarity, reproducibility, and meaningful impact.
               </p>
               {aboutData.quick_facts && aboutData.quick_facts.length > 0 && (
@@ -106,8 +106,8 @@ export default function About() {
                   <div className="space-y-2">
                     {aboutData.quick_facts.map((item, i) => (
                       <div key={i} className="flex items-start gap-3">
-                        <span className="pill bg-primary-50 text-primary-700 border-primary-100">{item.label}</span>
-                        <p className="text-gray-700">{item.value}</p>
+                        <span className="pill bg-theme-primary/10 text-theme-primary border-theme-border">{item.label}</span>
+                        <p className="text-theme-text-muted">{item.value}</p>
                       </div>
                     ))}
                   </div>
@@ -125,9 +125,9 @@ export default function About() {
                   transition={{ delay: idx * 0.05 }}
                   className="frosted-card p-5"
                 >
-                  <p className="text-xs uppercase tracking-wide text-primary-600 font-semibold mb-1">Value {idx + 1}</p>
-                  <h4 className="text-xl font-semibold text-gray-900 mb-2">{value.title}</h4>
-                  <p className="text-gray-700 leading-relaxed">{value.description}</p>
+                  <p className="text-xs uppercase tracking-wide text-theme-primary font-semibold mb-1">Value {idx + 1}</p>
+                  <h4 className="text-xl font-semibold text-theme-text mb-2">{value.title}</h4>
+                  <p className="text-theme-text-muted leading-relaxed">{value.description}</p>
                 </motion.div>
               ))}
             </motion.div>

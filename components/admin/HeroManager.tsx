@@ -1,7 +1,7 @@
 'use client'
 
 import { useEffect, useState } from 'react'
-import { Save, Plus, X } from 'lucide-react'
+import { Save, Plus, X, Upload, FileText, Loader2 } from 'lucide-react'
 import type { Hero } from '@/lib/types'
 
 export default function HeroManager() {
@@ -10,6 +10,38 @@ export default function HeroManager() {
   const [formData, setFormData] = useState<Partial<Hero>>({})
   const [showForm, setShowForm] = useState(false)
   const [focusTag, setFocusTag] = useState('')
+  const [uploading, setUploading] = useState(false)
+  const [uploadMsg, setUploadMsg] = useState<{ ok: boolean; text: string } | null>(null)
+
+  const handleResumeUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0]
+    e.target.value = '' // allow re-selecting the same file later
+    if (!file) return
+    if (file.type !== 'application/pdf') {
+      setUploadMsg({ ok: false, text: 'Please select a PDF file.' })
+      return
+    }
+    setUploading(true)
+    setUploadMsg(null)
+    try {
+      const body = new FormData()
+      body.append('file', file)
+      const res = await fetch('/api/resume/upload', { method: 'POST', body })
+      const data = await res.json()
+      if (res.ok) {
+        setFormData((prev) => ({ ...prev, cv_url: data.url }))
+        setUploadMsg({ ok: true, text: 'Resume uploaded! The Download CV link now points to your new file.' })
+        if (typeof window !== 'undefined') window.dispatchEvent(new Event('content-updated'))
+        await fetchItem()
+      } else {
+        setUploadMsg({ ok: false, text: data.error || 'Upload failed.' })
+      }
+    } catch (err: any) {
+      setUploadMsg({ ok: false, text: err.message || 'Upload failed.' })
+    } finally {
+      setUploading(false)
+    }
+  }
 
   useEffect(() => {
     fetchItem()
@@ -201,6 +233,52 @@ export default function HeroManager() {
                 />
               </div>
             </div>
+
+            {/* Resume / CV upload */}
+            <div className="rounded-lg border border-dashed border-primary-300 bg-primary-50/50 p-4">
+              <div className="flex items-center gap-2 mb-2">
+                <FileText className="w-4 h-4 text-primary-600" />
+                <label className="block text-sm font-semibold text-gray-800">Resume / CV file (PDF)</label>
+              </div>
+              <p className="text-xs text-gray-500 mb-3">
+                Upload a new PDF to replace your CV. The <strong>CV URL</strong> above and the site&apos;s
+                &quot;Download CV&quot; button update automatically. (Requires the one-time
+                <code className="mx-1 px-1 rounded bg-gray-100">create_resume_bucket.sql</code> setup in Supabase.)
+              </p>
+              <div className="flex items-center gap-3">
+                <label
+                  className={`inline-flex items-center gap-2 px-4 py-2 rounded-lg text-white cursor-pointer transition-colors ${
+                    uploading ? 'bg-gray-400 cursor-not-allowed' : 'bg-primary-600 hover:bg-primary-700'
+                  }`}
+                >
+                  {uploading ? <Loader2 className="w-4 h-4 animate-spin" /> : <Upload className="w-4 h-4" />}
+                  {uploading ? 'Uploading…' : 'Upload Resume (PDF)'}
+                  <input
+                    type="file"
+                    accept="application/pdf"
+                    className="hidden"
+                    disabled={uploading}
+                    onChange={handleResumeUpload}
+                  />
+                </label>
+                {formData.cv_url && (
+                  <a
+                    href={formData.cv_url}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="text-sm text-primary-600 hover:underline"
+                  >
+                    View current CV
+                  </a>
+                )}
+              </div>
+              {uploadMsg && (
+                <p className={`mt-2 text-sm ${uploadMsg.ok ? 'text-green-600' : 'text-red-600'}`}>
+                  {uploadMsg.text}
+                </p>
+              )}
+            </div>
+
             <div>
               <label className="block text-sm font-medium text-gray-700 mb-1">Profile Image URL</label>
               <input

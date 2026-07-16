@@ -3,7 +3,10 @@ import './globals.css'
 import Navbar from '@/components/Navbar'
 import Footer from '@/components/Footer'
 import { ThemeProvider } from '@/components/ThemeProvider'
-import ThemeSwitcher from '@/components/ThemeSwitcher'
+import ThemeBackground from '@/components/ThemeBackground'
+import ThemePreview from '@/components/ThemePreview'
+import ScrollProgress from '@/components/motion/ScrollProgress'
+import BackToTop from '@/components/motion/BackToTop'
 
 export const metadata: Metadata = {
   title: 'Sarbajit Paul Bappy | AI/ML Researcher',
@@ -23,10 +26,13 @@ export default function RootLayout({
       </head>
       <body>
         <ThemeProvider>
+          <ThemeBackground />
+          <ScrollProgress />
           <Navbar />
           <main>{children}</main>
           <Footer />
-          <ThemeSwitcher />
+          <BackToTop />
+          <ThemePreview />
         </ThemeProvider>
       </body>
     </html>

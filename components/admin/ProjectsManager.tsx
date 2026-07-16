@@ -34,7 +34,7 @@ export default function ProjectsManager() {
       technologies: [],
       category: '',
       gradient: 'from-blue-500 to-cyan-500',
-      order: items.length,
+      order: items.length ? Math.min(...items.map((i: any) => i.order ?? 0)) - 1 : 0,
     })
     setShowForm(true)
     setEditingId(null)

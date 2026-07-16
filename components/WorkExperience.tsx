@@ -15,14 +15,24 @@ const fadeIn = {
 // Fallback work experience
 const fallbackWorkExperience: WorkExperience[] = [
   {
+    icon: 'GraduationCap',
+    title: 'Lecturer',
+    organization: 'Dept. of CSE, Daffodil International University',
+    period: 'July 2026 – Present',
+    description: 'Teach Data Structures (theory and lab) and Software Quality Assurance at the undergraduate level; design course content, assessments, and mentor students.',
+    gradient: 'from-slate-500 to-gray-600',
+    type: 'Work',
+    order: 0,
+  },
+  {
     icon: 'BookOpen',
     title: 'Teaching Assistant',
     organization: 'Daffodil International University',
-    period: 'October 2025 – Present',
-    description: 'Supporting undergraduate courses, labs, and evaluation under Prof. Dr. Fernaz Narin Nur. Mentoring students and assisting research activities.',
+    period: 'October 2025 – June 2026',
+    description: 'Supported undergraduate courses, labs, and evaluation under Prof. Dr. Fernaz Narin Nur. Mentored students and assisted research activities.',
     gradient: 'from-blue-500 to-cyan-500',
     type: 'Work',
-    order: 0,
+    order: 1,
   },
   {
     icon: 'Users',
@@ -89,12 +99,12 @@ export default function WorkExperience() {
   if (loading) {
     return (
       <section id="experience" className="section-container">
-        <div className="text-center py-12 text-gray-600">Loading...</div>
+        <div className="text-center py-12 text-theme-text-muted">Loading...</div>
       </section>
     )
   }
   return (
-    <section id="experience" className="section-container bg-gradient-to-b from-white via-gray-50 to-white relative overflow-hidden">
+    <section id="experience" className="section-container relative overflow-hidden">
       <div className="absolute inset-0 overflow-hidden pointer-events-none">
         <div className="absolute -top-10 -left-10 w-80 h-80 bg-primary-200/12 rounded-full blur-3xl" />
         <div className="absolute bottom-0 right-0 w-96 h-96 bg-primary-300/12 rounded-full blur-3xl" />
@@ -105,7 +115,7 @@ export default function WorkExperience() {
           <h2 className="text-4xl md:text-5xl font-bold mb-4">
             Work Experience & <span className="gradient-text">Volunteering</span>
           </h2>
-          <p className="text-lg text-gray-600">
+          <p className="text-lg text-theme-text-muted">
             Professional roles, leadership, and community involvement
           </p>
         </motion.div>
@@ -116,9 +126,9 @@ export default function WorkExperience() {
               key={role.title}
               {...fadeIn}
               transition={{ ...fadeIn.transition, delay: idx * 0.05 }}
-              className="group relative overflow-hidden rounded-2xl p-[1px] bg-gradient-to-r from-white via-primary-100/30 to-white shadow-lg hover:shadow-xl transition-all hover:-translate-y-1"
+              className="group relative overflow-hidden rounded-2xl p-[1px] bg-gradient-to-r from-theme-border/40 via-theme-primary/25 to-theme-border/40 shadow-lg hover:shadow-xl transition-all hover:-translate-y-1"
             >
-              <div className="relative rounded-2xl bg-white/75 backdrop-blur-xl border border-white/60 p-6 h-full">
+              <div className="relative rounded-2xl bg-theme-surface/75 backdrop-blur-xl border border-white/60 p-6 h-full">
                 <div className="flex items-start gap-4">
                   <div className={`w-12 h-12 rounded-xl bg-gradient-to-br ${role.gradient} flex items-center justify-center text-white shadow-md`}>
                     {(() => {
@@ -129,8 +139,8 @@ export default function WorkExperience() {
                   <div className="flex-1 space-y-2">
                     <div className="flex items-start justify-between gap-2">
                       <div>
-                        <h3 className="text-xl font-semibold text-gray-900">{role.title}</h3>
-                        <p className="text-primary-600 font-medium">{role.organization}</p>
+                        <h3 className="text-xl font-semibold text-theme-text">{role.title}</h3>
+                        <p className="text-theme-primary font-medium">{role.organization}</p>
                       </div>
                       <span
                         className={`px-3 py-1 text-xs font-semibold rounded-full shadow-sm ${
@@ -142,17 +152,17 @@ export default function WorkExperience() {
                         {role.type}
                       </span>
                     </div>
-                    <p className="text-sm text-gray-500">{role.period}</p>
-                    <p className="text-gray-700 text-sm leading-relaxed">{role.description}</p>
+                    <p className="text-sm text-theme-text-muted">{role.period}</p>
+                    <p className="text-theme-text-muted text-sm leading-relaxed">{role.description}</p>
                   </div>
                 </div>
 
                 <div className="mt-4 h-px bg-gradient-to-r from-transparent via-gray-200 to-transparent" />
 
                 <div className="mt-3 flex flex-wrap gap-2 text-xs">
-                  <span className="px-3 py-1 rounded-full bg-gray-100 text-gray-700">Leadership</span>
-                  <span className="px-3 py-1 rounded-full bg-gray-100 text-gray-700">Impact</span>
-                  <span className="px-3 py-1 rounded-full bg-gray-100 text-gray-700">Collaboration</span>
+                  <span className="px-3 py-1 rounded-full bg-theme-surface-elevated text-theme-text-muted">Leadership</span>
+                  <span className="px-3 py-1 rounded-full bg-theme-surface-elevated text-theme-text-muted">Impact</span>
+                  <span className="px-3 py-1 rounded-full bg-theme-surface-elevated text-theme-text-muted">Collaboration</span>
                 </div>
               </div>
             </motion.div>

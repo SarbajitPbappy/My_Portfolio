@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { verifyPassword } from '@/lib/auth'
+import { createAdminToken } from '@/lib/adminToken'
 
 export async function POST(request: NextRequest) {
   try {
@@ -21,10 +22,10 @@ export async function POST(request: NextRequest) {
       )
     }
 
-    // Create a simple session token (in production, use proper JWT or NextAuth)
-    const token = Buffer.from(`${Date.now()}-${Math.random()}`).toString('base64')
-    
-    const response = NextResponse.json({ success: true, token })
+    // Create a signed, expiring session token (HMAC-SHA256).
+    const token = await createAdminToken()
+
+    const response = NextResponse.json({ success: true })
     
     // Set HTTP-only cookie
     response.cookies.set('admin_token', token, {

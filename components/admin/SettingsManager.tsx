@@ -1,7 +1,7 @@
 'use client'
 
 import { useEffect, useState } from 'react'
-import { Save, Moon, Sun, Palette, Sparkles, Briefcase, GraduationCap, Minimize2 } from 'lucide-react'
+import { Save, Moon, Sun, Palette, Sparkles, Briefcase, GraduationCap, Minimize2, Network, Zap } from 'lucide-react'
 import { useTheme, themeOptions } from '@/components/ThemeProvider'
 import type { Settings, Theme } from '@/lib/types'
 
@@ -12,6 +12,8 @@ const themeIcons: Record<Theme, React.ReactNode> = {
   aesthetic: <Palette className="w-5 h-5" />,
   professional: <Briefcase className="w-5 h-5" />,
   academic: <GraduationCap className="w-5 h-5" />,
+  neural: <Network className="w-5 h-5" />,
+  creative: <Zap className="w-5 h-5" />,
 }
 
 // Extended theme descriptions
@@ -36,6 +38,14 @@ const themeDescriptions: Record<Theme, { tagline: string; features: string[] }> 
     tagline: 'Scholarly design for research & higher education',
     features: ['Maroon & amber', 'Paper-like texture', 'Serif typography', 'Source Serif'],
   },
+  neural: {
+    tagline: 'Deep-tech look with a live neural-network background',
+    features: ['Animated network', 'Cyan & emerald glow', 'Monospace headings', 'Glass panels'],
+  },
+  creative: {
+    tagline: 'Bold, expressive, mind-blowing — animated aurora + glass',
+    features: ['Aurora background', 'Fuchsia gradients', 'Oversized type', 'Grain texture'],
+  },
 }
 
 // Color previews for each theme
@@ -59,6 +69,14 @@ const themeColors: Record<Theme, { light: string[]; dark: string[] }> = {
   academic: {
     light: ['#7f1d1d', '#78350f', '#d6d3d1'],
     dark: ['#f87171', '#fbbf24', '#44403c'],
+  },
+  neural: {
+    light: ['#22d3ee', '#10b981', '#0f172a'],
+    dark: ['#22d3ee', '#34d399', '#020617'],
+  },
+  creative: {
+    light: ['#d946ef', '#f59e0b', '#6366f1'],
+    dark: ['#e879f9', '#fbbf24', '#818cf8'],
   },
 }
 

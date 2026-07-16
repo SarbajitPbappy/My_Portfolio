@@ -33,7 +33,7 @@ export default function ResearchAreasManager() {
       description: '',
       technologies: [],
       gradient: 'from-purple-500 to-indigo-500',
-      order: items.length,
+      order: items.length ? Math.min(...items.map((i: any) => i.order ?? 0)) - 1 : 0,
     })
     setShowForm(true)
     setEditingId(null)

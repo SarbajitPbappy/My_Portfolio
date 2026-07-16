@@ -748,3 +748,328 @@
     --color-text: 248 250 252;
   }
 }
+
+/* ============================================================================
+   NEURAL THEME — deep-tech neural-network researcher aesthetic
+   Dark base + live animated network (ThemeBackground) + glass panels + glow.
+   ============================================================================ */
+
+[data-theme="neural"] {
+  --font-heading: 'JetBrains Mono', monospace;
+  --font-body: 'Inter', sans-serif;
+  --font-mono: 'JetBrains Mono', monospace;
+
+  --color-primary: 34 211 238;         /* cyan-400 */
+  --color-primary-hover: 103 232 249;  /* cyan-300 */
+  --color-accent: 16 185 129;          /* emerald-500 */
+  --color-background: 8 12 24;          /* deep navy-black */
+  --color-surface: 15 23 42;           /* slate-900 */
+  --color-surface-elevated: 30 41 59;  /* slate-800 */
+  --color-text: 226 232 240;           /* slate-200 */
+  --color-text-muted: 148 163 184;     /* slate-400 */
+  --color-border: 51 65 85;            /* slate-700 */
+  --color-border-subtle: 30 41 59;
+
+  --radius-sm: 0.125rem;
+  --radius-md: 0.25rem;
+  --radius-lg: 0.375rem;
+  --radius-xl: 0.5rem;
+
+  --shadow-sm: 0 0 0 1px rgb(34 211 238 / 0.10);
+  --shadow-md: 0 4px 22px -6px rgb(34 211 238 / 0.18);
+  --shadow-lg: 0 10px 34px -8px rgb(34 211 238 / 0.22);
+  --shadow-xl: 0 16px 44px -10px rgb(34 211 238 / 0.28);
+}
+
+.dark[data-theme="neural"] {
+  --color-background: 2 6 16;
+  --color-surface: 10 16 30;
+  --color-surface-elevated: 20 28 46;
+  --color-text: 236 242 250;
+  --color-text-muted: 148 163 184;
+  --color-border: 45 58 82;
+}
+
+[data-theme="neural"] body {
+  background-color: rgb(var(--color-background));
+  color: rgb(var(--color-text));
+}
+
+/* faint circuit grid, masked to the top */
+[data-theme="neural"] body::before {
+  content: '';
+  position: fixed;
+  inset: 0;
+  z-index: -1;
+  pointer-events: none;
+  background-image:
+    linear-gradient(rgba(34, 211, 238, 0.05) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(34, 211, 238, 0.05) 1px, transparent 1px);
+  background-size: 46px 46px;
+  -webkit-mask-image: radial-gradient(ellipse 90% 60% at 50% 0%, #000 15%, transparent 72%);
+  mask-image: radial-gradient(ellipse 90% 60% at 50% 0%, #000 15%, transparent 72%);
+}
+
+/* glass panels with a cyan edge glow */
+[data-theme="neural"] .bg-theme-surface {
+  background-color: rgb(var(--color-surface) / 0.5);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  box-shadow: inset 0 0 0 1px rgb(34 211 238 / 0.12), 0 10px 34px -14px rgb(34 211 238 / 0.28);
+}
+
+[data-theme="neural"] .border-theme-border { border-color: rgb(34 211 238 / 0.18); }
+
+[data-theme="neural"] .gradient-text {
+  filter: drop-shadow(0 0 14px rgb(34 211 238 / 0.35));
+}
+
+[data-theme="neural"] h1,
+[data-theme="neural"] h2,
+[data-theme="neural"] h3 { letter-spacing: -0.02em; }
+
+[data-theme="neural"] .pill {
+  border-radius: 0.125rem;
+  font-family: var(--font-mono);
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  font-size: 0.65rem;
+  border-color: rgb(34 211 238 / 0.28);
+}
+
+/* ============================================================================
+   CREATIVE THEME — bold, expressive, mind-blowing.
+   Animated aurora (ThemeBackground) + grain + heavy glass + oversized type.
+   ============================================================================ */
+
+[data-theme="creative"] {
+  --font-heading: 'DM Sans', sans-serif;
+  --font-body: 'Inter', sans-serif;
+  --font-mono: 'JetBrains Mono', monospace;
+
+  --color-primary: 217 70 239;         /* fuchsia-500 */
+  --color-primary-hover: 192 38 211;   /* fuchsia-600 */
+  --color-accent: 245 158 11;          /* amber-500 */
+  --color-background: 252 248 255;
+  --color-surface: 255 255 255;
+  --color-surface-elevated: 255 250 255;
+  --color-text: 30 27 45;
+  --color-text-muted: 92 82 116;
+  --color-border: 233 213 255;
+  --color-border-subtle: 245 235 255;
+
+  --radius-sm: 0.75rem;
+  --radius-md: 1.25rem;
+  --radius-lg: 1.75rem;
+  --radius-xl: 2.25rem;
+
+  --shadow-sm: 0 4px 16px -6px rgb(217 70 239 / 0.20);
+  --shadow-md: 0 12px 32px -10px rgb(217 70 239 / 0.26);
+  --shadow-lg: 0 20px 46px -12px rgb(139 92 246 / 0.30);
+  --shadow-xl: 0 30px 64px -16px rgb(139 92 246 / 0.36);
+}
+
+.dark[data-theme="creative"] {
+  --color-primary: 232 121 249;
+  --color-primary-hover: 240 171 252;
+  --color-accent: 251 191 36;
+  --color-background: 15 10 26;
+  --color-surface: 26 18 40;
+  --color-surface-elevated: 38 26 56;
+  --color-text: 247 240 255;
+  --color-text-muted: 190 176 214;
+  --color-border: 76 45 110;
+  --color-border-subtle: 40 28 60;
+}
+
+[data-theme="creative"] body {
+  background-color: rgb(var(--color-background));
+  color: rgb(var(--color-text));
+}
+
+/* subtle film grain for tactile depth */
+[data-theme="creative"] body::after {
+  content: '';
+  position: fixed;
+  inset: 0;
+  z-index: -1;
+  pointer-events: none;
+  opacity: 0.05;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='140' height='140'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+}
+
+/* heavy frosted glass cards + white highlight edge */
+[data-theme="creative"] .bg-theme-surface {
+  background-color: rgb(var(--color-surface) / 0.55);
+  backdrop-filter: blur(18px);
+  -webkit-backdrop-filter: blur(18px);
+  box-shadow: inset 0 1px 0 0 rgb(255 255 255 / 0.18), 0 24px 54px -22px rgb(139 92 246 / 0.40);
+}
+
+[data-theme="creative"] .rounded-2xl { border-radius: 1.75rem; }
+[data-theme="creative"] .rounded-xl { border-radius: 1.35rem; }
+
+[data-theme="creative"] .gradient-text {
+  filter: drop-shadow(0 6px 22px rgb(217 70 239 / 0.30));
+}
+
+[data-theme="creative"] h1,
+[data-theme="creative"] h2 { font-weight: 800; letter-spacing: -0.03em; }
+
+[data-theme="creative"] .pill {
+  background: linear-gradient(135deg, rgb(var(--color-primary) / 0.14), rgb(var(--color-accent) / 0.14));
+  border-color: rgb(var(--color-primary) / 0.32);
+  border-radius: 9999px;
+}
+
+/* ---- Creative aurora blobs (rendered by ThemeBackground) ---- */
+.aurora-blob {
+  position: absolute;
+  border-radius: 9999px;
+  filter: blur(90px);
+  opacity: 0.55;
+  will-change: transform;
+}
+.aurora-1 { width: 46vw; height: 46vw; top: -12%; left: -6%;
+  background: radial-gradient(circle at 50% 50%, #d946ef, transparent 70%);
+  animation: aurora-drift-1 20s ease-in-out infinite; }
+.aurora-2 { width: 40vw; height: 40vw; top: 20%; right: -8%;
+  background: radial-gradient(circle at 50% 50%, #6366f1, transparent 70%);
+  animation: aurora-drift-2 26s ease-in-out infinite; }
+.aurora-3 { width: 38vw; height: 38vw; bottom: -14%; left: 25%;
+  background: radial-gradient(circle at 50% 50%, #f59e0b, transparent 70%);
+  animation: aurora-drift-3 23s ease-in-out infinite; }
+
+.dark[data-theme="creative"] .aurora-blob { mix-blend-mode: screen; opacity: 0.5; }
+html[data-theme="creative"]:not(.dark) .aurora-blob { mix-blend-mode: multiply; opacity: 0.42; }
+
+@keyframes aurora-drift-1 { 0%,100% { transform: translate(0,0) scale(1); } 50% { transform: translate(18vw,14vh) scale(1.18); } }
+@keyframes aurora-drift-2 { 0%,100% { transform: translate(0,0) scale(1.1); } 50% { transform: translate(-14vw,10vh) scale(0.9); } }
+@keyframes aurora-drift-3 { 0%,100% { transform: translate(0,0) scale(1); } 50% { transform: translate(-10vw,-12vh) scale(1.2); } }
+
+/* ---- Creative robotic / HUD layer ---- */
+[data-theme="creative"] .creative-grid {
+  position: absolute;
+  inset: 0;
+  background-image:
+    linear-gradient(rgb(var(--color-primary) / 0.06) 1px, transparent 1px),
+    linear-gradient(90deg, rgb(var(--color-primary) / 0.06) 1px, transparent 1px);
+  background-size: 58px 58px;
+  -webkit-mask-image: radial-gradient(ellipse 80% 70% at 50% 40%, #000 25%, transparent 78%);
+  mask-image: radial-gradient(ellipse 80% 70% at 50% 40%, #000 25%, transparent 78%);
+}
+
+.creative-scan {
+  position: absolute;
+  left: 0;
+  right: 0;
+  top: 0;
+  height: 160px;
+  background: linear-gradient(to bottom, transparent, rgb(var(--color-primary) / 0.10), transparent);
+  animation: creative-scan-move 7.5s linear infinite;
+}
+@keyframes creative-scan-move {
+  0% { transform: translateY(-200px); }
+  100% { transform: translateY(100vh); }
+}
+
+.creative-hud {
+  position: absolute;
+  top: 9%;
+  right: 5%;
+  width: min(360px, 34vw);
+  height: min(360px, 34vw);
+  color: rgb(var(--color-primary));
+  opacity: 0.42;
+  animation: hud-spin 44s linear infinite;
+}
+.creative-hud-2 {
+  position: absolute;
+  bottom: 8%;
+  left: 4%;
+  width: min(180px, 20vw);
+  height: min(180px, 20vw);
+  color: rgb(var(--color-accent));
+  opacity: 0.4;
+  animation: hud-spin-rev 30s linear infinite;
+}
+@keyframes hud-spin { to { transform: rotate(360deg); } }
+@keyframes hud-spin-rev { to { transform: rotate(-360deg); } }
+
+.creative-hex {
+  position: absolute;
+  width: 70px;
+  height: 80px;
+  clip-path: polygon(50% 0%, 100% 25%, 100% 75%, 50% 100%, 0% 75%, 0% 25%);
+  background: linear-gradient(135deg, rgb(var(--color-primary) / 0.22), rgb(var(--color-accent) / 0.12));
+  filter: drop-shadow(0 0 10px rgb(var(--color-primary) / 0.25));
+}
+.hex-1 { top: 22%; left: 11%; animation: hex-float 12s ease-in-out infinite; }
+.hex-2 { top: 64%; right: 15%; width: 48px; height: 56px; animation: hex-float 15s ease-in-out infinite reverse; }
+.hex-3 { top: 40%; left: 47%; width: 38px; height: 44px; opacity: 0.7; animation: hex-float 18s ease-in-out infinite; }
+@keyframes hex-float {
+  0%, 100% { transform: translateY(0) rotate(0deg); }
+  50% { transform: translateY(-26px) rotate(12deg); }
+}
+
+/* animated circuit traces (flowing "current") */
+.creative-circuit {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  color: rgb(var(--color-primary));
+  opacity: 0.22;
+}
+.creative-circuit path.trace {
+  stroke-dasharray: 12 340;
+  animation: trace-flow 6.5s linear infinite;
+}
+.creative-circuit path.trace:nth-of-type(2) { animation-duration: 8.5s; animation-delay: -3s; }
+.creative-circuit path.trace:nth-of-type(3) { animation-duration: 5.5s; animation-delay: -1.5s; }
+.creative-circuit path.trace:nth-of-type(4) { animation-duration: 7.5s; animation-delay: -4s; }
+@keyframes trace-flow { to { stroke-dashoffset: -352; } }
+
+/* mech / robot silhouette with a pulsing visor */
+.creative-mech {
+  position: absolute;
+  bottom: -2%;
+  right: 7%;
+  width: min(260px, 26vw);
+  height: auto;
+  color: rgb(var(--color-primary));
+  opacity: 0.2;
+}
+.creative-mech .mech-eye {
+  animation: mech-eye-pulse 2.6s ease-in-out infinite;
+  filter: drop-shadow(0 0 8px currentColor);
+}
+@keyframes mech-eye-pulse {
+  0%, 100% { opacity: 0.45; }
+  50% { opacity: 1; }
+}
+
+/* glitch flicker on headings — text-shadow only (no transform, so gradient
+   headings never break the way a transformed ancestor would) */
+[data-theme="creative"] h1,
+[data-theme="creative"] h2 {
+  animation: creative-glitch 6s steps(1) infinite;
+}
+@keyframes creative-glitch {
+  0%, 93%, 100% { text-shadow: none; }
+  94% { text-shadow: 2px 0 rgba(232, 121, 249, 0.75), -2px 0 rgba(56, 189, 248, 0.7); }
+  96% { text-shadow: -2px 0 rgba(232, 121, 249, 0.75), 2px 0 rgba(56, 189, 248, 0.7); }
+  98% { text-shadow: 1px 0 rgba(251, 191, 36, 0.7), -2px 0 rgba(56, 189, 248, 0.7); }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .aurora-blob,
+  .creative-scan,
+  .creative-hud,
+  .creative-hud-2,
+  .creative-hex,
+  .creative-circuit path.trace,
+  .creative-mech .mech-eye,
+  [data-theme="creative"] h1,
+  [data-theme="creative"] h2 { animation: none !important; }
+}

@@ -35,7 +35,7 @@ export default function PublicationsManager() {
       year: new Date().getFullYear().toString(),
       type: 'Journal Article',
       gradient: 'from-green-500 to-emerald-500',
-      order: items.length,
+      order: items.length ? Math.min(...items.map((i: any) => i.order ?? 0)) - 1 : 0,
     })
     setShowForm(true)
     setEditingId(null)

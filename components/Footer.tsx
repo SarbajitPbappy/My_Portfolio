@@ -9,7 +9,7 @@ import { iconMap } from '@/lib/icons'
 // Fallback footer
 const fallbackFooter: Footer = {
   name: 'Sarbajit Paul Bappy',
-  description: 'Final-year Computer Science student passionate about Deep Learning, Computer Vision, and Explainable AI',
+  description: 'Lecturer & AI/ML researcher working on deep learning, computer vision, explainable AI, and federated learning.',
   quick_links: ['About', 'Education', 'Research', 'Publications', 'Projects', 'Contact'],
   social_links: [
     { icon: 'Github', href: 'https://github.com/SarbajitPbappy', label: 'GitHub' },
@@ -53,7 +53,7 @@ export default function Footer() {
   if (loading) {
     return (
       <footer className="bg-gray-900 text-gray-300 py-12">
-        <div className="text-center py-12 text-gray-600">Loading...</div>
+        <div className="text-center py-12 text-gray-400">Loading...</div>
       </footer>
     )
   }

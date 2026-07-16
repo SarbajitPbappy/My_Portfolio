@@ -33,7 +33,7 @@ export default function SkillsManager() {
       category: '',
       level: '',
       icon: '',
-      order: items.length,
+      order: items.length ? Math.min(...items.map((i: any) => i.order ?? 0)) - 1 : 0,
     })
     setShowForm(true)
     setEditingId(null)

@@ -5,6 +5,7 @@ import { motion } from 'framer-motion'
 import { iconMap, Github } from '@/lib/icons'
 import Link from 'next/link'
 import type { Project } from '@/lib/types'
+import { staggerContainer, staggerItem, viewportOnce, springSnappy } from '@/lib/motion'
 
 const fadeIn = {
   initial: { opacity: 0, y: 12 },
@@ -111,13 +112,13 @@ export default function Projects() {
 
   if (loading) {
     return (
-      <section id="projects" className="section-container bg-white">
-        <div className="text-center py-12 text-gray-600">Loading...</div>
+      <section id="projects" className="section-container bg-theme-surface">
+        <div className="text-center py-12 text-theme-text-muted">Loading...</div>
       </section>
     )
   }
   return (
-    <section id="projects" className="section-container bg-white relative overflow-hidden">
+    <section id="projects" className="section-container bg-theme-surface relative overflow-hidden">
       <div className="absolute inset-0 overflow-hidden pointer-events-none">
         <div className="absolute top-0 left-0 w-80 h-80 bg-primary-200/12 rounded-full blur-3xl" />
         <div className="absolute bottom-0 right-0 w-96 h-96 bg-primary-300/12 rounded-full blur-3xl" />
@@ -128,20 +129,27 @@ export default function Projects() {
           <h2 className="text-5xl md:text-6xl font-bold mb-4">
             <span className="gradient-text">Projects</span>
           </h2>
-          <p className="text-lg text-gray-600">
+          <p className="text-lg text-theme-text-muted">
             Showcasing my work in machine learning, deep learning, and data analysis
           </p>
         </motion.div>
 
-        <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
-          {projects.map((project, idx) => (
+        <motion.div
+          variants={staggerContainer(0.08)}
+          initial="hidden"
+          whileInView="visible"
+          viewport={viewportOnce}
+          className="grid md:grid-cols-2 lg:grid-cols-3 gap-6"
+        >
+          {projects.map((project) => (
             <motion.div
               key={project.title}
-              {...fadeIn}
-              transition={{ ...fadeIn.transition, delay: idx * 0.05 }}
-              className="group relative bg-white border border-gray-100 rounded-2xl p-6 shadow-sm hover:shadow-md transition-all hover:-translate-y-1"
+              variants={staggerItem}
+              whileHover={{ y: -8 }}
+              transition={springSnappy}
+              className="group relative bg-theme-surface border border-theme-border rounded-2xl p-6 shadow-sm hover:shadow-xl transition-shadow"
             >
-              <div className={`w-14 h-14 rounded-2xl bg-gradient-to-br ${project.gradient} flex items-center justify-center mb-4 text-white shadow-lg`}>
+              <div className={`w-14 h-14 rounded-2xl bg-gradient-to-br ${project.gradient} flex items-center justify-center mb-4 text-white shadow-lg transition-transform duration-300 group-hover:scale-110 group-hover:-rotate-3`}>
                 {(() => {
                   const Icon = project.icon && iconMap[project.icon] ? iconMap[project.icon] : iconMap.Code
                   return <Icon className="w-7 h-7" />
@@ -149,19 +157,19 @@ export default function Projects() {
               </div>
 
               <div className="flex items-start justify-between gap-3 mb-3">
-                <h3 className="text-xl font-bold text-gray-900 leading-tight flex-1">{project.title}</h3>
+                <h3 className="text-xl font-bold text-theme-text leading-tight flex-1">{project.title}</h3>
                 <span className={`px-3 py-1 bg-gradient-to-r ${project.gradient} text-white rounded-full text-xs font-semibold whitespace-nowrap`}>
                   {project.category}
                 </span>
               </div>
 
-              <p className="text-gray-600 mb-4 leading-relaxed text-sm">{project.description}</p>
+              <p className="text-theme-text-muted mb-4 leading-relaxed text-sm">{project.description}</p>
 
               <div className="flex flex-wrap gap-2 mb-4">
                 {project.technologies.map((tech) => (
                   <span
                     key={tech}
-                    className="px-3 py-1.5 bg-gray-50 text-gray-700 rounded-lg text-xs font-medium border border-gray-200"
+                    className="px-3 py-1.5 bg-theme-surface-elevated text-theme-text-muted rounded-lg text-xs font-medium border border-theme-border"
                   >
                     {tech}
                   </span>
@@ -169,12 +177,12 @@ export default function Projects() {
               </div>
 
               {project.github && (
-                <div className="flex gap-2 mt-auto pt-4 border-t border-gray-100">
+                <div className="flex gap-2 mt-auto pt-4 border-t border-theme-border">
                   <Link
                     href={project.github}
                     target="_blank"
                     rel="noopener noreferrer"
-                    className="flex items-center gap-2 text-primary-600 hover:text-primary-700 font-semibold text-sm"
+                    className="flex items-center gap-2 text-theme-primary hover:text-theme-primary font-semibold text-sm"
                   >
                     <Github className="w-5 h-5" />
                     <span>View on GitHub</span>
@@ -183,7 +191,7 @@ export default function Projects() {
               )}
             </motion.div>
           ))}
-        </div>
+        </motion.div>
 
         <motion.div {...fadeIn} className="mt-12 text-center">
           <Link

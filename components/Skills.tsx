@@ -5,6 +5,7 @@ import { motion } from 'framer-motion'
 import { Code, Brain, Database, Cloud, Smartphone, Wrench } from 'lucide-react'
 import { iconMap } from '@/lib/icons'
 import type { Skill } from '@/lib/types'
+import { staggerContainer, staggerItem, viewportOnce, springSnappy } from '@/lib/motion'
 
 const fadeIn = {
   initial: { opacity: 0, y: 12 },
@@ -60,8 +61,8 @@ export default function Skills() {
 
   if (loading) {
     return (
-      <section id="skills" className="section-container bg-white">
-        <div className="text-center py-12 text-gray-600">Loading...</div>
+      <section id="skills" className="section-container bg-theme-surface">
+        <div className="text-center py-12 text-theme-text-muted">Loading...</div>
       </section>
     )
   }
@@ -79,7 +80,7 @@ export default function Skills() {
   // Show empty state
   if (skills.length === 0) {
     return (
-      <section id="skills" className="section-container bg-white relative overflow-hidden">
+      <section id="skills" className="section-container bg-theme-surface relative overflow-hidden">
         <div className="absolute inset-0 overflow-hidden pointer-events-none">
           <div className="absolute top-0 left-0 w-80 h-80 bg-primary-200/12 rounded-full blur-3xl" />
           <div className="absolute bottom-0 right-0 w-96 h-96 bg-primary-300/12 rounded-full blur-3xl" />
@@ -90,12 +91,12 @@ export default function Skills() {
             <h2 className="text-5xl md:text-6xl font-bold mb-4">
               <span className="gradient-text">Skills</span>
             </h2>
-            <p className="text-lg text-gray-600">
+            <p className="text-lg text-theme-text-muted">
               Technologies and tools I work with
             </p>
           </motion.div>
-          <div className="bg-white/70 rounded-xl p-8 border border-gray-200 shadow-sm max-w-2xl mx-auto">
-            <p className="text-gray-500">No skills added yet. Add skills from the Admin Panel.</p>
+          <div className="bg-theme-surface/70 rounded-xl p-8 border border-theme-border shadow-sm max-w-2xl mx-auto">
+            <p className="text-theme-text-muted">No skills added yet. Add skills from the Admin Panel.</p>
           </div>
         </div>
       </section>
@@ -103,7 +104,7 @@ export default function Skills() {
   }
 
   return (
-    <section id="skills" className="section-container bg-white relative overflow-hidden">
+    <section id="skills" className="section-container bg-theme-surface relative overflow-hidden">
       <div className="absolute inset-0 overflow-hidden pointer-events-none">
         <div className="absolute top-0 left-0 w-80 h-80 bg-primary-200/12 rounded-full blur-3xl" />
         <div className="absolute bottom-0 right-0 w-96 h-96 bg-primary-300/12 rounded-full blur-3xl" />
@@ -114,28 +115,35 @@ export default function Skills() {
             <h2 className="text-5xl md:text-6xl font-bold mb-4">
               <span className="gradient-text">Skills</span>
             </h2>
-            <p className="text-lg text-gray-600">
+            <p className="text-lg text-theme-text-muted">
               Technologies and tools I work with
             </p>
           </motion.div>
 
-        <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
-          {Object.entries(skillsByCategory).map(([category, categorySkills], idx) => {
+        <motion.div
+          variants={staggerContainer(0.08)}
+          initial="hidden"
+          whileInView="visible"
+          viewport={viewportOnce}
+          className="grid md:grid-cols-2 lg:grid-cols-3 gap-6"
+        >
+          {Object.entries(skillsByCategory).map(([category, categorySkills]) => {
             const config = categoryConfig[category] || { icon: Code, gradient: 'from-gray-500 to-gray-600' }
             const Icon = config.icon
-            
+
             return (
               <motion.div
                 key={category}
-                {...fadeIn}
-                transition={{ ...fadeIn.transition, delay: idx * 0.05 }}
-                className="group relative bg-white border border-gray-100 rounded-2xl p-6 shadow-sm hover:shadow-md transition-all hover:-translate-y-1"
+                variants={staggerItem}
+                whileHover={{ y: -8 }}
+                transition={springSnappy}
+                className="group relative bg-theme-surface border border-theme-border rounded-2xl p-6 shadow-sm hover:shadow-xl transition-shadow"
               >
-                <div className={`w-14 h-14 rounded-2xl bg-gradient-to-br ${config.gradient} flex items-center justify-center mb-4 text-white shadow-lg`}>
+                <div className={`w-14 h-14 rounded-2xl bg-gradient-to-br ${config.gradient} flex items-center justify-center mb-4 text-white shadow-lg transition-transform duration-300 group-hover:scale-110 group-hover:-rotate-3`}>
                   <Icon className="w-7 h-7" />
                 </div>
 
-                <h3 className="text-xl font-bold text-gray-900 mb-4">{category}</h3>
+                <h3 className="text-xl font-bold text-theme-text mb-4">{category}</h3>
 
                 <div className="flex flex-wrap gap-2">
                   {categorySkills.map((skill) => {
@@ -145,12 +153,12 @@ export default function Skills() {
                       <motion.span
                         key={skill.id}
                         whileHover={{ scale: 1.05, y: -2 }}
-                        className="inline-flex items-center gap-1.5 px-3 py-1.5 bg-gray-50 text-gray-700 rounded-lg text-xs font-medium border border-gray-200 hover:border-primary-300 hover:bg-primary-50 transition-colors"
+                        className="inline-flex items-center gap-1.5 px-3 py-1.5 bg-theme-surface-elevated text-theme-text-muted rounded-lg text-xs font-medium border border-theme-border hover:border-theme-primary hover:bg-theme-primary/10 transition-colors"
                       >
                         {SkillIcon && <SkillIcon className="w-3.5 h-3.5" />}
                         <span>{skill.name}</span>
                         {skill.level && (
-                          <span className="ml-1 text-xs text-gray-500">({skill.level})</span>
+                          <span className="ml-1 text-xs text-theme-text-muted">({skill.level})</span>
                         )}
                       </motion.span>
                     )
@@ -159,7 +167,7 @@ export default function Skills() {
               </motion.div>
             )
           })}
-        </div>
+        </motion.div>
       </div>
     </section>
   )
