@@ -185,6 +185,8 @@ export default function PublicationsManager() {
                   <option value="Published (Abstract)">Published (Abstract)</option>
                   <option value="Under Review">Under Review</option>
                   <option value="Draft">Draft</option>
+                    <option value="Submitted">Submitted</option>
+                    <option value="Accepted">Accepted</option>
                 </select>
               </div>
               <div>
