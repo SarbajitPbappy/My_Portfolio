@@ -1,7 +1,7 @@
 'use client'
 
 import { useEffect, useState } from 'react'
-import { Save, Plus, X, Upload, FileText, Loader2 } from 'lucide-react'
+import { Save, Plus, X, Upload, FileText, Loader2, ImageIcon } from 'lucide-react'
 import type { Hero } from '@/lib/types'
 
 export default function HeroManager() {
@@ -12,6 +12,38 @@ export default function HeroManager() {
   const [focusTag, setFocusTag] = useState('')
   const [uploading, setUploading] = useState(false)
   const [uploadMsg, setUploadMsg] = useState<{ ok: boolean; text: string } | null>(null)
+  const [imgUploading, setImgUploading] = useState(false)
+  const [imgMsg, setImgMsg] = useState<{ ok: boolean; text: string } | null>(null)
+
+  const handleProfileUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0]
+    e.target.value = '' // allow re-selecting the same file later
+    if (!file) return
+    if (!['image/jpeg', 'image/png', 'image/webp'].includes(file.type)) {
+      setImgMsg({ ok: false, text: 'Please select a JPG, PNG, or WEBP image.' })
+      return
+    }
+    setImgUploading(true)
+    setImgMsg(null)
+    try {
+      const body = new FormData()
+      body.append('file', file)
+      const res = await fetch('/api/profile-image/upload', { method: 'POST', body })
+      const data = await res.json()
+      if (res.ok) {
+        setFormData((prev) => ({ ...prev, profile_image_url: data.url }))
+        setImgMsg({ ok: true, text: 'Profile image updated! It now shows on your hero section.' })
+        if (typeof window !== 'undefined') window.dispatchEvent(new Event('content-updated'))
+        await fetchItem()
+      } else {
+        setImgMsg({ ok: false, text: data.error || 'Upload failed.' })
+      }
+    } catch (err: any) {
+      setImgMsg({ ok: false, text: err.message || 'Upload failed.' })
+    } finally {
+      setImgUploading(false)
+    }
+  }
 
   const handleResumeUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0]
@@ -287,6 +319,51 @@ export default function HeroManager() {
                 onChange={(e) => setFormData({ ...formData, profile_image_url: e.target.value })}
                 className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-transparent"
               />
+            </div>
+
+            {/* Profile image upload */}
+            <div className="rounded-lg border border-dashed border-primary-300 bg-primary-50/50 p-4">
+              <div className="flex items-center gap-2 mb-2">
+                <ImageIcon className="w-4 h-4 text-primary-600" />
+                <label className="block text-sm font-semibold text-gray-800">Profile image (JPG / PNG / WEBP)</label>
+              </div>
+              <p className="text-xs text-gray-500 mb-3">
+                Upload a new photo to replace your profile picture. The <strong>Profile Image URL</strong> above and the
+                hero photo update automatically. (Requires the one-time
+                <code className="mx-1 px-1 rounded bg-gray-100">create_media_bucket.sql</code> setup in Supabase.)
+              </p>
+              <div className="flex items-center gap-3">
+                <label
+                  className={`inline-flex items-center gap-2 px-4 py-2 rounded-lg text-white cursor-pointer transition-colors ${
+                    imgUploading ? 'bg-gray-400 cursor-not-allowed' : 'bg-primary-600 hover:bg-primary-700'
+                  }`}
+                >
+                  {imgUploading ? <Loader2 className="w-4 h-4 animate-spin" /> : <Upload className="w-4 h-4" />}
+                  {imgUploading ? 'Uploading…' : 'Upload Profile Image'}
+                  <input
+                    type="file"
+                    accept="image/jpeg,image/png,image/webp"
+                    className="hidden"
+                    disabled={imgUploading}
+                    onChange={handleProfileUpload}
+                  />
+                </label>
+                {formData.profile_image_url && (
+                  <a
+                    href={formData.profile_image_url}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="text-sm text-primary-600 hover:underline"
+                  >
+                    View current image
+                  </a>
+                )}
+              </div>
+              {imgMsg && (
+                <p className={`mt-2 text-sm ${imgMsg.ok ? 'text-green-600' : 'text-red-600'}`}>
+                  {imgMsg.text}
+                </p>
+              )}
             </div>
             <div>
               <label className="block text-sm font-medium text-gray-700 mb-1">Focus Tags</label>
