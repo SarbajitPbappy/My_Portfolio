@@ -80,18 +80,21 @@ const fallbackProjects: Project[] = [
   },
 ]
 
-export default function Projects() {
-  const [projects, setProjects] = useState<Project[]>([])
-  const [loading, setLoading] = useState(true)
+export default function Projects({ initialProjects }: { initialProjects?: Project[] } = {}) {
+  const seeded = initialProjects !== undefined
+  const [projects, setProjects] = useState<Project[]>(
+    seeded ? (initialProjects!.length > 0 ? initialProjects! : fallbackProjects) : []
+  )
+  const [loading, setLoading] = useState(!seeded)
 
   useEffect(() => {
-    fetchProjects()
-    
+    if (!seeded) fetchProjects()
+
     const handleUpdate = () => {
       fetchProjects()
     }
     window.addEventListener('content-updated', handleUpdate)
-    
+
     return () => {
       window.removeEventListener('content-updated', handleUpdate)
     }

@@ -1,5 +1,45 @@
 import { supabase } from './supabase'
-import type { Education, Publication, WorkExperience, Project, ResearchArea, Course, Hero, About, ContactInfo, Footer, Skill, Settings } from './types'
+import type { Education, Publication, WorkExperience, Project, ResearchArea, Course, Hero, About, ContactInfo, Footer, Skill, Settings, Page } from './types'
+
+const supabaseConfigured = () =>
+  !!process.env.NEXT_PUBLIC_SUPABASE_URL && !!process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY
+
+// Pages (custom admin-created pages) — read helpers for SSR + sitemap.
+// Fail soft: if the table is absent or Supabase is unconfigured, return empty/null
+// so the caller can render a real 404 instead of crashing.
+export async function getPages(): Promise<Page[]> {
+  if (!supabaseConfigured()) return []
+
+  const { data, error } = await supabase
+    .from('pages')
+    .select('*')
+    .order('updated_at', { ascending: false })
+
+  if (error) {
+    console.error('Supabase error (getPages):', error.message)
+    return []
+  }
+  return (data || []) as Page[]
+}
+
+export async function getPageBySlug(slug: string): Promise<Page | null> {
+  if (!supabaseConfigured()) return null
+
+  const cleanSlug = slug.trim().replace(/^\/+|\/+$/g, '').toLowerCase()
+  if (!cleanSlug) return null
+
+  const { data, error } = await supabase
+    .from('pages')
+    .select('*')
+    .eq('slug', cleanSlug)
+    .maybeSingle()
+
+  if (error) {
+    console.error('Supabase error (getPageBySlug):', error.message)
+    return null
+  }
+  return (data as Page) || null
+}
 
 // Education CRUD
 export async function getEducation() {

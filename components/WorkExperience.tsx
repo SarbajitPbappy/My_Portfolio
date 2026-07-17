@@ -66,18 +66,25 @@ const fallbackWorkExperience: WorkExperience[] = [
   },
 ]
 
-export default function WorkExperience() {
-  const [roles, setRoles] = useState<WorkExperience[]>([])
-  const [loading, setLoading] = useState(true)
+export default function WorkExperience({
+  initialRoles,
+}: {
+  initialRoles?: WorkExperience[]
+} = {}) {
+  const seeded = initialRoles !== undefined
+  const [roles, setRoles] = useState<WorkExperience[]>(
+    seeded ? (initialRoles!.length > 0 ? initialRoles! : fallbackWorkExperience) : []
+  )
+  const [loading, setLoading] = useState(!seeded)
 
   useEffect(() => {
-    fetchWorkExperience()
-    
+    if (!seeded) fetchWorkExperience()
+
     const handleUpdate = () => {
       fetchWorkExperience()
     }
     window.addEventListener('content-updated', handleUpdate)
-    
+
     return () => {
       window.removeEventListener('content-updated', handleUpdate)
     }

@@ -21,17 +21,18 @@ const fallbackFooter: Footer = {
 }
 
 export default function Footer() {
-  const [footer, setFooter] = useState<Footer | null>(null)
-  const [loading, setLoading] = useState(true)
+  // Seed with the fallback so the footer content is present in the SSR HTML
+  // (no loading flash), then refresh from the API on the client.
+  const [footer, setFooter] = useState<Footer>(fallbackFooter)
 
   useEffect(() => {
     fetchFooter()
-    
+
     const handleUpdate = () => {
       fetchFooter()
     }
     window.addEventListener('content-updated', handleUpdate)
-    
+
     return () => {
       window.removeEventListener('content-updated', handleUpdate)
     }
@@ -40,22 +41,12 @@ export default function Footer() {
   const fetchFooter = async () => {
     try {
       const res = await fetch('/api/footer')
+      if (!res.ok) return
       const data = await res.json()
-      setFooter(data || fallbackFooter)
+      if (data) setFooter(data)
     } catch (error) {
       console.error('Error fetching footer:', error)
-      setFooter(fallbackFooter)
-    } finally {
-      setLoading(false)
     }
-  }
-
-  if (loading) {
-    return (
-      <footer className="bg-gray-900 text-gray-300 py-12">
-        <div className="text-center py-12 text-gray-400">Loading...</div>
-      </footer>
-    )
   }
 
   const footerData = footer || fallbackFooter

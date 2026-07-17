@@ -30,18 +30,19 @@ const categoryConfig: Record<string, { icon: React.ComponentType<any>, gradient:
   'Domain Expertise': { icon: Brain, gradient: 'from-red-500 to-rose-500' },
 }
 
-export default function Skills() {
-  const [skills, setSkills] = useState<Skill[]>([])
-  const [loading, setLoading] = useState(true)
+export default function Skills({ initialSkills }: { initialSkills?: Skill[] } = {}) {
+  const seeded = initialSkills !== undefined
+  const [skills, setSkills] = useState<Skill[]>(seeded ? initialSkills ?? [] : [])
+  const [loading, setLoading] = useState(!seeded)
 
   useEffect(() => {
-    fetchSkills()
-    
+    if (!seeded) fetchSkills()
+
     const handleUpdate = () => {
       fetchSkills()
     }
     window.addEventListener('content-updated', handleUpdate)
-    
+
     return () => {
       window.removeEventListener('content-updated', handleUpdate)
     }

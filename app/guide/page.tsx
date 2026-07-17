@@ -3,6 +3,13 @@ import { join } from 'path'
 import ReactMarkdown from 'react-markdown'
 import Link from 'next/link'
 import { ArrowLeft } from 'lucide-react'
+import type { Metadata } from 'next'
+
+// Internal admin helper page — keep it out of search indexes.
+export const metadata: Metadata = {
+  title: 'Guide',
+  robots: { index: false, follow: false },
+}
 
 export default async function GuidePage() {
   let content = ''

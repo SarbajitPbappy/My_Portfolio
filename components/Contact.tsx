@@ -37,18 +37,23 @@ const fallbackContactInfo = [
   { icon: 'Linkedin', text: 'linkedin.com/in/iamsarbajit', href: 'https://linkedin.com/in/iamsarbajit', gradient: 'from-blue-600 to-blue-800', is_external: true },
 ]
 
-export default function Contact() {
-  const [contactInfo, setContactInfo] = useState<Array<{ icon: string; text: string; href: string; gradient: string; is_external: boolean }>>([])
-  const [loading, setLoading] = useState(true)
+type ContactInfoItem = { icon: string; text: string; href: string; gradient: string; is_external: boolean }
+
+export default function Contact({ initialContactInfo }: { initialContactInfo?: ContactInfoItem[] } = {}) {
+  const seeded = initialContactInfo !== undefined
+  const [contactInfo, setContactInfo] = useState<ContactInfoItem[]>(
+    seeded ? (initialContactInfo!.length > 0 ? initialContactInfo! : fallbackContactInfo) : []
+  )
+  const [loading, setLoading] = useState(!seeded)
 
   useEffect(() => {
-    fetchContactInfo()
-    
+    if (!seeded) fetchContactInfo()
+
     const handleUpdate = () => {
       fetchContactInfo()
     }
     window.addEventListener('content-updated', handleUpdate)
-    
+
     return () => {
       window.removeEventListener('content-updated', handleUpdate)
     }

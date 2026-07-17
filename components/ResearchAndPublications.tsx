@@ -117,19 +117,38 @@ const fallbackPublications: Publication[] = [
   },
 ]
 
-export default function ResearchAndPublications() {
-  const [researchAreas, setResearchAreas] = useState<ResearchArea[]>([])
-  const [publications, setPublications] = useState<Publication[]>([])
-  const [loading, setLoading] = useState(true)
+export default function ResearchAndPublications({
+  initialResearchAreas,
+  initialPublications,
+}: {
+  initialResearchAreas?: ResearchArea[]
+  initialPublications?: Publication[]
+} = {}) {
+  const seeded = initialResearchAreas !== undefined || initialPublications !== undefined
+  const [researchAreas, setResearchAreas] = useState<ResearchArea[]>(
+    initialResearchAreas !== undefined
+      ? initialResearchAreas.length > 0
+        ? initialResearchAreas
+        : fallbackResearchAreas
+      : []
+  )
+  const [publications, setPublications] = useState<Publication[]>(
+    initialPublications !== undefined
+      ? initialPublications.length > 0
+        ? initialPublications
+        : fallbackPublications
+      : []
+  )
+  const [loading, setLoading] = useState(!seeded)
 
   useEffect(() => {
-    fetchData()
-    
+    if (!seeded) fetchData()
+
     const handleUpdate = () => {
       fetchData()
     }
     window.addEventListener('content-updated', handleUpdate)
-    
+
     return () => {
       window.removeEventListener('content-updated', handleUpdate)
     }

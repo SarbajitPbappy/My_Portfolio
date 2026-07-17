@@ -31,19 +31,22 @@ const fallbackHero: Hero = {
   order: 0,
 }
 
-export default function Hero() {
-  const [hero, setHero] = useState<Hero | null>(null)
-  const [loading, setLoading] = useState(true)
+export default function Hero({ initialData }: { initialData?: Hero | null } = {}) {
+  // Seeded from the server (SSR) when `initialData` is provided (even if null →
+  // fallback). Only fetches on the client when rendered without a seed.
+  const seeded = initialData !== undefined
+  const [hero, setHero] = useState<Hero | null>(seeded ? initialData ?? null : null)
+  const [loading, setLoading] = useState(!seeded)
 
   useEffect(() => {
-    fetchHero()
-    
+    if (!seeded) fetchHero()
+
     // Listen for content updates from admin panel
     const handleUpdate = () => {
       fetchHero()
     }
     window.addEventListener('content-updated', handleUpdate)
-    
+
     return () => {
       window.removeEventListener('content-updated', handleUpdate)
     }

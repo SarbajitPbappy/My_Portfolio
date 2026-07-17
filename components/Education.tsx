@@ -64,20 +64,39 @@ const fallbackCourses: Course[] = [
   },
 ]
 
-export default function Education() {
-  const [education, setEducation] = useState<Education[]>([])
-  const [courses, setCourses] = useState<Course[]>([])
-  const [loading, setLoading] = useState(true)
+export default function Education({
+  initialEducation,
+  initialCourses,
+}: {
+  initialEducation?: Education[]
+  initialCourses?: Course[]
+} = {}) {
+  const seeded = initialEducation !== undefined || initialCourses !== undefined
+  const [education, setEducation] = useState<Education[]>(
+    initialEducation !== undefined
+      ? initialEducation.length > 0
+        ? initialEducation
+        : fallbackEducation
+      : []
+  )
+  const [courses, setCourses] = useState<Course[]>(
+    initialCourses !== undefined
+      ? initialCourses.length > 0
+        ? initialCourses
+        : fallbackCourses
+      : []
+  )
+  const [loading, setLoading] = useState(!seeded)
 
   useEffect(() => {
-    fetchData()
-    
+    if (!seeded) fetchData()
+
     // Listen for content updates from admin panel
     const handleUpdate = () => {
       fetchData()
     }
     window.addEventListener('content-updated', handleUpdate)
-    
+
     return () => {
       window.removeEventListener('content-updated', handleUpdate)
     }

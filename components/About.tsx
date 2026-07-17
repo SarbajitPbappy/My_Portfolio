@@ -37,18 +37,19 @@ const fallbackAbout: About = {
   order: 0,
 }
 
-export default function About() {
-  const [about, setAbout] = useState<About | null>(null)
-  const [loading, setLoading] = useState(true)
+export default function About({ initialData }: { initialData?: About | null } = {}) {
+  const seeded = initialData !== undefined
+  const [about, setAbout] = useState<About | null>(seeded ? initialData ?? null : null)
+  const [loading, setLoading] = useState(!seeded)
 
   useEffect(() => {
-    fetchAbout()
-    
+    if (!seeded) fetchAbout()
+
     const handleUpdate = () => {
       fetchAbout()
     }
     window.addEventListener('content-updated', handleUpdate)
-    
+
     return () => {
       window.removeEventListener('content-updated', handleUpdate)
     }
