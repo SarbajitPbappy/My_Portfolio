@@ -6,7 +6,7 @@
  * to your real production domain. The fallback is only used in development.
  */
 export const SITE_URL = (
-  process.env.NEXT_PUBLIC_SITE_URL || 'https://sarbajit.tech'
+  process.env.NEXT_PUBLIC_SITE_URL || 'https://www.sarbajit.tech'
 ).replace(/\/$/, '')
 
 export const siteConfig = {
