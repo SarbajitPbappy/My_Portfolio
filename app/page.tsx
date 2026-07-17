@@ -20,9 +20,10 @@ import {
   getContactInfo,
 } from '@/lib/db'
 
-// Content is admin-editable, so render fresh on each request. The client
-// components still hydrate and refetch on admin "content-updated" events.
-export const dynamic = 'force-dynamic'
+// Serve statically-cached HTML (fast TTFB) and regenerate in the background at
+// most every 2 minutes. Admins still see edits instantly via the client-side
+// "content-updated" refetch; public SSR is at most ~2 min stale.
+export const revalidate = 120
 
 // If a DB query rejects, fall back to `undefined` so the client component keeps
 // its own fetch-and-fallback behavior instead of the page crashing.
