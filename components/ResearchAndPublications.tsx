@@ -321,6 +321,8 @@ export default function ResearchAndPublications({
                       href={pub.link}
                       target="_blank"
                       rel="noopener noreferrer"
+                      aria-label={`Open publication: ${pub.title}`}
+                      title={`Open publication: ${pub.title}`}
                       className="flex-shrink-0 w-9 h-9 flex items-center justify-center rounded-lg text-theme-primary hover:bg-theme-primary/10 transition-colors"
                     >
                       <ExternalLink className="w-5 h-5" />

@@ -115,6 +115,8 @@ export default function Footer() {
                       href={social.href}
                       target={social.href.startsWith('http') ? '_blank' : undefined}
                       rel={social.href.startsWith('http') ? 'noopener noreferrer' : undefined}
+                      aria-label={social.label}
+                      title={social.label}
                       whileHover={{ scale: 1.2, rotate: i % 2 === 0 ? 5 : -5 }}
                       className="hover:text-primary-400 transition-colors"
                     >

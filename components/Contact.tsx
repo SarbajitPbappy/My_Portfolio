@@ -8,7 +8,6 @@ import { useForm } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
 import * as z from 'zod'
 import Link from 'next/link'
-import Swal from 'sweetalert2'
 
 const contactSchema = z.object({
   name: z.string().min(2, 'Name must be at least 2 characters'),
@@ -90,13 +89,15 @@ export default function Contact({ initialContactInfo }: { initialContactInfo?: C
   }
 
   const onSubmit = async (data: ContactFormData) => {
+    // Loaded on demand so SweetAlert2 stays out of the initial page bundle.
+    const { default: Swal } = await import('sweetalert2')
     try {
       const response = await fetch('/api/contact', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(data),
       })
-      
+
       const result = await response.json()
       
       if (response.ok && result.success) {
