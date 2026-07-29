@@ -8,6 +8,7 @@ import ThemeBackground from '@/components/ThemeBackground'
 import ThemePreview from '@/components/ThemePreview'
 import ScrollProgress from '@/components/motion/ScrollProgress'
 import BackToTop from '@/components/motion/BackToTop'
+import AnalyticsTracker from '@/components/AnalyticsTracker'
 
 export const metadata: Metadata = {
   metadataBase: new URL(SITE_URL),
@@ -73,6 +74,7 @@ export default function RootLayout({
           <Footer />
           <BackToTop />
           <ThemePreview />
+          <AnalyticsTracker />
         </ThemeProvider>
       </body>
     </html>

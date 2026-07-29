@@ -7,6 +7,7 @@ const PUBLIC_MUTATIONS = new Set([
   '/api/admin/login',
   '/api/admin/logout',
   '/api/contact', // public contact form
+  '/api/analytics/track', // page-view beacon fired by every visitor
 ])
 
 const SAFE_METHODS = new Set(['GET', 'HEAD', 'OPTIONS'])

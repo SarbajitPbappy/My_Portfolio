@@ -3,7 +3,8 @@
 import { useEffect, useState } from 'react'
 import Link from 'next/link'
 import { motion } from 'framer-motion'
-import type { Footer } from '@/lib/types'
+import { Users } from 'lucide-react'
+import type { AnalyticsSummary, Footer } from '@/lib/types'
 import { iconMap } from '@/lib/icons'
 
 // Fallback footer
@@ -24,9 +25,11 @@ export default function Footer() {
   // Seed with the fallback so the footer content is present in the SSR HTML
   // (no loading flash), then refresh from the API on the client.
   const [footer, setFooter] = useState<Footer>(fallbackFooter)
+  const [visits, setVisits] = useState<AnalyticsSummary | null>(null)
 
   useEffect(() => {
     fetchFooter()
+    fetchVisits()
 
     const handleUpdate = () => {
       fetchFooter()
@@ -37,6 +40,16 @@ export default function Footer() {
       window.removeEventListener('content-updated', handleUpdate)
     }
   }, [])
+
+  const fetchVisits = async () => {
+    try {
+      const res = await fetch('/api/analytics/summary')
+      if (!res.ok) return
+      setVisits(await res.json())
+    } catch {
+      // The counter is decorative — never surface an analytics failure here.
+    }
+  }
 
   const fetchFooter = async () => {
     try {
@@ -136,6 +149,24 @@ export default function Footer() {
           className="border-t border-gray-800 pt-8 text-center text-gray-400"
         >
           <p>{footerData.copyright_text || `© ${currentYear} ${footerData.name}. All rights reserved.`}</p>
+
+          {/* Visitor counter. Hidden until there is something to show, so the
+              footer never reads "0 visitors". Full stats live in /admin. */}
+          {visits && visits.total_visitors > 0 && (
+            <p className="mt-3 inline-flex items-center gap-2 text-sm text-gray-500">
+              <Users className="w-4 h-4" aria-hidden="true" />
+              <span>
+                <span className="font-medium text-gray-400">
+                  {visits.total_visitors.toLocaleString('en-US')}
+                </span>{' '}
+                visitors ·{' '}
+                <span className="font-medium text-gray-400">
+                  {visits.total_views.toLocaleString('en-US')}
+                </span>{' '}
+                page views
+              </span>
+            </p>
+          )}
         </motion.div>
       </div>
     </footer>

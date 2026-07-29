@@ -172,3 +172,40 @@ export interface Settings {
   updated_at?: string
 }
 
+// --- Site analytics ---------------------------------------------------------
+// Shapes returned by the aggregate SQL functions in create_analytics_table.sql.
+
+export interface AnalyticsBreakdownRow {
+  label: string
+  views: number
+  visitors: number
+}
+
+export interface AnalyticsDailyPoint {
+  day: string // YYYY-MM-DD
+  views: number
+  visitors: number
+}
+
+export interface AnalyticsSummary {
+  total_views: number
+  total_visitors: number
+  today_views: number
+  today_visitors: number
+}
+
+export interface AnalyticsStats {
+  days: number
+  totals: { views: number; visitors: number }
+  /** Same-length window immediately before this one, for the trend deltas. */
+  previous: { views: number; visitors: number }
+  allTime: AnalyticsSummary
+  daily: AnalyticsDailyPoint[]
+  paths: AnalyticsBreakdownRow[]
+  referrers: AnalyticsBreakdownRow[]
+  devices: AnalyticsBreakdownRow[]
+  countries: AnalyticsBreakdownRow[]
+  /** false when create_analytics_table.sql has not been run yet */
+  configured: boolean
+}
+

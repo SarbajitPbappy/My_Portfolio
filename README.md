@@ -12,6 +12,7 @@ A modern, fully customizable portfolio website built with Next.js, TypeScript, T
 - **Database-Driven** - All content stored in Supabase PostgreSQL database
 - **Secure Admin Panel** - Password-protected admin interface
 - **Contact Form** - Working contact form with email notifications (Resend)
+- **Visitor Analytics** - Cookie-free, self-hosted traffic stats in the admin panel, plus a visitor counter in the footer
 
 ## 📋 Prerequisites
 
@@ -72,6 +73,28 @@ TO_EMAIL=your-email@example.com
 This will create all necessary tables:
 - `hero`, `about`, `contact_info`, `footer`, `navbar`
 - `education`, `publications`, `work_experience`, `projects`, `research_areas`, `courses`
+
+### 4b. Enable Visitor Analytics
+
+Run `create_analytics_table.sql` the same way (SQL Editor → paste → Run). It adds
+the `page_views` table plus the aggregate functions the dashboard reads.
+
+Then open **/admin → Analytics** for visitors per day, top pages, referrers,
+devices and countries. The public site shows only a small visitor counter in the
+footer.
+
+How the counting works:
+
+- **No cookies, no localStorage.** Nothing is stored in the visitor's browser.
+- **No IP addresses or user agents are saved.** Each hit stores a salted hash of
+  (IP + user agent) where the salt rotates every UTC day, so a visitor is counted
+  once per day and cannot be followed across days.
+- Bots and crawlers are filtered out, and visitors sending Do Not Track / Global
+  Privacy Control are not counted.
+- Visits from `localhost` are ignored so development doesn't inflate the numbers.
+  Set `NEXT_PUBLIC_ANALYTICS_DEBUG=true` in `.env.local` to count them while testing.
+- Over a multi-day range, "visitors" is the sum of each day's unique visitors
+  (the same convention Plausible and Fathom use).
 
 ### 5. Run Migration (Optional)
 
