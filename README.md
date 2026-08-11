@@ -115,6 +115,31 @@ clicked — and password fields are skipped entirely.
 Until this file is run, the Visitors tab shows a setup notice and the headline
 counters keep working normally.
 
+### 4d. Google Analytics 4 (Optional)
+
+The site also supports GA4 alongside the built-in analytics.
+
+1. Go to [analytics.google.com](https://analytics.google.com) → **Admin** →
+   **Create property** (or pick an existing one).
+2. Under **Data streams**, add a **Web** stream for `https://www.sarbajit.tech`.
+3. Copy the **Measurement ID** — it looks like `G-XXXXXXXXXX`.
+4. Add it as an environment variable, locally in `.env.local` and in the Vercel
+   project settings (Settings → Environment Variables), then redeploy:
+
+   ```
+   NEXT_PUBLIC_GA_ID=G-XXXXXXXXXX
+   ```
+
+With no `NEXT_PUBLIC_GA_ID` set, GA never loads and sets no cookie. GA is also
+skipped on `/admin`, on `localhost`, and for visitors sending Do Not Track.
+
+> **This changes the site's privacy posture.** The built-in analytics use no
+> cookies and keep all data in your own database. GA4 **does** set cookies
+> (`_ga`, `_ga_*`) and sends visitor data to Google, which is what brings
+> cookie-consent requirements into play for EU/UK visitors. The gates above are
+> not a substitute for a consent banner if you need one. Skip this section
+> entirely if you would rather stay cookie-free.
+
 ### 5. Run Migration (Optional)
 
 If you have existing hardcoded data, migrate it to the database:
