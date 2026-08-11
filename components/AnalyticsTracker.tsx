@@ -69,11 +69,37 @@ const clean = (value: string | null | undefined, max: number): string | undefine
 }
 
 /**
+ * True when the click is likely to tear the page down (an outbound link, a
+ * download, a different page, a form submit). Those batches must be sent
+ * immediately instead of waiting for the debounce, or the click is lost —
+ * this is exactly how "Download CV" used to go unrecorded.
+ */
+function leavesPage(el: HTMLElement, href?: string): boolean {
+  if (el.tagName.toLowerCase() !== 'a' || !href) {
+    return el.getAttribute('type') === 'submit'
+  }
+
+  const target = el.getAttribute('target')
+  if (target && target !== '_self') return false // opens elsewhere; this page survives
+  if (el.hasAttribute('download')) return true
+
+  try {
+    const url = new URL(href, window.location.href)
+    if (url.origin !== window.location.origin) return true
+    return url.pathname !== window.location.pathname // same-page #anchor stays
+  } catch {
+    return false
+  }
+}
+
+/**
  * Describes what was clicked, without ever reading what anyone typed.
  * For form fields only the placeholder/name is used — never `.value` — and
  * password fields are skipped entirely.
  */
-function describeClick(node: Element): Omit<TrackedEvent, 'kind' | 'path' | 'offset'> | null {
+function describeClick(
+  node: Element
+): (Omit<TrackedEvent, 'kind' | 'path' | 'offset'> & { exit: boolean }) | null {
   const el = (node.closest(
     'a, button, [role="button"], summary, input, textarea, select, label, [data-track]'
   ) || node) as HTMLElement
@@ -97,6 +123,7 @@ function describeClick(node: Element): Omit<TrackedEvent, 'kind' | 'path' | 'off
     label: label || tag,
     target: clean(`${tag}${id}${section && !id ? ` @${section}` : ''}`, 120),
     href: href ? clean(href, 300) : undefined,
+    exit: leavesPage(el, href),
   }
 }
 
@@ -186,9 +213,10 @@ export default function AnalyticsTracker() {
       const node = event.target as Element | null
       if (!node || node.nodeType !== 1 || !session.current || !isTrackablePath()) return
 
-      const described = describeClick(node)
-      if (!described) return
+      const info = describeClick(node)
+      if (!info) return
 
+      const { exit, ...described } = info
       queue.current.push({
         kind: 'click',
         path: lastPath.current || window.location.pathname,
@@ -196,7 +224,9 @@ export default function AnalyticsTracker() {
         ...described,
       })
 
-      if (queue.current.length >= FLUSH_AT) flush.current()
+      // A click that navigates away gets sent in the same tick; `keepalive`
+      // then carries it to completion even as the document is torn down.
+      if (exit || queue.current.length >= FLUSH_AT) flush.current()
       else scheduleFlush()
     }
 
