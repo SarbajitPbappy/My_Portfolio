@@ -194,6 +194,57 @@ export interface AnalyticsSummary {
   today_visitors: number
 }
 
+/** One recorded visit. Timestamps are UTC ISO strings; render them in Asia/Dhaka. */
+export interface VisitorSession {
+  session_id: string
+  started_at: string
+  last_seen_at: string
+  duration_seconds: number
+  entry_path: string | null
+  referrer: string | null
+  country: string | null
+  device: string | null
+  browser: string | null
+  os: string | null
+  screen: string | null
+  page_views: number
+  clicks: number
+}
+
+export interface VisitorEvent {
+  kind: 'pageview' | 'click'
+  path: string | null
+  label: string | null
+  target: string | null
+  href: string | null
+  occurred_at: string
+  offset_ms: number
+}
+
+export interface AnalyticsEngagement {
+  sessions: number
+  avg_duration_seconds: number
+  median_duration_seconds: number
+  avg_pages: number
+  total_clicks: number
+  bounce_rate: number
+}
+
+export interface AnalyticsClickRow {
+  label: string
+  href: string | null
+  clicks: number
+}
+
+export interface AnalyticsVisitors {
+  days: number
+  engagement: AnalyticsEngagement
+  sessions: VisitorSession[]
+  topClicks: AnalyticsClickRow[]
+  /** false when create_analytics_sessions.sql has not been run yet */
+  configured: boolean
+}
+
 export interface AnalyticsStats {
   days: number
   totals: { views: number; visitors: number }

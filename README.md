@@ -96,6 +96,25 @@ How the counting works:
 - Over a multi-day range, "visitors" is the sum of each day's unique visitors
   (the same convention Plausible and Fathom use).
 
+### 4c. Enable Per-Visit Detail (Sessions + Clicks)
+
+Run `create_analytics_sessions.sql` (after `create_analytics_table.sql`). This
+powers **/admin → Analytics → Visitors**:
+
+- when each visit started, shown in **Bangladesh time (UTC+6)**
+- how long the visitor stayed
+- every page they viewed and every element they clicked, in order
+- average time on site, pages per visit, bounce rate, and a "most clicked" list
+
+A visit is keyed by a random id in `sessionStorage` (not a cookie) and lasts as
+long as the browser tab. Duration is measured from the first to the last signal
+received, so a tab left open in the background reads longer than actual reading
+time. **Text typed into forms is never recorded** — only which element was
+clicked — and password fields are skipped entirely.
+
+Until this file is run, the Visitors tab shows a setup notice and the headline
+counters keep working normally.
+
 ### 5. Run Migration (Optional)
 
 If you have existing hardcoded data, migrate it to the database:

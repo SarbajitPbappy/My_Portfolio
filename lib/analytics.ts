@@ -1,9 +1,13 @@
 import { createClient } from '@supabase/supabase-js'
 import type {
   AnalyticsBreakdownRow,
+  AnalyticsClickRow,
   AnalyticsDailyPoint,
   AnalyticsStats,
   AnalyticsSummary,
+  AnalyticsVisitors,
+  VisitorEvent,
+  VisitorSession,
 } from './types'
 
 /**
@@ -71,6 +75,39 @@ export function deviceFromUserAgent(userAgent?: string | null): string {
   if (TABLET_UA.test(userAgent)) return 'tablet'
   if (MOBILE_UA.test(userAgent)) return 'mobile'
   return 'desktop'
+}
+
+// Coarse browser/OS names for the visit detail panel. Order matters: Edge and
+// Opera both claim "Chrome", and Chrome claims "Safari".
+const BROWSERS: Array<[RegExp, string]> = [
+  [/edg(?:e|ios|a)?\//i, 'Edge'],
+  [/opr\/|opera/i, 'Opera'],
+  [/samsungbrowser/i, 'Samsung Internet'],
+  [/firefox|fxios/i, 'Firefox'],
+  [/chrome|crios/i, 'Chrome'],
+  [/safari/i, 'Safari'],
+]
+
+const OSES: Array<[RegExp, string]> = [
+  [/windows nt 10|windows nt 11/i, 'Windows'],
+  [/windows/i, 'Windows'],
+  [/iphone|ipad|ipod/i, 'iOS'],
+  [/mac os x|macintosh/i, 'macOS'],
+  [/android/i, 'Android'],
+  [/linux/i, 'Linux'],
+]
+
+function matchFirst(pairs: Array<[RegExp, string]>, ua: string): string | null {
+  for (const [pattern, name] of pairs) if (pattern.test(ua)) return name
+  return null
+}
+
+export function browserFromUserAgent(userAgent?: string | null): string | null {
+  return userAgent ? matchFirst(BROWSERS, userAgent) : null
+}
+
+export function osFromUserAgent(userAgent?: string | null): string | null {
+  return userAgent ? matchFirst(OSES, userAgent) : null
 }
 
 /** First hop from the CDN/proxy chain. Used for hashing only — never stored. */
@@ -279,4 +316,194 @@ export async function getAnalyticsStats(days: number): Promise<AnalyticsStats> {
     countries: toRows(countries.data),
     configured: true,
   }
+}
+
+// --- Sessions & click tracking ----------------------------------------------
+
+const MAX_EVENTS_PER_BATCH = 50
+const SESSION_ID_RE = /^[A-Za-z0-9_-]{8,64}$/
+
+export interface IngestEvent {
+  kind: 'pageview' | 'click'
+  path?: string | null
+  label?: string | null
+  target?: string | null
+  href?: string | null
+  offset?: number
+}
+
+export interface IngestInput {
+  session_id: string
+  visitor_hash: string
+  path: string | null
+  referrer: string | null
+  country: string | null
+  device: string
+  browser: string | null
+  os: string | null
+  screen: string | null
+  events: IngestEvent[]
+}
+
+export function isValidSessionId(value: unknown): value is string {
+  return typeof value === 'string' && SESSION_ID_RE.test(value)
+}
+
+const clip = (value: unknown, max: number): string | null => {
+  if (typeof value !== 'string') return null
+  const trimmed = value.replace(/\s+/g, ' ').trim()
+  return trimmed ? trimmed.slice(0, max) : null
+}
+
+/**
+ * Sanitizes a client-supplied event batch. Everything here arrives from the
+ * visitor's browser, so lengths are clipped, unknown kinds are dropped and the
+ * batch is capped — the DB never sees raw client strings.
+ */
+export function normalizeEvents(raw: unknown): IngestEvent[] {
+  if (!Array.isArray(raw)) return []
+
+  const events: IngestEvent[] = []
+  for (const item of raw.slice(0, MAX_EVENTS_PER_BATCH)) {
+    const kind = (item as any)?.kind
+    if (kind !== 'pageview' && kind !== 'click') continue
+
+    const offset = Number((item as any)?.offset)
+    events.push({
+      kind,
+      // A pageview's path must survive normalizePath; a click just rides along
+      // with whatever page it happened on.
+      path: normalizePath((item as any)?.path) ?? clip((item as any)?.path, 200),
+      label: clip((item as any)?.label, 120),
+      target: clip((item as any)?.target, 120),
+      href: clip((item as any)?.href, 300),
+      offset: Number.isFinite(offset) && offset >= 0 ? Math.min(Math.trunc(offset), 86_400_000) : 0,
+    })
+  }
+  return events
+}
+
+/** Writes one batch. Returns false if storage is unavailable or the SQL is missing. */
+export async function ingestAnalyticsBatch(input: IngestInput): Promise<boolean> {
+  if (!supabaseConfigured()) return false
+
+  const { error } = await analyticsDb.rpc('analytics_ingest', { p_payload: input })
+  if (!error) return true
+
+  console.error('Analytics ingest failed:', error.message)
+
+  // The tracker posts only here, so a missing analytics_ingest would silently
+  // stop the visitor counters that already work. Fall back to writing pageviews
+  // straight to page_views: session detail is lost until
+  // create_analytics_sessions.sql is run, the headline numbers are not.
+  for (const event of input.events) {
+    if (event.kind === 'pageview' && event.path) {
+      await recordPageView({
+        path: event.path,
+        referrer: input.referrer,
+        visitor_hash: input.visitor_hash,
+        country: input.country,
+        device: input.device,
+      })
+    }
+  }
+  return false
+}
+
+const EMPTY_VISITORS: AnalyticsVisitors = {
+  days: 7,
+  engagement: {
+    sessions: 0,
+    avg_duration_seconds: 0,
+    median_duration_seconds: 0,
+    avg_pages: 0,
+    total_clicks: 0,
+    bounce_rate: 0,
+  },
+  sessions: [],
+  topClicks: [],
+  configured: false,
+}
+
+/** Recent visits + engagement summary + what people clicked, for the admin panel. */
+export async function getAnalyticsVisitors(days: number, limit = 50): Promise<AnalyticsVisitors> {
+  const window = Math.min(Math.max(Math.trunc(days) || 7, 1), 365)
+  const rows = Math.min(Math.max(Math.trunc(limit) || 50, 1), 200)
+
+  if (!supabaseConfigured()) return { ...EMPTY_VISITORS, days: window }
+
+  const [sessions, engagement, clicks] = await Promise.all([
+    analyticsDb.rpc('analytics_sessions', { p_days: window, p_limit: rows }),
+    analyticsDb.rpc('analytics_engagement', { p_days: window }),
+    analyticsDb.rpc('analytics_top_clicks', { p_days: window, p_limit: 10 }),
+  ])
+
+  if (sessions.error) {
+    console.error('Analytics sessions failed:', sessions.error.message)
+    return { ...EMPTY_VISITORS, days: window }
+  }
+
+  const engagementRow: any = Array.isArray(engagement.data) ? engagement.data[0] : engagement.data
+
+  return {
+    days: window,
+    engagement: {
+      sessions: toNumber(engagementRow?.sessions),
+      avg_duration_seconds: toNumber(engagementRow?.avg_duration_seconds),
+      median_duration_seconds: toNumber(engagementRow?.median_duration_seconds),
+      avg_pages: toNumber(engagementRow?.avg_pages),
+      total_clicks: toNumber(engagementRow?.total_clicks),
+      bounce_rate: toNumber(engagementRow?.bounce_rate),
+    },
+    sessions: (Array.isArray(sessions.data) ? sessions.data : []).map(
+      (row: any): VisitorSession => ({
+        session_id: String(row?.session_id ?? ''),
+        started_at: String(row?.started_at ?? ''),
+        last_seen_at: String(row?.last_seen_at ?? ''),
+        duration_seconds: toNumber(row?.duration_seconds),
+        entry_path: row?.entry_path ?? null,
+        referrer: row?.referrer ?? null,
+        country: row?.country ?? null,
+        device: row?.device ?? null,
+        browser: row?.browser ?? null,
+        os: row?.os ?? null,
+        screen: row?.screen ?? null,
+        page_views: toNumber(row?.page_views),
+        clicks: toNumber(row?.clicks),
+      })
+    ),
+    topClicks: (Array.isArray(clicks.data) ? clicks.data : []).map(
+      (row: any): AnalyticsClickRow => ({
+        label: String(row?.label ?? 'Unlabelled'),
+        href: row?.href ?? null,
+        clicks: toNumber(row?.clicks),
+      })
+    ),
+    configured: true,
+  }
+}
+
+/** Full click/page timeline for a single visit. */
+export async function getSessionEvents(sessionId: string): Promise<VisitorEvent[]> {
+  if (!supabaseConfigured() || !isValidSessionId(sessionId)) return []
+
+  const { data, error } = await analyticsDb.rpc('analytics_session_events', {
+    p_session_id: sessionId,
+  })
+  if (error) {
+    console.error('Analytics session events failed:', error.message)
+    return []
+  }
+
+  return (Array.isArray(data) ? data : []).map(
+    (row: any): VisitorEvent => ({
+      kind: row?.kind === 'click' ? 'click' : 'pageview',
+      path: row?.path ?? null,
+      label: row?.label ?? null,
+      target: row?.target ?? null,
+      href: row?.href ?? null,
+      occurred_at: String(row?.occurred_at ?? ''),
+      offset_ms: toNumber(row?.offset_ms),
+    })
+  )
 }

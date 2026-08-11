@@ -15,6 +15,7 @@ import {
   Users,
 } from 'lucide-react'
 import type { AnalyticsBreakdownRow, AnalyticsStats } from '@/lib/types'
+import VisitorsPanel from './VisitorsPanel'
 
 /**
  * Visitor analytics dashboard.
@@ -256,6 +257,8 @@ function BreakdownCard({
 // --- dashboard --------------------------------------------------------------
 
 export default function AnalyticsManager() {
+  const [view, setView] = useState<'overview' | 'visitors'>('overview')
+  const [refreshKey, setRefreshKey] = useState(0)
   const [days, setDays] = useState(30)
   const [stats, setStats] = useState<AnalyticsStats | null>(null)
   const [loading, setLoading] = useState(true)
@@ -346,6 +349,31 @@ export default function AnalyticsManager() {
             daily-rotating hash, so a visitor is counted once per day and cannot be tracked
             across days.
           </p>
+
+          <div
+            className="mt-4 flex rounded-lg border border-gray-200 dark:border-gray-700 overflow-hidden w-fit"
+            role="group"
+            aria-label="Analytics view"
+          >
+            {([
+              ['overview', 'Overview'],
+              ['visitors', 'Visitors'],
+            ] as const).map(([id, label]) => (
+              <button
+                key={id}
+                type="button"
+                onClick={() => setView(id)}
+                aria-pressed={view === id}
+                className={`px-4 py-2 text-sm font-medium transition-colors ${
+                  view === id
+                    ? 'bg-primary-600 text-white'
+                    : 'bg-white dark:bg-gray-800 text-gray-600 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-700'
+                }`}
+              >
+                {label}
+              </button>
+            ))}
+          </div>
         </div>
 
         {/* One filter row, above everything it scopes. */}
@@ -373,7 +401,10 @@ export default function AnalyticsManager() {
           </div>
           <button
             type="button"
-            onClick={() => fetchStats(days)}
+            onClick={() => {
+              fetchStats(days)
+              setRefreshKey((key) => key + 1)
+            }}
             className="p-2 rounded-lg border border-gray-200 dark:border-gray-700 text-gray-600 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors"
             aria-label="Refresh analytics"
             title="Refresh"
@@ -383,6 +414,10 @@ export default function AnalyticsManager() {
         </div>
       </div>
 
+      {view === 'visitors' ? (
+        <VisitorsPanel days={days} refreshKey={refreshKey} />
+      ) : (
+        <>
       {error && (
         <div className="rounded-xl border border-red-200 bg-red-50 px-4 py-3 text-sm text-red-700">
           {error}
@@ -699,6 +734,8 @@ export default function AnalyticsManager() {
           visitors.
         </p>
       </div>
+        </>
+      )}
     </div>
   )
 }
