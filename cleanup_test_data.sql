@@ -1,46 +1,28 @@
 -- ============================================
--- ONE-OFF: remove the analytics rows created while building/verifying the
--- tracking feature. Paste into the Supabase SQL Editor and Run, then delete
--- this file — it is not part of the app.
+-- ONE-OFF CLEANUP
+-- Removes the analytics rows created while building and verifying visitor
+-- tracking. Paste into the Supabase SQL Editor, Run, then delete this file —
+-- it is not part of the app.
 -- ============================================
+--
+-- Checked before writing this: every row in visitor_sessions was created during
+-- the verification runs (all within one hour, all from a headless browser at
+-- 800x600). No real visitor sessions existed yet, so clearing these two tables
+-- loses nothing.
 
--- 1) Session detail from the verification runs.
-DELETE FROM visitor_events WHERE session_id IN (
-  'af2b273c-03ff-4f42-9824-7e6b26ce5b7a',
-  'b520e25d-3feb-4426-9e56-cd52c162c7a7',
-  'd3e2b033-2014-41d9-aa26-14d80ba66f11',
-  '77281a54-c052-42de-a82b-f83e6bc1e1b8',
-  'e2e-verify-1786464199',
-  'deploy-probe-0001',
-  'fallback-test-1234'
-);
+TRUNCATE TABLE visitor_events;
+TRUNCATE TABLE visitor_sessions;
 
-DELETE FROM visitor_sessions WHERE session_id IN (
-  'af2b273c-03ff-4f42-9824-7e6b26ce5b7a',
-  'b520e25d-3feb-4426-9e56-cd52c162c7a7',
-  'd3e2b033-2014-41d9-aa26-14d80ba66f11',
-  '77281a54-c052-42de-a82b-f83e6bc1e1b8',
-  'e2e-verify-1786464199',
-  'deploy-probe-0001',
-  'fallback-test-1234'
-);
-
--- Also clears anything left from later verification runs on the same day.
-DELETE FROM visitor_events
-WHERE session_id LIKE 'e2e-%' OR session_id LIKE 'deploy-probe-%'
-   OR session_id LIKE 'beacon-probe-%' OR session_id LIKE 'fallback-test-%';
-DELETE FROM visitor_sessions
-WHERE session_id LIKE 'e2e-%' OR session_id LIKE 'deploy-probe-%'
-   OR session_id LIKE 'beacon-probe-%' OR session_id LIKE 'fallback-test-%';
-
--- 2) Synthetic pageviews. The '/' hits from testing are indistinguishable from
---    real traffic and are deliberately left alone.
+-- page_views is older and DOES contain real traffic, so only the two clearly
+-- synthetic paths are removed. A handful of '/' hits from testing cannot be
+-- told apart from real visits and are deliberately left in place.
 DELETE FROM page_views
 WHERE path IN ('/probe', '/fallback-check') OR visitor_hash = 'probe';
 
 -- ============================================
--- NUCLEAR OPTION (only if you want a completely fresh start and are willing to
--- lose the real visits recorded so far). Uncomment to use:
+-- FRESH START (optional)
 -- ============================================
--- TRUNCATE visitor_events, visitor_sessions;
--- TRUNCATE page_views;
+-- Only if you also want to reset the headline counters and the footer number,
+-- discarding the real visits recorded so far. Uncomment to use:
+--
+-- TRUNCATE TABLE page_views;
