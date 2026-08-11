@@ -19,6 +19,10 @@ const START_KEY = 'pf_start'
 // beacon never arrives.
 const HEARTBEAT_MS = 30_000
 const FLUSH_AT = 12
+// Clicks are sent a couple of seconds after they happen rather than waiting for
+// the heartbeat, so a visitor who clicks and immediately leaves is still
+// recorded even if the unload request is dropped.
+const CLICK_FLUSH_MS = 2_500
 
 type TrackedEvent = {
   kind: 'pageview' | 'click'
@@ -110,9 +114,10 @@ export default function AnalyticsTracker() {
   const session = useRef<{ id: string; start: number } | null>(null)
   const lastPath = useRef<string | null>(null)
   const enabled = useRef(false)
+  const pendingFlush = useRef<number | null>(null)
 
   // Stable across renders: the click listener and timers are attached once.
-  const flush = useRef<(useBeacon?: boolean) => void>(() => {})
+  const flush = useRef<() => void>(() => {})
 
   useEffect(() => {
     if (!COUNT_LOCALHOST && LOCAL_HOSTS.has(window.location.hostname)) return
@@ -125,8 +130,25 @@ export default function AnalyticsTracker() {
     session.current = current
     enabled.current = true
 
-    flush.current = (useBeacon = false) => {
+    // Last resort only. sendBeacon reports success by returning true even when
+    // the request is silently dropped, so it can't be trusted as the primary
+    // path — it is here for browsers without fetch keepalive (Firefox < 121).
+    const beacon = (payload: string) => {
+      try {
+        const blob = new Blob([payload], { type: 'application/json' })
+        navigator.sendBeacon?.(ENDPOINT, blob)
+      } catch {
+        // Analytics must never surface an error to a visitor.
+      }
+    }
+
+    flush.current = () => {
+      if (pendingFlush.current !== null) {
+        window.clearTimeout(pendingFlush.current)
+        pendingFlush.current = null
+      }
       if (!session.current || !isTrackablePath()) return
+
       const events = queue.current
       queue.current = []
 
@@ -138,23 +160,26 @@ export default function AnalyticsTracker() {
         events,
       })
 
-      if (useBeacon) {
-        try {
-          const blob = new Blob([payload], { type: 'application/json' })
-          if (navigator.sendBeacon(ENDPOINT, blob)) return
-        } catch {
-          // fall through to fetch
-        }
+      // `keepalive` lets the request outlive the page the same way a beacon
+      // does, but it actually reports failure, so a fallback is possible.
+      try {
+        fetch(ENDPOINT, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: payload,
+          keepalive: true,
+        }).catch(() => beacon(payload))
+      } catch {
+        beacon(payload)
       }
+    }
 
-      fetch(ENDPOINT, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: payload,
-        keepalive: true,
-      }).catch(() => {
-        // Analytics must never surface an error to a visitor.
-      })
+    const scheduleFlush = () => {
+      if (pendingFlush.current !== null) return
+      pendingFlush.current = window.setTimeout(() => {
+        pendingFlush.current = null
+        flush.current()
+      }, CLICK_FLUSH_MS)
     }
 
     const onClick = (event: MouseEvent) => {
@@ -172,6 +197,7 @@ export default function AnalyticsTracker() {
       })
 
       if (queue.current.length >= FLUSH_AT) flush.current()
+      else scheduleFlush()
     }
 
     // Capture phase so a handler calling stopPropagation cannot hide the click.
@@ -182,9 +208,9 @@ export default function AnalyticsTracker() {
     }, HEARTBEAT_MS)
 
     const onHide = () => {
-      if (document.visibilityState === 'hidden') flush.current(true)
+      if (document.visibilityState === 'hidden') flush.current()
     }
-    const onPageHide = () => flush.current(true)
+    const onPageHide = () => flush.current()
 
     document.addEventListener('visibilitychange', onHide)
     window.addEventListener('pagehide', onPageHide)
@@ -194,7 +220,7 @@ export default function AnalyticsTracker() {
       document.removeEventListener('visibilitychange', onHide)
       window.removeEventListener('pagehide', onPageHide)
       window.clearInterval(heartbeat)
-      flush.current(true)
+      flush.current()
     }
   }, [])
 
