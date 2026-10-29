@@ -2,9 +2,7 @@
 
 import { createContext, useContext, useEffect, useRef, useState } from 'react'
 import { MotionConfig } from 'framer-motion'
-import type { Theme, Settings } from '@/lib/types'
-
-const VALID_THEMES: Theme[] = ['minimal', 'modern', 'aesthetic', 'professional', 'academic', 'neural', 'creative']
+import { isTheme, type Theme, type Settings } from '@/lib/types'
 
 // Theme metadata for UI display
 export const themeOptions: { value: Theme; label: string; description: string; icon: string }[] = [
@@ -15,6 +13,8 @@ export const themeOptions: { value: Theme; label: string; description: string; i
   { value: 'academic', label: 'Academic', description: 'Scholarly & research', icon: '◈' },
   { value: 'neural', label: 'Neural', description: 'Deep-tech neural network', icon: '⬡' },
   { value: 'creative', label: 'Creative', description: 'Bold & mind-blowing', icon: '✺' },
+  { value: 'latent', label: 'Latent Space', description: 'Immersive 3D particle universe', icon: '◉' },
+  { value: 'multiverse', label: 'Multiverse', description: '3D glass prism, one ray per section', icon: '⬢' },
 ]
 
 interface ThemeContextType {
@@ -32,10 +32,19 @@ interface ThemeContextType {
 
 const ThemeContext = createContext<ThemeContextType | undefined>(undefined)
 
-export function ThemeProvider({ children }: { children: React.ReactNode }) {
-  // Initialize with default values (no localStorage access during SSR)
-  const [darkMode, setDarkMode] = useState(false)
-  const [theme, setThemeState] = useState<Theme>('modern')
+export function ThemeProvider({
+  children,
+  initialTheme = 'modern',
+  initialDark = false,
+}: {
+  children: React.ReactNode
+  // The admin's saved appearance, read on the server so the first paint (and
+  // theme-specific layouts like Multiverse) match instead of swapping in later.
+  initialTheme?: Theme
+  initialDark?: boolean
+}) {
+  const [darkMode, setDarkMode] = useState(initialDark)
+  const [theme, setThemeState] = useState<Theme>(initialTheme)
   const [settings, setSettings] = useState<Settings | null>(null)
   const [loading, setLoading] = useState(true)
   const [mounted, setMounted] = useState(false)
@@ -69,7 +78,7 @@ export function ThemeProvider({ children }: { children: React.ReactNode }) {
     let previewing = false
     if (typeof window !== 'undefined') {
       const pt = localStorage.getItem('previewTheme') as Theme | null
-      if (pt && VALID_THEMES.includes(pt)) {
+      if (isTheme(pt)) {
         previewing = true
         previewingRef.current = true
         const pd = localStorage.getItem('previewDark') === 'true'
@@ -298,9 +307,9 @@ export function ThemeProvider({ children }: { children: React.ReactNode }) {
   // Always provide context, even during loading
   // Use mounted state to prevent hydration mismatch
   if (!mounted) {
-    // Return default values during SSR to match initial client render
+    // SSR and the first client render both use the server-provided appearance
     return (
-      <ThemeContext.Provider value={{ ...ctxValue, darkMode: false, theme: 'modern', settings: null, previewActive: false }}>
+      <ThemeContext.Provider value={{ ...ctxValue, darkMode: initialDark, theme: initialTheme, settings: null, previewActive: false }}>
         <MotionConfig reducedMotion="user">{children}</MotionConfig>
       </ThemeContext.Provider>
     )

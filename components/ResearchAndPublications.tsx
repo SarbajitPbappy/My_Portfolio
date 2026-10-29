@@ -2,10 +2,17 @@
 
 import { useEffect, useState } from 'react'
 import { motion } from 'framer-motion'
-import { ExternalLink, CheckCircle, Clock, FileText, Sparkles } from 'lucide-react'
+import { ExternalLink, FileText } from 'lucide-react'
 import type { ResearchArea, Publication } from '@/lib/types'
 import { iconMap } from '@/lib/icons'
+import { publicationStatus } from '@/lib/publicationStatus'
+import AuthorList from '@/components/AuthorList'
 import { staggerContainer, staggerItem, viewportOnce, springSnappy } from '@/lib/motion'
+import dynamic from 'next/dynamic'
+import { useTheme } from '@/components/ThemeProvider'
+
+// 3D variant for the Multiverse theme, split out so other themes never load it.
+const ResearchMV = dynamic(() => import('@/components/multiverse/ResearchMV'))
 
 const fadeIn = {
   initial: { opacity: 0, y: 14 },
@@ -125,6 +132,7 @@ export default function ResearchAndPublications({
   initialPublications?: Publication[]
 } = {}) {
   const seeded = initialResearchAreas !== undefined || initialPublications !== undefined
+  const { theme } = useTheme()
   const [researchAreas, setResearchAreas] = useState<ResearchArea[]>(
     initialResearchAreas !== undefined
       ? initialResearchAreas.length > 0
@@ -180,6 +188,8 @@ export default function ResearchAndPublications({
       </section>
     )
   }
+
+  if (theme === 'multiverse') return <ResearchMV areas={researchAreas} publications={publications} />
   return (
     <section id="research" className="section-container relative overflow-hidden">
       <div className="absolute inset-0 overflow-hidden pointer-events-none">
@@ -234,7 +244,7 @@ export default function ResearchAndPublications({
           ))}
         </motion.div>
 
-        <div className="space-y-4">
+        <div id="publications" className="space-y-4 scroll-mt-24">
           <motion.div {...fadeIn} className="text-center">
             <h3 className="text-3xl font-bold text-theme-text mb-2">Selected Publications</h3>
             <p className="text-theme-text-muted">Recent publications and manuscripts in progress</p>
@@ -251,69 +261,45 @@ export default function ResearchAndPublications({
               <motion.div
                 key={pub.title}
                 variants={staggerItem}
-                whileHover={{ x: 6 }}
                 transition={springSnappy}
-                className="bg-theme-surface border border-theme-border rounded-2xl p-6 shadow-sm hover:shadow-xl transition-shadow"
+                className="bg-theme-surface border border-theme-border rounded-2xl p-5 sm:p-6 shadow-sm hover:shadow-lg transition-shadow"
               >
                 <div className="flex items-start gap-4">
-                  <div className={`w-10 h-10 rounded-xl bg-gradient-to-br ${pub.gradient} flex items-center justify-center text-white`}>
+                  <div className={`hidden sm:flex w-10 h-10 shrink-0 rounded-xl bg-gradient-to-br ${pub.gradient} items-center justify-center text-white`}>
                     <FileText className="w-5 h-5" />
                   </div>
-                  <div className="flex-1 space-y-2">
-                    <h4 className="text-lg font-semibold text-theme-text leading-snug">{pub.title}</h4>
-                    <p className="text-sm text-theme-text-muted">{pub.authors}</p>
-                    <div className="flex flex-wrap gap-2 text-sm">
-                      <span className="px-3 py-1 bg-theme-surface-elevated text-theme-text-muted rounded-lg font-medium">{pub.type}</span>
-                      {pub.journal && <span className="text-theme-primary font-semibold">{pub.journal}</span>}
-                      {pub.year && <span className="text-theme-text-muted">({pub.year})</span>}
-                      {pub.doi && <span className="px-3 py-1 bg-theme-primary/10 text-theme-primary rounded-lg font-medium">DOI: {pub.doi}</span>}
-                      {pub.volume && <span className="text-theme-text-muted">{pub.volume}</span>}
-                    </div>
-                    <div className="flex items-center gap-3 text-xs font-semibold">
+                  <div className="min-w-0 flex-1 space-y-2">
+                    <h4 className="text-lg font-semibold text-theme-text leading-snug">{pub.title.trim()}</h4>
+                    <p className="text-sm text-theme-text-muted leading-relaxed">
+                      <AuthorList authors={pub.authors} />
+                    </p>
+                    <p className="text-sm text-theme-text-muted">
+                      {pub.journal && <em className="font-medium text-theme-primary">{pub.journal.trim()}</em>}
+                      {pub.volume && <span>, {pub.volume}</span>}
+                      {pub.year && <span> ({pub.year})</span>}
+                    </p>
+                    <div className="flex flex-wrap items-center gap-2 pt-1 text-xs font-semibold">
                       {(() => {
-                        const status = pub.status?.trim() || ''
-                        if (status === 'Published') {
-                          return (
-                            <span className="inline-flex items-center gap-1 px-3 py-1 rounded-full bg-green-100 text-green-700">
-                              <CheckCircle className="w-3.5 h-3.5" /> Published
-                            </span>
-                          )
-                        }
-                        if (status === 'Major Revision') {
-                          return (
-                            <span className="inline-flex items-center gap-1 px-3 py-1 rounded-full bg-amber-100 text-amber-800">
-                              <Clock className="w-3.5 h-3.5" /> Major Revision
-                            </span>
-                          )
-                        }
-                        if (status === 'Published (Abstract)') {
-                          return (
-                            <span className="inline-flex items-center gap-1 px-3 py-1 rounded-full bg-blue-100 text-blue-800">
-                              <Sparkles className="w-3.5 h-3.5" /> Abstract
-                            </span>
-                          )
-                        }
-                        if (status === 'Under Review') {
-                          return (
-                            <span className="inline-flex items-center gap-1 px-3 py-1 rounded-full bg-purple-100 text-purple-800">
-                              <Clock className="w-3.5 h-3.5" /> Under Review
-                            </span>
-                          )
-                        }
-                        if (status === 'Draft') {
-                          return (
-                            <span className="inline-flex items-center gap-1 px-3 py-1 rounded-full bg-theme-surface-elevated text-theme-text">
-                              <FileText className="w-3.5 h-3.5" /> Draft
-                            </span>
-                          )
-                        }
-                        // Fallback for any other status
+                        const { label, className, Icon } = publicationStatus(pub.status)
                         return (
-                          <span className="inline-flex items-center gap-1 px-3 py-1 rounded-full bg-theme-surface-elevated text-theme-text">
-                            <FileText className="w-3.5 h-3.5" /> {status || 'Unknown'}
+                          <span className={`inline-flex items-center gap-1 px-2.5 py-1 rounded-full ${className}`}>
+                            <Icon className="w-3.5 h-3.5" /> {label}
                           </span>
                         )
                       })()}
+                      {pub.type && (
+                        <span className="px-2.5 py-1 rounded-full border border-theme-border font-medium text-theme-text-muted">{pub.type}</span>
+                      )}
+                      {pub.doi && /^10\./.test(pub.doi.trim()) && (
+                        <a
+                          href={`https://doi.org/${pub.doi.trim()}`}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          className="px-2.5 py-1 rounded-full bg-theme-primary/10 text-theme-primary hover:bg-theme-primary/20 transition-colors break-all"
+                        >
+                          DOI {pub.doi.trim()}
+                        </a>
+                      )}
                     </div>
                   </div>
                   {pub.link && pub.link !== '#' && (

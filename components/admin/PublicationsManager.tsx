@@ -181,6 +181,7 @@ export default function PublicationsManager() {
                   className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-transparent"
                 >
                   <option value="Published">Published</option>
+                  <option value="Minor Revision">Minor Revision</option>
                   <option value="Major Revision">Major Revision</option>
                   <option value="Published (Abstract)">Published (Abstract)</option>
                   <option value="Under Review">Under Review</option>

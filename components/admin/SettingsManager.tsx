@@ -1,7 +1,7 @@
 'use client'
 
 import { useEffect, useState } from 'react'
-import { Save, Moon, Sun, Palette, Sparkles, Briefcase, GraduationCap, Minimize2, Network, Zap } from 'lucide-react'
+import { Save, Moon, Sun, Palette, Sparkles, Briefcase, GraduationCap, Minimize2, Network, Zap, Orbit, Box } from 'lucide-react'
 import { useTheme, themeOptions } from '@/components/ThemeProvider'
 import type { Settings, Theme } from '@/lib/types'
 
@@ -14,6 +14,8 @@ const themeIcons: Record<Theme, React.ReactNode> = {
   academic: <GraduationCap className="w-5 h-5" />,
   neural: <Network className="w-5 h-5" />,
   creative: <Zap className="w-5 h-5" />,
+  latent: <Orbit className="w-5 h-5" />,
+  multiverse: <Box className="w-5 h-5" />,
 }
 
 // Extended theme descriptions
@@ -46,6 +48,14 @@ const themeDescriptions: Record<Theme, { tagline: string; features: string[] }> 
     tagline: 'Bold, expressive, mind-blowing — animated aurora + glass',
     features: ['Aurora background', 'Fuchsia gradients', 'Oversized type', 'Grain texture'],
   },
+  latent: {
+    tagline: 'Immersive WebGL universe — particles morph into a new 3D sculpture for every section',
+    features: ['Live 3D (three.js)', 'Scroll-morphing shapes', 'Cursor & click physics', 'Best in dark mode'],
+  },
+  multiverse: {
+    tagline: 'A real-time glass prism splits one beam into a ray per section; the camera flies down the spectrum as you scroll',
+    features: ['WebGL glass + bloom', 'Scroll camera flight', 'Spectral section colours', 'Always dark'],
+  },
 }
 
 // Color previews for each theme
@@ -77,6 +87,14 @@ const themeColors: Record<Theme, { light: string[]; dark: string[] }> = {
   creative: {
     light: ['#d946ef', '#f59e0b', '#6366f1'],
     dark: ['#e879f9', '#fbbf24', '#818cf8'],
+  },
+  latent: {
+    light: ['#7c3aed', '#0891b2', '#f4f3fb'],
+    dark: ['#8b5cf6', '#22d3ee', '#04050e'],
+  },
+  multiverse: {
+    light: ['#a78bfa', '#22d3ee', '#fb923c'],
+    dark: ['#a78bfa', '#22d3ee', '#fb923c'],
   },
 }
 

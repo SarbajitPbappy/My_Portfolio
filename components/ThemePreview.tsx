@@ -15,6 +15,8 @@ const swatches: Record<Theme, string[]> = {
   academic: ['#7f1d1d', '#b45309', '#d6d3d1'],
   neural: ['#22d3ee', '#10b981', '#0f172a'],
   creative: ['#d946ef', '#f59e0b', '#6366f1'],
+  latent: ['#8b5cf6', '#22d3ee', '#04050e'],
+  multiverse: ['#a78bfa', '#22d3ee', '#fb923c'],
 }
 
 /**

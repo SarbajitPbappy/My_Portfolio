@@ -1,6 +1,10 @@
 import type { Metadata } from 'next'
+import { GeistSans } from 'geist/font/sans'
+import { GeistMono } from 'geist/font/mono'
 import './globals.css'
 import { siteConfig, SITE_URL } from '@/lib/site'
+import { getSettings } from '@/lib/db'
+import { isTheme } from '@/lib/types'
 import Navbar from '@/components/Navbar'
 import Footer from '@/components/Footer'
 import { ThemeProvider } from '@/components/ThemeProvider'
@@ -59,15 +63,32 @@ export const metadata: Metadata = {
   category: 'technology',
 }
 
-export default function RootLayout({
+// The saved appearance, so the server renders the admin's theme from the first
+// byte (no flash of the default theme, no late layout swap for Multiverse).
+async function getAppearance() {
+  try {
+    const settings = await getSettings()
+    return { theme: isTheme(settings?.theme) ? settings.theme : 'modern', dark: Boolean(settings?.dark_mode) } as const
+  } catch {
+    return { theme: 'modern', dark: false } as const
+  }
+}
+
+export default async function RootLayout({
   children,
 }: {
   children: React.ReactNode
 }) {
+  const { theme, dark } = await getAppearance()
   return (
-    <html lang="en" suppressHydrationWarning>
+    <html
+      lang="en"
+      data-theme={theme}
+      className={`${GeistSans.variable} ${GeistMono.variable}${dark ? ' dark' : ''}`}
+      suppressHydrationWarning
+    >
       <body>
-        <ThemeProvider>
+        <ThemeProvider initialTheme={theme} initialDark={dark}>
           <ThemeBackground />
           <ScrollProgress />
           <Navbar />

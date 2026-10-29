@@ -18,7 +18,7 @@ export interface Publication {
   id?: number
   title: string
   authors: string
-  status: 'Published' | 'Major Revision' | 'Published (Abstract)' | 'Under Review' | 'Draft'
+  status: 'Published' | 'Accepted' | 'Minor Revision' | 'Major Revision' | 'Published (Abstract)' | 'Under Review' | 'Submitted' | 'Draft'
   journal?: string
   year: string
   doi?: string
@@ -162,7 +162,9 @@ export interface Skill {
   updated_at?: string
 }
 
-export type Theme = 'minimal' | 'modern' | 'aesthetic' | 'professional' | 'academic' | 'neural' | 'creative'
+export const THEMES = ['minimal', 'modern', 'aesthetic', 'professional', 'academic', 'neural', 'creative', 'latent', 'multiverse'] as const
+export type Theme = (typeof THEMES)[number]
+export const isTheme = (v: unknown): v is Theme => typeof v === 'string' && (THEMES as readonly string[]).includes(v)
 
 export interface Settings {
   id?: number

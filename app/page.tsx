@@ -61,8 +61,8 @@ export default async function Home() {
   return (
     <div className="min-h-screen">
       <StructuredData hero={settled(hero) ?? null} publications={publicationsData ?? []} />
-      <Hero initialData={settled(hero) ?? null} />
-      <About initialData={settled(about) ?? null} />
+      <Hero initialData={settled(hero) ?? null} publications={publicationsData} />
+      <About initialData={settled(about) ?? null} profileImageUrl={settled(hero)?.profile_image_url} />
       <Education
         initialEducation={settled(education)}
         initialCourses={settled(courses)}

@@ -2,11 +2,16 @@
 
 import { useEffect, useState } from 'react'
 import { motion } from 'framer-motion'
-import { Download, Github, Linkedin, Mail, Phone, ArrowDown, Sparkles, GraduationCap, Globe } from 'lucide-react'
+import { Download, Github, Linkedin, Mail, Phone, GraduationCap, Globe } from 'lucide-react'
 import Link from 'next/link'
 import Image from 'next/image'
-import type { Hero } from '@/lib/types'
+import type { Hero, Publication } from '@/lib/types'
 import Magnetic from '@/components/motion/Magnetic'
+import dynamic from 'next/dynamic'
+import { useTheme } from '@/components/ThemeProvider'
+
+// 3D variant for the Multiverse theme, split out so other themes never load it.
+const HeroMV = dynamic(() => import('@/components/multiverse/HeroMV'))
 
 const fadeIn = {
   initial: { opacity: 0, y: 16 },
@@ -31,10 +36,18 @@ const fallbackHero: Hero = {
   order: 0,
 }
 
-export default function Hero({ initialData }: { initialData?: Hero | null } = {}) {
+export default function Hero({
+  initialData,
+  publications,
+}: {
+  initialData?: Hero | null
+  // only the Multiverse hero uses these, for its publication stats
+  publications?: Publication[]
+} = {}) {
   // Seeded from the server (SSR) when `initialData` is provided (even if null →
   // fallback). Only fetches on the client when rendered without a seed.
   const seeded = initialData !== undefined
+  const { theme } = useTheme()
   const [hero, setHero] = useState<Hero | null>(seeded ? initialData ?? null : null)
   const [loading, setLoading] = useState(!seeded)
 
@@ -74,6 +87,7 @@ export default function Hero({ initialData }: { initialData?: Hero | null } = {}
   }
 
   const heroData = hero || fallbackHero
+  if (theme === 'multiverse') return <HeroMV hero={heroData} publications={publications ?? []} />
   return (
     <section id="home" className="min-h-[80vh] flex items-center justify-center pt-16 relative overflow-hidden">
       {/* Animated background elements */}
@@ -189,59 +203,48 @@ export default function Hero({ initialData }: { initialData?: Hero | null } = {}
               initial={{ opacity: 0, y: 22 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.55, ease: [0.22, 1, 0.36, 1], delay: 0.32 }}
-              className="flex flex-wrap gap-4"
+              className="space-y-5"
             >
-              {heroData.cv_url && (
-                <Magnetic strength={0.4}>
-                  <motion.a
-                    href={heroData.cv_url}
-                    download
-                    whileHover={{ scale: 1.05 }}
-                    whileTap={{ scale: 0.95 }}
-                    className="flex items-center gap-2 bg-theme-primary text-white px-6 py-3 rounded-lg hover:bg-theme-primary-hover transition-colors font-medium shadow-lg"
-                  >
-                    <Download size={20} />
-                    Download CV
-                  </motion.a>
-                </Magnetic>
-              )}
-              {heroData.github_url && (
-                <motion.div whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }}>
-                  <Link
-                    href={heroData.github_url}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="flex items-center gap-2 border-2 border-theme-border text-theme-text-muted px-6 py-3 rounded-lg hover:border-theme-primary hover:text-theme-primary transition-colors shadow-lg"
-                  >
-                    <Github size={20} />
-                    GitHub
-                  </Link>
-                </motion.div>
-              )}
-              {heroData.linkedin_url && (
-                <motion.div whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }}>
-                  <Link
-                    href={heroData.linkedin_url}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="flex items-center gap-2 border-2 border-theme-border text-theme-text-muted px-6 py-3 rounded-lg hover:border-theme-primary hover:text-theme-primary transition-colors shadow-lg"
-                  >
-                    <Linkedin size={20} />
-                    LinkedIn
-                  </Link>
-                </motion.div>
-              )}
-              <motion.div whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }}>
-                <Link
-                  href="https://orcid.org/0009-0006-7551-0461"
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="flex items-center gap-2 border-2 border-theme-border text-theme-text-muted px-6 py-3 rounded-lg hover:border-theme-primary hover:text-theme-primary transition-colors shadow-lg"
+              <div className="flex flex-wrap gap-3">
+                {heroData.cv_url && (
+                  <Magnetic strength={0.4}>
+                    <motion.a
+                      href={heroData.cv_url}
+                      download
+                      whileTap={{ scale: 0.97 }}
+                      className="flex items-center gap-2 bg-theme-primary text-white px-6 py-3 rounded-lg hover:bg-theme-primary-hover transition-colors font-medium shadow-md"
+                    >
+                      <Download size={20} />
+                      Download CV
+                    </motion.a>
+                  </Magnetic>
+                )}
+                <a
+                  href="#publications"
+                  className="flex items-center gap-2 border border-theme-border bg-theme-surface/70 text-theme-text px-6 py-3 rounded-lg hover:border-theme-primary hover:text-theme-primary transition-colors font-medium"
                 >
-                  <Globe size={20} />
-                  ORCID
-                </Link>
-              </motion.div>
+                  Publications
+                </a>
+              </div>
+              <div className="flex flex-wrap items-center gap-x-5 gap-y-2 text-sm font-medium text-theme-text-muted">
+                {[
+                  heroData.github_url && { href: heroData.github_url, label: 'GitHub', Icon: Github },
+                  heroData.linkedin_url && { href: heroData.linkedin_url, label: 'LinkedIn', Icon: Linkedin },
+                  { href: 'https://orcid.org/0009-0006-7551-0461', label: 'ORCID', Icon: Globe },
+                ]
+                  .filter((l): l is { href: string; label: string; Icon: typeof Github } => Boolean(l))
+                  .map(({ href, label, Icon }) => (
+                    <Link
+                      key={label}
+                      href={href}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="inline-flex items-center gap-1.5 hover:text-theme-primary transition-colors"
+                    >
+                      <Icon className="w-4 h-4" /> {label}
+                    </Link>
+                  ))}
+              </div>
             </motion.div>
           </motion.div>
 
@@ -278,23 +281,6 @@ export default function Hero({ initialData }: { initialData?: Hero | null } = {}
           </motion.div>
         </div>
 
-        {/* Scroll indicator */}
-        <motion.div
-          initial={{ opacity: 0 }}
-          animate={{ opacity: 1 }}
-          transition={{ delay: 1.2 }}
-          className="absolute bottom-10 left-1/2 transform -translate-x-1/2"
-        >
-          <motion.a
-            href="#about"
-            animate={{ y: [0, 10, 0] }}
-            transition={{ duration: 2, repeat: Infinity }}
-            className="flex flex-col items-center text-theme-text-muted hover:text-theme-primary transition-colors"
-          >
-            <span className="text-sm mb-2">Scroll to explore</span>
-            <ArrowDown className="w-6 h-6" />
-          </motion.a>
-        </motion.div>
       </div>
     </section>
   )

@@ -1,8 +1,14 @@
 'use client'
 
 import { useEffect, useRef } from 'react'
+import dynamic from 'next/dynamic'
 import { useReducedMotion } from 'framer-motion'
 import { useTheme } from './ThemeProvider'
+
+// three.js is only downloaded when the "latent" theme is actually active.
+const LatentSpace = dynamic(() => import('./LatentSpace'), { ssr: false })
+const Spectrum = dynamic(() => import('./multiverse/Spectrum'), { ssr: false })
+const DepthField = dynamic(() => import('./multiverse/DepthField'), { ssr: false })
 
 /**
  * Full-page animated background that swaps by theme.
@@ -11,12 +17,24 @@ import { useTheme } from './ThemeProvider'
  *                signal pulses fire along the connections (activation).
  * - "creative" → aurora + robotic HUD: reticles, scanline, tech grid, hex chips,
  *                animated circuit traces, and a mech silhouette with a pulsing visor.
+ * - "latent"   → WebGL particle universe that morphs into a 3D sculpture per
+ *                section (see LatentSpace).
+ * - "multiverse" → a glass prism splitting one beam into a ray per section
+ *                (see multiverse/Spectrum).
  * Other themes render nothing, preserving their original look.
  */
 export default function ThemeBackground() {
-  const { theme } = useTheme()
+  const { theme, darkMode } = useTheme()
   if (theme === 'neural') return <NeuralNetwork />
   if (theme === 'creative') return <CreativeScene />
+  if (theme === 'latent') return <LatentSpace dark={darkMode} />
+  if (theme === 'multiverse')
+    return (
+      <>
+        <Spectrum />
+        <DepthField />
+      </>
+    )
   return null
 }
 

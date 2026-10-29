@@ -4,6 +4,11 @@ import { useEffect, useState } from 'react'
 import { motion } from 'framer-motion'
 import type { Education, Course } from '@/lib/types'
 import { iconMap } from '@/lib/icons'
+import dynamic from 'next/dynamic'
+import { useTheme } from '@/components/ThemeProvider'
+
+// 3D variant for the Multiverse theme, split out so other themes never load it.
+const EducationMV = dynamic(() => import('@/components/multiverse/EducationMV'))
 
 const fadeIn = {
   initial: { opacity: 0, y: 14 },
@@ -72,6 +77,7 @@ export default function Education({
   initialCourses?: Course[]
 } = {}) {
   const seeded = initialEducation !== undefined || initialCourses !== undefined
+  const { theme } = useTheme()
   const [education, setEducation] = useState<Education[]>(
     initialEducation !== undefined
       ? initialEducation.length > 0
@@ -141,6 +147,8 @@ export default function Education({
       </section>
     )
   }
+
+  if (theme === 'multiverse') return <EducationMV education={education} courses={courses} />
   return (
     <section id="education" className="section-container relative overflow-hidden">
       {/* Decorative background */}
@@ -224,7 +232,7 @@ export default function Education({
 
         {/* Courses & Certifications Section */}
         <motion.div {...fadeIn} className="mt-16 max-w-4xl mx-auto">
-          <motion.div whileHover={{ scale: 1.01 }} className="card /50 border-primary-200/50 rounded-2xl p-6">
+          <motion.div whileHover={{ scale: 1.01 }} className="card rounded-2xl p-6">
             <h3 className="text-2xl font-bold mb-6 text-theme-text">Courses & Certifications</h3>
             <div className="space-y-4">
               {courses.map((item, i) => (
@@ -237,7 +245,7 @@ export default function Education({
                   whileHover={{ x: 5 }}
                   className="relative"
                 >
-                  <div className="flex items-center justify-between p-4 rounded-xl bg-theme-surface/50 border border-theme-border hover:border-primary-200 transition-all">
+                  <div className="flex items-center justify-between p-4 rounded-xl bg-theme-surface/50 border border-theme-border hover:border-theme-primary/40 transition-colors">
                     <div>
                       <h4 className="font-bold text-theme-primary mb-1">{item.title}</h4>
                       <p className="text-theme-text-muted text-sm">{item.desc}</p>
@@ -250,9 +258,9 @@ export default function Education({
                         rel="noopener noreferrer"
                         whileHover={{ scale: 1.1, rotate: 3 }}
                         whileTap={{ scale: 0.95 }}
-                        className="flex-shrink-0 px-4 py-1 bg-blue-600 text-white font-semibold rounded-xl shadow-md hover:bg-blue-700 transition-all"
+                        className="flex-shrink-0 px-4 py-1.5 bg-theme-primary text-white text-sm font-semibold rounded-lg hover:bg-theme-primary-hover transition-colors"
                       >
-                        Verify Certificate
+                        Verify
                       </motion.a>
                     )}
                   </div>

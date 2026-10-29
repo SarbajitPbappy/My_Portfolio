@@ -3,6 +3,11 @@
 import { useEffect, useState } from 'react'
 import { motion } from 'framer-motion'
 import type { About } from '@/lib/types'
+import dynamic from 'next/dynamic'
+import { useTheme } from '@/components/ThemeProvider'
+
+// 3D variant for the Multiverse theme, split out so other themes never load it.
+const AboutMV = dynamic(() => import('@/components/multiverse/AboutMV'))
 
 const fadeIn = {
   initial: { opacity: 0, y: 14 },
@@ -37,8 +42,16 @@ const fallbackAbout: About = {
   order: 0,
 }
 
-export default function About({ initialData }: { initialData?: About | null } = {}) {
+export default function About({
+  initialData,
+  profileImageUrl,
+}: {
+  initialData?: About | null
+  // only the Multiverse layout shows the portrait here
+  profileImageUrl?: string
+} = {}) {
   const seeded = initialData !== undefined
+  const { theme } = useTheme()
   const [about, setAbout] = useState<About | null>(seeded ? initialData ?? null : null)
   const [loading, setLoading] = useState(!seeded)
 
@@ -77,6 +90,7 @@ export default function About({ initialData }: { initialData?: About | null } = 
   }
 
   const aboutData = about || fallbackAbout
+  if (theme === 'multiverse') return <AboutMV about={aboutData} photo={profileImageUrl || '/profile.jpg'} />
   return (
     <section id="about" className="section-container relative overflow-hidden">
       <div className="absolute inset-0 overflow-hidden pointer-events-none">
@@ -89,7 +103,7 @@ export default function About({ initialData }: { initialData?: About | null } = 
           <h2 className="text-5xl md:text-6xl font-bold mb-4">
             {aboutData.title?.split(' ')[0] || 'About'} <span className="gradient-text">{aboutData.title?.split(' ').slice(1).join(' ') || 'Me'}</span>
           </h2>
-          <p className="text-lg text-theme-text-muted leading-relaxed max-w-3xl mx-auto">
+          <p className="text-lg text-theme-text-muted leading-relaxed max-w-3xl mx-auto text-left sm:text-center">
             {aboutData.description}
           </p>
         </div>
@@ -104,14 +118,14 @@ export default function About({ initialData }: { initialData?: About | null } = 
               {aboutData.quick_facts && aboutData.quick_facts.length > 0 && (
                 <>
                   <div className="soft-divider my-4" />
-                  <div className="space-y-2">
+                  <dl className="grid grid-cols-[auto_minmax(0,1fr)] items-baseline gap-x-4 gap-y-3">
                     {aboutData.quick_facts.map((item, i) => (
-                      <div key={i} className="flex items-start gap-3">
-                        <span className="pill bg-theme-primary/10 text-theme-primary border-theme-border">{item.label}</span>
-                        <p className="text-theme-text-muted">{item.value}</p>
+                      <div key={i} className="contents">
+                        <dt className="text-xs font-semibold uppercase tracking-wide text-theme-primary whitespace-nowrap">{item.label}</dt>
+                        <dd className="text-theme-text-muted">{item.value}</dd>
                       </div>
                     ))}
-                  </div>
+                  </dl>
                 </>
               )}
             </div>

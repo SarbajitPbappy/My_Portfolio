@@ -5,7 +5,13 @@ import { motion } from 'framer-motion'
 import { iconMap, Github } from '@/lib/icons'
 import Link from 'next/link'
 import type { Project } from '@/lib/types'
+import { lastRowSpan } from '@/lib/layout'
 import { staggerContainer, staggerItem, viewportOnce, springSnappy } from '@/lib/motion'
+import dynamic from 'next/dynamic'
+import { useTheme } from '@/components/ThemeProvider'
+
+// 3D variant for the Multiverse theme, split out so other themes never load it.
+const ProjectsMV = dynamic(() => import('@/components/multiverse/ProjectsMV'))
 
 const fadeIn = {
   initial: { opacity: 0, y: 12 },
@@ -82,6 +88,7 @@ const fallbackProjects: Project[] = [
 
 export default function Projects({ initialProjects }: { initialProjects?: Project[] } = {}) {
   const seeded = initialProjects !== undefined
+  const { theme } = useTheme()
   const [projects, setProjects] = useState<Project[]>(
     seeded ? (initialProjects!.length > 0 ? initialProjects! : fallbackProjects) : []
   )
@@ -120,6 +127,8 @@ export default function Projects({ initialProjects }: { initialProjects?: Projec
       </section>
     )
   }
+
+  if (theme === 'multiverse') return <ProjectsMV projects={projects} />
   return (
     <section id="projects" className="section-container bg-theme-surface relative overflow-hidden">
       <div className="absolute inset-0 overflow-hidden pointer-events-none">
@@ -142,15 +151,15 @@ export default function Projects({ initialProjects }: { initialProjects?: Projec
           initial="hidden"
           whileInView="visible"
           viewport={viewportOnce}
-          className="grid md:grid-cols-2 lg:grid-cols-3 gap-6"
+          className="grid md:grid-cols-2 gap-6"
         >
-          {projects.map((project) => (
+          {projects.map((project, i) => (
             <motion.div
               key={project.title}
               variants={staggerItem}
               whileHover={{ y: -8 }}
               transition={springSnappy}
-              className="group relative bg-theme-surface border border-theme-border rounded-2xl p-6 shadow-sm hover:shadow-xl transition-shadow"
+              className={`group relative flex flex-col bg-theme-surface border border-theme-border rounded-2xl p-6 shadow-sm hover:shadow-xl transition-shadow ${lastRowSpan(i, projects.length, 2)}`}
             >
               <div className={`w-14 h-14 rounded-2xl bg-gradient-to-br ${project.gradient} flex items-center justify-center mb-4 text-white shadow-lg transition-transform duration-300 group-hover:scale-110 group-hover:-rotate-3`}>
                 {(() => {
@@ -161,7 +170,7 @@ export default function Projects({ initialProjects }: { initialProjects?: Projec
 
               <div className="flex items-start justify-between gap-3 mb-3">
                 <h3 className="text-xl font-bold text-theme-text leading-tight flex-1">{project.title}</h3>
-                <span className={`px-3 py-1 bg-gradient-to-r ${project.gradient} text-white rounded-full text-xs font-semibold whitespace-nowrap`}>
+                <span className="shrink-0 px-2.5 py-1 rounded-full border border-theme-border text-xs font-medium text-theme-text-muted whitespace-nowrap">
                   {project.category}
                 </span>
               </div>
@@ -201,10 +210,10 @@ export default function Projects({ initialProjects }: { initialProjects?: Projec
             href="https://github.com/SarbajitPbappy"
             target="_blank"
             rel="noopener noreferrer"
-            className="inline-flex items-center gap-3 bg-gradient-to-r from-primary-600 to-primary-500 text-white px-8 py-4 rounded-xl hover:from-primary-700 hover:to-primary-600 transition-all font-semibold shadow-lg"
+            className="inline-flex items-center gap-3 bg-theme-primary text-white px-6 py-3 rounded-xl hover:bg-theme-primary-hover transition-colors font-semibold shadow-md"
           >
             <Github className="w-5 h-5" />
-            <span>View All Projects on GitHub</span>
+            <span>More on GitHub</span>
           </Link>
         </motion.div>
       </div>

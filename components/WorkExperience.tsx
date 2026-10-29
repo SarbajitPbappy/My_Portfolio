@@ -4,6 +4,11 @@ import { useEffect, useState } from 'react'
 import { motion } from 'framer-motion'
 import type { WorkExperience } from '@/lib/types'
 import { iconMap } from '@/lib/icons'
+import dynamic from 'next/dynamic'
+import { useTheme } from '@/components/ThemeProvider'
+
+// 3D variant for the Multiverse theme, split out so other themes never load it.
+const ExperienceMV = dynamic(() => import('@/components/multiverse/ExperienceMV'))
 
 const fadeIn = {
   initial: { opacity: 0, y: 16 },
@@ -72,6 +77,7 @@ export default function WorkExperience({
   initialRoles?: WorkExperience[]
 } = {}) {
   const seeded = initialRoles !== undefined
+  const { theme } = useTheme()
   const [roles, setRoles] = useState<WorkExperience[]>(
     seeded ? (initialRoles!.length > 0 ? initialRoles! : fallbackWorkExperience) : []
   )
@@ -110,6 +116,8 @@ export default function WorkExperience({
       </section>
     )
   }
+
+  if (theme === 'multiverse') return <ExperienceMV roles={roles} />
   return (
     <section id="experience" className="section-container relative overflow-hidden">
       <div className="absolute inset-0 overflow-hidden pointer-events-none">
@@ -137,20 +145,20 @@ export default function WorkExperience({
             >
               <div className="relative rounded-2xl bg-theme-surface/75 backdrop-blur-xl border border-white/60 p-6 h-full">
                 <div className="flex items-start gap-4">
-                  <div className={`w-12 h-12 rounded-xl bg-gradient-to-br ${role.gradient} flex items-center justify-center text-white shadow-md`}>
+                  <div className={`w-12 h-12 shrink-0 rounded-xl bg-gradient-to-br ${role.gradient} flex items-center justify-center text-white shadow-md`}>
                     {(() => {
                       const Icon = role.icon && iconMap[role.icon] ? iconMap[role.icon] : iconMap.Briefcase
                       return <Icon className="w-6 h-6" />
                     })()}
                   </div>
-                  <div className="flex-1 space-y-2">
+                  <div className="min-w-0 flex-1 space-y-2">
                     <div className="flex items-start justify-between gap-2">
                       <div>
                         <h3 className="text-xl font-semibold text-theme-text">{role.title}</h3>
                         <p className="text-theme-primary font-medium">{role.organization}</p>
                       </div>
                       <span
-                        className={`px-3 py-1 text-xs font-semibold rounded-full shadow-sm ${
+                        className={`shrink-0 px-3 py-1 text-xs font-semibold rounded-full ${
                           role.type === 'Work'
                             ? 'bg-gradient-to-r from-emerald-100 to-emerald-200 text-emerald-800'
                             : 'bg-gradient-to-r from-sky-100 to-blue-200 text-blue-800'
@@ -164,13 +172,6 @@ export default function WorkExperience({
                   </div>
                 </div>
 
-                <div className="mt-4 h-px bg-gradient-to-r from-transparent via-gray-200 to-transparent" />
-
-                <div className="mt-3 flex flex-wrap gap-2 text-xs">
-                  <span className="px-3 py-1 rounded-full bg-theme-surface-elevated text-theme-text-muted">Leadership</span>
-                  <span className="px-3 py-1 rounded-full bg-theme-surface-elevated text-theme-text-muted">Impact</span>
-                  <span className="px-3 py-1 rounded-full bg-theme-surface-elevated text-theme-text-muted">Collaboration</span>
-                </div>
               </div>
             </motion.div>
           ))}

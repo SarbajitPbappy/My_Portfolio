@@ -6,17 +6,13 @@ import { Send } from 'lucide-react'
 import { iconMap } from '@/lib/icons'
 import { useForm } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
-import * as z from 'zod'
+import { contactSchema, sendContactMessage, type ContactFormData } from '@/lib/contactForm'
 import Link from 'next/link'
+import dynamic from 'next/dynamic'
+import { useTheme } from '@/components/ThemeProvider'
 
-const contactSchema = z.object({
-  name: z.string().min(2, 'Name must be at least 2 characters'),
-  email: z.string().email('Invalid email address'),
-  subject: z.string().min(3, 'Subject must be at least 3 characters'),
-  message: z.string().min(10, 'Message must be at least 10 characters'),
-})
-
-type ContactFormData = z.infer<typeof contactSchema>
+// 3D variant for the Multiverse theme, split out so other themes never load it.
+const ContactMV = dynamic(() => import('@/components/multiverse/ContactMV'))
 
 const fadeIn = {
   initial: { opacity: 0, y: 14 },
@@ -40,6 +36,7 @@ type ContactInfoItem = { icon: string; text: string; href: string; gradient: str
 
 export default function Contact({ initialContactInfo }: { initialContactInfo?: ContactInfoItem[] } = {}) {
   const seeded = initialContactInfo !== undefined
+  const { theme } = useTheme()
   const [contactInfo, setContactInfo] = useState<ContactInfoItem[]>(
     seeded ? (initialContactInfo!.length > 0 ? initialContactInfo! : fallbackContactInfo) : []
   )
@@ -88,57 +85,10 @@ export default function Contact({ initialContactInfo }: { initialContactInfo?: C
     )
   }
 
-  const onSubmit = async (data: ContactFormData) => {
-    // Loaded on demand so SweetAlert2 stays out of the initial page bundle.
-    const { default: Swal } = await import('sweetalert2')
-    try {
-      const response = await fetch('/api/contact', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(data),
-      })
+  if (theme === 'multiverse') return <ContactMV contactInfo={contactInfo} />
 
-      const result = await response.json()
-      
-      if (response.ok && result.success) {
-        Swal.fire({
-          icon: 'success',
-          title: 'Message Sent!',
-          text: result.message || 'I will get back to you soon.',
-          confirmButtonColor: '#0284c7',
-          confirmButtonText: 'Great!',
-          timer: 3000,
-          timerProgressBar: true,
-          customClass: {
-            popup: 'rounded-2xl',
-            confirmButton: 'rounded-lg px-6 py-2',
-          },
-        })
-        reset()
-      } else {
-        Swal.fire({
-          icon: 'error',
-          title: 'Oops...',
-          text: result.message || 'Failed to send message. Please try again.',
-          confirmButtonColor: '#dc2626',
-          customClass: {
-            popup: 'rounded-2xl',
-            confirmButton: 'rounded-lg px-6 py-2',
-          },
-        })
-      }
-    } catch (error) {
-      Swal.fire({
-        icon: 'error',
-        title: 'Error',
-        text: 'An error occurred. Please try again later.',
-        confirmButtonColor: '#dc2626',
-        customClass: {
-          popup: 'rounded-2xl',
-          confirmButton: 'rounded-lg px-6 py-2',
-        },
-      })
-    }
+  const onSubmit = async (data: ContactFormData) => {
+    if (await sendContactMessage(data)) reset()
   }
 
   return (
@@ -181,7 +131,7 @@ export default function Contact({ initialContactInfo }: { initialContactInfo?: C
                           href={info.href}
                           target="_blank"
                           rel="noopener noreferrer"
-                          className="flex items-center gap-4 p-3 rounded-xl bg-theme-surface-elevated hover:bg-gradient-to-r hover:from-primary-50 hover:to-primary-100/50 transition-all group"
+                          className="flex items-center gap-4 p-3 rounded-xl bg-theme-surface-elevated hover:bg-theme-primary/10 transition-colors group"
                         >
                           <div className={`w-10 h-10 rounded-lg bg-gradient-to-br ${info.gradient} flex items-center justify-center shadow-md group-hover:scale-110 transition-transform`}>
                             <Icon className="w-5 h-5 text-white" />
@@ -191,7 +141,7 @@ export default function Contact({ initialContactInfo }: { initialContactInfo?: C
                       ) : (
                         <motion.a
                           href={info.href}
-                          className="flex items-center gap-4 p-3 rounded-xl bg-theme-surface-elevated hover:bg-gradient-to-r hover:from-primary-50 hover:to-primary-100/50 transition-all group"
+                          className="flex items-center gap-4 p-3 rounded-xl bg-theme-surface-elevated hover:bg-theme-primary/10 transition-colors group"
                         >
                           <div className={`w-10 h-10 rounded-lg bg-gradient-to-br ${info.gradient} flex items-center justify-center shadow-md group-hover:scale-110 transition-transform`}>
                             <Icon className="w-5 h-5 text-white" />
@@ -305,7 +255,7 @@ export default function Contact({ initialContactInfo }: { initialContactInfo?: C
                   disabled={isSubmitting}
                   whileHover={{ scale: 1.02 }}
                   whileTap={{ scale: 0.98 }}
-                  className="w-full bg-gradient-to-r from-primary-600 to-primary-500 text-white px-6 py-4 rounded-xl hover:from-primary-700 hover:to-primary-600 transition-all font-semibold flex items-center justify-center gap-2 disabled:opacity-50 disabled:cursor-not-allowed shadow-lg hover:shadow-xl"
+                  className="w-full bg-theme-primary text-white px-6 py-4 rounded-xl hover:bg-theme-primary-hover transition-colors font-semibold flex items-center justify-center gap-2 disabled:opacity-50 disabled:cursor-not-allowed shadow-lg hover:shadow-xl"
                 >
                   <Send className="w-5 h-5" />
                   {isSubmitting ? 'Sending...' : 'Send Message'}
