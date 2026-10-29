@@ -1,8 +1,8 @@
 /**
- * Idempotent content reconciliation from Sarbajit's July 2026 resume.
- * - UPDATES existing rows by id (stale titles, DOIs, statuses).
- * - INSERTS new publications/projects ONLY if a row with the same title
- *   does not already exist (safe to re-run).
+ * Idempotent content reconciliation from Sarbajit's October 2026 CV.
+ * - UPDATES existing rows by id (stale titles, authors, statuses, ordering).
+ * - INSERTS new rows ONLY if a row with the same key (title / category) does
+ *   not already exist (safe to re-run).
  *
  * Run:  node scripts/update-content.mjs
  */
@@ -29,95 +29,158 @@ async function update(table, id, patch, label) {
   log(`✓ updated ${label}`); changed++
 }
 
-// Insert only if no row with same title (case-insensitive, trimmed) exists.
-async function insertIfMissing(table, row, titleField = 'title') {
-  const { data } = await sb.from(table).select(`id, ${titleField}`)
+// Insert only if no row with the same key (case-insensitive, trimmed) exists.
+async function insertIfMissing(table, row, keyField = 'title') {
+  const { data } = await sb.from(table).select(`id, ${keyField}`)
   const exists = (data || []).some(
-    r => (r[titleField] || '').trim().toLowerCase() === row[titleField].trim().toLowerCase()
+    r => (r[keyField] || '').trim().toLowerCase() === row[keyField].trim().toLowerCase()
   )
-  if (exists) { log(`• skip (exists): ${row[titleField].slice(0, 50)}`); return }
+  if (exists) { log(`• skip (exists): ${row[keyField].slice(0, 50)}`); return }
   const { error } = await sb.from(table).insert(row)
   if (error) { console.error(`  ✗ insert ${table}:`, error.message); return }
-  log(`✓ inserted ${table}: ${row[titleField].slice(0, 50)}`); changed++
+  log(`✓ inserted ${table}: ${row[keyField].slice(0, 50)}`); changed++
 }
 
-console.log('\n── HERO ──')
-await update('hero', 1, {
-  title: 'Lecturer, Dept. of CSE @ Daffodil International University',
-  description:
-    'AI/ML researcher and lecturer working on deep learning, computer vision, explainable AI, and federated learning for medical and agricultural imaging.',
-  focus_tags: ['Computer Vision', 'Explainable AI', 'Federated Learning', 'Medical Imaging'],
-}, 'hero title/description/tags')
+// Set `order` on rows matched by a key, following the given sequence.
+async function reorder(table, keyField, keys) {
+  const { data } = await sb.from(table).select(`id, ${keyField}`)
+  for (const [i, k] of keys.entries()) {
+    const row = (data || []).find(r => (r[keyField] || '').trim().toLowerCase().startsWith(k.toLowerCase()))
+    if (!row) { console.error(`  ✗ ${table}: no row starting with "${k}"`); continue }
+    await sb.from(table).update({ order: i }).eq('id', row.id)
+  }
+  log(`✓ reordered ${table}`); changed++
+}
 
 console.log('\n── ABOUT ──')
 await update('about', 1, {
   description:
-    'Lecturer in the Department of CSE at Daffodil International University and an AI/ML researcher (CGPA 3.95/4.00, Batch First) with Erasmus+ exchange experience at Mälardalen University, Sweden. Published researcher across deep learning, computer vision, explainable AI, and federated learning for medical and agricultural imaging, currently teaching Data Structures and Software Quality Assurance while maintaining an active research pipeline in healthcare AI.',
-  quick_facts: [
-    { label: 'Specialties', value: 'Deep Learning, Computer Vision, XAI, Federated Learning' },
-    { label: 'Stack', value: 'PyTorch, TensorFlow, Keras, Scikit-learn, OpenCV' },
-    { label: 'Current Role', value: 'Lecturer, CSE — Daffodil International University' },
+    'Lecturer in the Department of CSE at Daffodil International University and an AI/ML researcher (B.Sc. in CSE, CGPA 3.95/4.00, Batch First) with Erasmus+ exchange experience at Mälardalen University, Sweden. Published researcher in deep learning, computer vision, explainable AI, and federated learning for medical and agricultural imaging, and formerly a Research Assistant at DIU’s Health Informatics Research Lab. Currently teaching Data Structures, Computer Graphics, and Software Quality Assurance while maintaining an active research pipeline in healthcare AI.',
+}, 'about description')
+
+console.log('\n── EDUCATION ──')
+await update('education', 2, {
+  gpa: 'Grade: Passed',
+  highlights: [
+    'Erasmus+ ICM Exchange Scholarship (2025)',
+    'International academic exchange',
+    'Cross-cultural research collaboration',
+    'Global perspective on AI/ML',
   ],
-}, 'about description/quick-facts')
+}, 'Mälardalen grade + Erasmus+ scholarship')
 
 console.log('\n── WORK EXPERIENCE ──')
 await update('work_experience', 5, {
+  title: 'Lecturer (Contractual)',
   description:
-    'Teach Data Structures (theory and laboratory) and Software Quality Assurance at the undergraduate level. Design lecture content, lab exercises, assignments, and assessments aligned with course outcomes; evaluate student performance; and participate in departmental academic and research activities.',
-}, 'Lecturer role description → Data Structures & SQA')
+    'Teach Data Structures (theory and laboratory), Computer Graphics, and Software Quality Assurance (SQA) at the undergraduate level. Design lecture content, lab exercises, assignments, and assessments aligned with course outcomes; evaluate student performance and provide academic guidance and mentoring; and participate in departmental academic and instructional activities.',
+}, 'Lecturer → adds Computer Graphics')
+await update('work_experience', 1, {
+  title: 'Teaching Assistant (Part-Time)',
+  organization: 'Department of CSE, Daffodil International University (DIU)',
+  description:
+    'Worked under the supervision of Professor Dr. Fernaz Narin Nur. Assisted in undergraduate courses (Information Security, Computer Network, Database Management System, Data Communication), laboratory sessions, and coursework evaluation, and provided academic and research support within the department.',
+}, 'Teaching Assistant courses')
+await insertIfMissing('work_experience', {
+  title: 'Research Assistant (Part-Time)',
+  organization: 'Health Informatics Research Lab (HIRL), Department of CSE, Daffodil International University (DIU)',
+  period: 'January 2026 – July 2026',
+  description:
+    'Worked under the supervision of Dr. Md. Zahid Hasan (Associate Professor & Lab Director) and Prof. Dr. Sheak Rashed Haider Noori (Professor & Head, Department of CSE). Coordinated research activities within the lab, supported its academic mission, and contributed to ongoing health informatics research initiatives.',
+  icon: 'Brain', gradient: 'from-teal-500 to-cyan-500', type: 'Work', order: 1,
+})
+await reorder('work_experience', 'title', [
+  'Lecturer', 'Research Assistant', 'Teaching Assistant', 'IEEE Vice Chair', 'Secretary', 'Campus Organizer',
+])
+
+console.log('\n── SKILLS ──')
+await update('skills', 1, { name: 'Python, C, C++, SQL, HTML, JavaScript' }, 'programming languages')
+await update('skills', 7, {
+  name: 'TensorFlow, Keras, Scikit-Learn, OpenCV, Pandas, NumPy, Matplotlib, Seaborn, Preprocessing, EDA',
+}, 'ML/DL frameworks (+OpenCV)')
+await update('skills', 8, { name: 'Git/GitHub, Jupyter Notebook, VS Code, Covidence, Overleaf' }, 'tools')
+await insertIfMissing('skills', {
+  name: 'Covidence, SPSS, LaTeX', category: 'Research Tools', level: '', icon: '', order: 3,
+}, 'category')
+await reorder('skills', 'category', [
+  'Programming Language', 'Deep Learning & Machine Learning', 'Tools & Technologies',
+  'Research Tools', 'Research', 'Industry Knowledge', 'Soft Skill',
+])
 
 console.log('\n── PUBLICATIONS (updates) ──')
+await update('publications', 1, {
+  authors: 'Sohel, A., Turjy, R. C. D., Paul, S. P., Assaduzzaman, M., Marouf, A. A., Rokne, J. G., & Alhajj, R.',
+}, 'SkinVisualNet authors')
 await update('publications', 2, {
-  status: 'Published', year: '2026', journal: 'PeerJ Computer Science (Q1)',
-  volume: '12, e3977', doi: '10.7717/peerj-cs.3977',
-}, 'JackVisualNet → Published + DOI')
-await update('publications', 1, { volume: '7(4), 157' }, 'SkinVisualNet volume')
-await update('publications', 8, { doi: '10.1109/QPAIN69676.2026.11546299' }, 'QPAIN cipher DOI')
+  authors: 'Sohel, A., Bijoy, M. H. I., Paul, S. P., Turjy, R. C. D., Othman, M., & Samad, M. A.',
+}, 'JackVisualNet authors')
+await update('publications', 10, {
+  title: 'A Systematic Review of Advances in Spatiotemporal Machine Learning for Road Traffic Accident Prediction in Developing Countries',
+  authors: 'Nur, F. N.†, Mondal, A.†, Paul Bappy, S.†, Dipu, M. H., & Moon, N. N. († equal contribution)',
+  journal: 'Discover Artificial Intelligence (Q1)', status: 'Accepted',
+}, 'Road-traffic review → Accepted, Discover AI')
+await update('publications', 9, {
+  authors: 'Bappy, S. P.†, Nur, F. N.†, Mondal, A., Dipu, M. H., Sharmin, S., Moon, N. N., & Jahan, H. († equal contribution)',
+  journal: 'PLOS ONE (Q1)', status: 'Minor Revision',
+}, 'Alzheimer DenseNet → Minor Revision')
 await update('publications', 6, {
-  status: 'Major Revision', journal: 'Computers in Human Behavior Reports (Q1)',
-}, 'Federated Learning review → Major Revision (Q1)')
-await update('publications', 5, { journal: 'Neural Computing and Applications (Q1)' }, 'DeepMed-A3Net journal (Q1)')
+  authors: 'Bappy, S. P., Tarafdar, S., Alvi, S. T., Turjy, R. C. D., & Sohel, A.',
+  journal: 'Social Sciences & Humanities Open (Q1)', status: 'Major Revision', doi: null, volume: null, link: null,
+}, 'FL review → Major Revision (drops "N/A" DOI)')
+await update('publications', 5, {
+  authors: 'Bappy, S. P., Bijoy, M. H. I., Turjy, R. C. D., Tarafdar, S., Nur, F. N., Sohel, A., Hasan, M. Z., Arefin, M. S., Dhar, P. K., Shimamura, T., & Ohidujjaman',
+}, 'DeepMed-A3Net authors')
+await update('publications', 7, {
+  title: 'Evaluating Deep Learning Models and Explainable AI for Mushroom Classification',
+  authors: 'Bappy, S. P., Turjy, R. C. D., Mondal, A., Bithi, T., Bijoy, M. H. I., & Sohel, A.',
+  journal: 'Taylor & Francis Group',
+}, 'Mushroom chapter title/authors')
+await update('publications', 8, {
+  title: 'An Enhanced Hybrid Cipher with Vigenere and Dynamic Caesar with Key-Position Swapping for Secure Encryption',
+  authors: 'Bithi, S. A., Nur, F. N., Bappy, S. P., Moon, N. N., & Chakraborty, A.',
+  journal: 'Proceedings of the 2026 IEEE 2nd International Conference on Quantum Photonics, Artificial Intelligence & Networking (QPAIN)',
+  volume: '1–7', type: 'Conference Paper',
+}, 'QPAIN cipher paper')
+await update('publications', 3, { authors: 'Paul, S. P., Turjy, R. C. D., & Sohel, A.' }, 'jackfruit abstract authors')
+await update('publications', 4, {
+  authors: 'Turjy, R. C. D., Paul, S. P., & Sohel, A.',
+  link: 'https://symposium24.ieeecsbdc.org/papers/21-a-hybrid-deep-learning-approach-for-identifying-lyme-disease-from-skin-rash-images',
+}, 'Lyme abstract authors + correct link (was the jackfruit paper)')
 
 console.log('\n── PUBLICATIONS (new) ──')
 await insertIfMissing('publications', {
-  title: 'A Quantum-Inspired Hybrid DenseNet Framework with Imbalance-Aware Learning for MRI-Based Alzheimer’s Disease Classification',
-  authors: 'Nur, F. N., Bappy, S. P., Mondal, A., Dipu, M. H., Sharmin, S., Moon, N. N., & Jahan, H.',
-  status: 'Under Review', journal: 'PLOS ONE', year: '2026', type: 'Journal Article',
-  doi: null, link: null, volume: null, gradient: 'from-indigo-500 to-violet-500', order: 8,
+  title: 'Bridging the Performance–Efficiency Gap: A Resource-Efficient Hybrid DL-ML Framework for Jackfruit Disease Detection',
+  authors: 'Turjy, R. C. D., Farid, F. A., Bijoy, M. H. I., Paul, S. P., Sohel, A., Uddin, J., & Karim, H. A.',
+  status: 'Published', journal: 'Frontiers in Artificial Intelligence', year: '2026', type: 'Journal Article',
+  doi: '10.3389/frai.2026.1884567', link: 'https://doi.org/10.3389/frai.2026.1884567', volume: '9',
+  gradient: 'from-emerald-500 to-teal-500', order: 2,
 })
-await insertIfMissing('publications', {
-  title: 'Spatiotemporal Patterns and Machine Learning for Road Traffic Accident Prediction in Developing Countries: A Systematic Review with Implications for Bangladesh',
-  authors: 'Mondal, A., Paul Bappy, S., & Nur, F. N.',
-  status: 'Under Review', journal: 'International Journal of Data Science and Analytics (Q1)',
-  year: '2026', type: 'Journal Article', doi: null, link: null, volume: null,
-  gradient: 'from-cyan-500 to-blue-500', order: 9,
-})
+await reorder('publications', 'title', [
+  'SkinVisualNet', 'JackVisualNet', 'Bridging the Performance', 'A Systematic Review of Advances',
+  'A Quantum-Inspired', 'Federated Learning for Securing', 'DeepMed-A3Net', 'Evaluating Deep Learning Models',
+  'An Enhanced Hybrid Cipher', 'A Hybrid Deep Learning Approach for Identifying Jackfruit',
+  'A Hybrid Deep Learning Approach for Identifying Lyme',
+])
 
-console.log('\n── PROJECTS (new) ──')
-const projGrad = 'from-blue-500 to-cyan-500'
-await insertIfMissing('projects', {
-  title: 'AI Email Assistant',
-  description: 'Intelligent Gmail triage system using an Ollama LLM, Gmail API, Telegram API, and Streamlit for automated email classification, job-opportunity detection, and tailored cover-letter generation.',
-  technologies: ['Ollama LLM', 'Gmail API', 'Telegram API', 'Streamlit', 'Python'],
-  category: 'AI / Automation', icon: 'Mail', gradient: 'from-violet-500 to-purple-500', github: '', order: 6,
-})
-await insertIfMissing('projects', {
-  title: 'RetroX – Dengue Outbreak Forecasting System',
-  description: 'ML-powered outbreak forecasting platform using Scikit-learn, Optuna, SHAP, FastAPI, and Streamlit with leakage-safe time-series feature engineering and explainable-AI integration.',
-  technologies: ['Scikit-learn', 'Optuna', 'SHAP', 'FastAPI', 'Streamlit'],
-  category: 'Machine Learning', icon: 'Activity', gradient: 'from-rose-500 to-pink-500', github: '', order: 7,
-})
-await insertIfMissing('projects', {
-  title: 'MLCG-GNN – Multi-Label Chest X-ray Classification',
-  description: 'End-to-end graph neural network pipeline for multi-label chest X-ray classification (NIH ChestX-ray14, CheXpert, VinDr-CXR) with adaptive graph construction, hybrid CNN–GNN feature fusion, uncertainty quantification, and Grad-CAM interpretability.',
-  technologies: ['PyTorch', 'GNN (GraphSAGE)', 'CNN', 'Grad-CAM', 'Uncertainty Quantification'],
-  category: 'Medical Imaging', icon: 'Brain', gradient: 'from-teal-500 to-emerald-500', github: '', order: 8,
-})
-await insertIfMissing('projects', {
-  title: 'HostelEase – Hostel Management System',
-  description: 'Multi-role hostel management platform built with PHP, MySQL, Bootstrap, and Docker featuring room-lifecycle management, automated billing, complaint tracking, and secure authentication.',
-  technologies: ['PHP', 'MySQL', 'Bootstrap', 'Docker'],
-  category: 'Web Application', icon: 'Building', gradient: 'from-amber-500 to-orange-500', github: '', order: 9,
-})
+console.log('\n── PROJECTS ──')
+await update('projects', 3, {
+  title: 'Email Spam Classifier',
+  description: 'NLP-based spam detection system using Random Forest and Decision Tree models, achieving 97% classification accuracy on 5,172 email samples.',
+}, 'spam classifier accuracy')
+// CV projects lead the list
+await reorder('projects', 'title', [
+  'AI Email Assistant', 'RetroX', 'MLCG-GNN', 'HostelEase', 'Email Spam Classifier',
+  'Medical Image Classification', 'Splitter', 'Django E-Commerce', 'Rainfall', 'Population Analysis',
+])
+
+console.log('\n── FOOTER ──')
+await update('footer', 1, {
+  social_links: [
+    { href: 'https://github.com/SarbajitPbappy', icon: 'Github', label: 'GitHub' },
+    { href: 'https://linkedin.com/in/iamsarbajit', icon: 'Linkedin', label: 'LinkedIn' },
+    { href: 'mailto:sarbajit2001@gmail.com', icon: 'Mail', label: 'Email' },
+    { href: 'https://www.facebook.com/bappy.2001.paul', icon: 'Facebook', label: 'Facebook' },
+  ],
+}, 'footer Facebook link (was missing https://)')
 
 console.log(`\n✅ Done. ${changed} change(s) applied.\n`)
