@@ -2,23 +2,14 @@
 
 import { useEffect, useState } from 'react'
 import { motion } from 'framer-motion'
-import { Download, Github, Linkedin, Mail, Phone, GraduationCap, Globe } from 'lucide-react'
+import { Download, Github, Linkedin, Mail, Globe, BookOpen, ArrowDown } from 'lucide-react'
 import Link from 'next/link'
 import Image from 'next/image'
 import type { Hero, Publication } from '@/lib/types'
-import Magnetic from '@/components/motion/Magnetic'
-import dynamic from 'next/dynamic'
-import { useTheme } from '@/components/ThemeProvider'
+import SaliencyFigure from '@/components/figures/SaliencyFigure'
+import { countJournalArticles } from '@/lib/publications'
+import { siteConfig } from '@/lib/site'
 
-// 3D variant for the Multiverse theme, split out so other themes never load it.
-const HeroMV = dynamic(() => import('@/components/multiverse/HeroMV'))
-
-const fadeIn = {
-  initial: { opacity: 0, y: 16 },
-  whileInView: { opacity: 1, y: 0 },
-  viewport: { once: true, margin: '-80px' },
-  transition: { duration: 0.45, ease: 'easeOut' },
-}
 
 // Fallback data
 const fallbackHero: Hero = {
@@ -26,9 +17,9 @@ const fallbackHero: Hero = {
   title: 'Lecturer, Dept. of CSE @ Daffodil International University',
   subtitle: '',
   description: 'AI/ML researcher and lecturer working on deep learning, computer vision, explainable AI, and federated learning for medical and agricultural imaging.',
-  email: 'sarbajit2001@gmail.com',
+  email: 'bappy15-6155@s.diu.edu.bd',
   phone: '+880 1315352270',
-  cv_url: '/Bappy_CV_Official.pdf',
+  cv_url: '/cv.pdf',
   github_url: 'https://github.com/SarbajitPbappy',
   linkedin_url: 'https://linkedin.com/in/iamsarbajit',
   profile_image_url: '/profile.jpg',
@@ -41,13 +32,11 @@ export default function Hero({
   publications,
 }: {
   initialData?: Hero | null
-  // only the Multiverse hero uses these, for its publication stats
   publications?: Publication[]
 } = {}) {
   // Seeded from the server (SSR) when `initialData` is provided (even if null →
   // fallback). Only fetches on the client when rendered without a seed.
   const seeded = initialData !== undefined
-  const { theme } = useTheme()
   const [hero, setHero] = useState<Hero | null>(seeded ? initialData ?? null : null)
   const [loading, setLoading] = useState(!seeded)
 
@@ -87,200 +76,139 @@ export default function Hero({
   }
 
   const heroData = hero || fallbackHero
-  if (theme === 'multiverse') return <HeroMV hero={heroData} publications={publications ?? []} />
+  // The journal count comes from the publication records so it can't drift.
+  const facts = siteConfig.facts.map((f) =>
+    f.label === 'journal papers' && publications?.length
+      ? { ...f, value: String(countJournalArticles(publications)) }
+      : f
+  )
+  const links = [
+    { href: siteConfig.social.scholar, label: 'Google Scholar', Icon: BookOpen },
+    { href: siteConfig.social.orcid, label: 'ORCID', Icon: Globe },
+    heroData.github_url && { href: heroData.github_url, label: 'GitHub', Icon: Github },
+    heroData.linkedin_url && { href: heroData.linkedin_url, label: 'LinkedIn', Icon: Linkedin },
+  ].filter((l): l is { href: string; label: string; Icon: typeof Github } => Boolean(l))
+
+  // Everything in the hero renders visible in the server HTML: the entrance is
+  // a short slide only (no opacity), so the name and research line paint
+  // before JavaScript loads.
+  const rise = (delay: number) => ({
+    initial: { y: 14 },
+    animate: { y: 0 },
+    transition: { duration: 0.5, ease: [0.22, 1, 0.36, 1] as const, delay },
+  })
+
   return (
-    <section id="home" className="min-h-[80vh] flex items-center justify-center pt-16 relative overflow-hidden">
-      {/* Animated background elements */}
-      <div className="absolute inset-0 overflow-hidden">
-        <motion.div
-          className="absolute top-20 left-10 w-72 h-72 bg-primary-200 rounded-full mix-blend-multiply filter blur-xl opacity-20"
-          animate={{
-            scale: [1, 1.2, 1],
-            x: [0, 100, 0],
-            y: [0, 50, 0],
-          }}
-          transition={{
-            duration: 20,
-            repeat: Infinity,
-            ease: 'easeInOut',
-          }}
-        />
-        <motion.div
-          className="absolute top-40 right-10 w-72 h-72 bg-primary-300 rounded-full mix-blend-multiply filter blur-xl opacity-20"
-          animate={{
-            scale: [1, 1.3, 1],
-            x: [0, -100, 0],
-            y: [0, -50, 0],
-          }}
-          transition={{
-            duration: 25,
-            repeat: Infinity,
-            ease: 'easeInOut',
-          }}
-        />
-      </div>
-
-      <div className="section-container relative z-10">
-        <div className="grid md:grid-cols-2 gap-10 items-center">
-          {/* Left Content */}
-          <motion.div className="space-y-6">
-
-            <motion.div
-              initial={{ opacity: 0, y: 22 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.55, ease: [0.22, 1, 0.36, 1], delay: 0.05 }}
-              className="space-y-2"
-            >
-              <h1 className="text-5xl md:text-6xl font-bold leading-tight">
-                Hi, I'm{' '}
-                <span className="gradient-text">{heroData.name}</span>
-              </h1>
-            </motion.div>
-
-            <motion.div
-              initial={{ opacity: 0, y: 22 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.55, ease: [0.22, 1, 0.36, 1], delay: 0.15 }}
-            >
-              {heroData.title && (
-                <div className="inline-flex items-center gap-3 px-4 py-2 rounded-xl bg-theme-surface/70 border border-theme-border shadow-sm mb-4">
-                  <GraduationCap className="w-5 h-5 text-theme-primary" />
-                  <div className="text-sm text-theme-text-muted">
-                    {heroData.title}
-                  </div>
-                </div>
-              )}
-
-              {heroData.description && (
-                <p className="text-lg text-theme-text-muted mb-4">
-                  {heroData.description}
-                </p>
-              )}
-
-              <div className="space-y-2 text-theme-text-muted mb-6">
-                {heroData.email && (
-                  <motion.div 
-                    className="flex items-center gap-2"
-                    whileHover={{ x: 7 }}
-                  >
-                    <Mail className="w-4 h-4" />
-                    <a href={`mailto:${heroData.email}`} className="hover:text-theme-primary">{heroData.email}</a>
-                  </motion.div>
-                )}
-                {heroData.phone && (
-                  <motion.div 
-                    className="flex items-center gap-2"
-                    whileHover={{ x: 5 }}
-                  >
-                    <Phone className="w-4 h-4" />
-                    <span>{heroData.phone}</span>
-                  </motion.div>
-                )}
+    <section id="home" className="relative pt-28 pb-10 md:pt-32">
+      <div className="section-container !py-0 w-full">
+        <div className="grid lg:grid-cols-[minmax(0,1.15fr)_minmax(0,0.85fr)] gap-12 lg:gap-16 items-start">
+          <motion.div {...rise(0)} className="min-w-0">
+            <div className="flex items-center gap-4 mb-7">
+              <div className="relative w-16 h-16 sm:w-[72px] sm:h-[72px] shrink-0 rounded-theme-md overflow-hidden ring-1 ring-theme-border bg-theme-surface">
+                <Image
+                  src={siteConfig.headshot}
+                  alt={`Portrait of ${heroData.name}`}
+                  fill
+                  className="object-cover object-top"
+                  priority
+                  sizes="72px"
+                />
               </div>
-            </motion.div>
+              <div className="min-w-0 text-sm leading-snug">
+                {heroData.title && <p className="text-theme-text font-medium">{heroData.title}</p>}
+                <p className="font-mono text-xs text-theme-text-muted mt-1">{siteConfig.location} · {siteConfig.shortTitle}</p>
+              </div>
+            </div>
 
-            {heroData.focus_tags && heroData.focus_tags.length > 0 && (
-              <motion.div
-                initial={{ opacity: 0, y: 22 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ duration: 0.55, ease: [0.22, 1, 0.36, 1], delay: 0.25 }}
-                className="flex flex-wrap gap-2"
-              >
-                {heroData.focus_tags.map((tag) => (
-                  <motion.span
-                    key={tag}
-                    whileHover={{ y: -3, scale: 1.05 }}
-                    transition={{ type: 'spring', stiffness: 320, damping: 20 }}
-                    className="pill bg-theme-surface/70 text-theme-text-muted border-theme-border shadow-sm"
-                  >
-                    {tag}
-                  </motion.span>
-                ))}
-              </motion.div>
+            <h1 className="text-[2.75rem] leading-[1.02] sm:text-6xl lg:text-[4.5rem] text-theme-text">
+              {heroData.name}
+            </h1>
+
+            <p className="mt-6 text-lg md:text-xl text-theme-text leading-relaxed max-w-[38ch] md:max-w-[44ch]">
+              {siteConfig.researchLine}
+            </p>
+
+            {siteConfig.availability && (
+              <p className="mt-6 inline-flex items-center gap-2.5 font-mono text-xs text-theme-text">
+                <span className="relative flex w-2 h-2" aria-hidden>
+                  <span className="absolute inline-flex w-full h-full rounded-full bg-[#f98c0a] opacity-60 motion-safe:animate-ping" />
+                  <span className="relative inline-flex w-2 h-2 rounded-full bg-[#f98c0a]" />
+                </span>
+                {siteConfig.availability}
+              </p>
             )}
 
-            <motion.div
-              initial={{ opacity: 0, y: 22 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.55, ease: [0.22, 1, 0.36, 1], delay: 0.32 }}
-              className="space-y-5"
-            >
-              <div className="flex flex-wrap gap-3">
-                {heroData.cv_url && (
-                  <Magnetic strength={0.4}>
-                    <motion.a
-                      href={heroData.cv_url}
-                      download
-                      whileTap={{ scale: 0.97 }}
-                      className="flex items-center gap-2 bg-theme-primary text-white px-6 py-3 rounded-lg hover:bg-theme-primary-hover transition-colors font-medium shadow-md"
-                    >
-                      <Download size={20} />
-                      Download CV
-                    </motion.a>
-                  </Magnetic>
-                )}
+            <dl className="mt-8 grid grid-cols-2 sm:grid-cols-4 border-y border-theme-border" aria-label="Highlights">
+              {facts.map((f) => (
+                <div key={f.label} className="py-3 px-3 border-theme-border odd:pl-0 even:border-l [&:nth-child(n+3)]:border-t sm:odd:pl-3 sm:first:!pl-0 sm:border-l sm:first:border-l-0 sm:[&:nth-child(n+3)]:border-t-0">
+                  <dt className="sr-only">{f.label}</dt>
+                  <dd>
+                    <span className="block font-heading text-2xl text-theme-text tabular-nums">{f.value}</span>
+                    <span className="block text-xs text-theme-text-muted leading-snug mt-0.5">{f.label}</span>
+                  </dd>
+                </div>
+              ))}
+            </dl>
+
+            <div className="mt-8 flex flex-wrap gap-3">
+              <a
+                href="#publications"
+                className="inline-flex items-center gap-2 bg-theme-text text-theme-background px-5 py-2.5 rounded-theme-md hover:bg-theme-primary transition-colors text-sm font-medium"
+              >
+                <ArrowDown size={16} />
+                Read the publications
+              </a>
+              {heroData.cv_url && (
                 <a
-                  href="#publications"
-                  className="flex items-center gap-2 border border-theme-border bg-theme-surface/70 text-theme-text px-6 py-3 rounded-lg hover:border-theme-primary hover:text-theme-primary transition-colors font-medium"
+                  href={heroData.cv_url}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="inline-flex items-center gap-2 border border-theme-border text-theme-text px-5 py-2.5 rounded-theme-md hover:border-theme-text transition-colors text-sm font-medium"
                 >
-                  Publications
+                  <Download size={16} />
+                  Download CV (PDF)
                 </a>
-              </div>
-              <div className="flex flex-wrap items-center gap-x-5 gap-y-2 text-sm font-medium text-theme-text-muted">
-                {[
-                  heroData.github_url && { href: heroData.github_url, label: 'GitHub', Icon: Github },
-                  heroData.linkedin_url && { href: heroData.linkedin_url, label: 'LinkedIn', Icon: Linkedin },
-                  { href: 'https://orcid.org/0009-0006-7551-0461', label: 'ORCID', Icon: Globe },
-                ]
-                  .filter((l): l is { href: string; label: string; Icon: typeof Github } => Boolean(l))
-                  .map(({ href, label, Icon }) => (
-                    <Link
-                      key={label}
-                      href={href}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      className="inline-flex items-center gap-1.5 hover:text-theme-primary transition-colors"
-                    >
-                      <Icon className="w-4 h-4" /> {label}
-                    </Link>
-                  ))}
-              </div>
-            </motion.div>
+              )}
+            </div>
+
+            <div className="mt-6 flex flex-wrap items-center gap-x-5 gap-y-2 text-sm text-theme-text-muted">
+              {links.map(({ href, label, Icon }) => (
+                <Link
+                  key={label}
+                  href={href}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="inline-flex items-center gap-1.5 hover:text-theme-primary transition-colors"
+                >
+                  <Icon className="w-4 h-4" /> {label}
+                </Link>
+              ))}
+              {heroData.email && (
+                <a href={`mailto:${heroData.email}`} className="inline-flex items-center gap-1.5 hover:text-theme-primary transition-colors">
+                  <Mail className="w-4 h-4" /> {heroData.email}
+                </a>
+              )}
+            </div>
           </motion.div>
 
-          {/* Right Image */}
-          <motion.div {...fadeIn} transition={{ ...fadeIn.transition, delay: 0.25 }} className="flex justify-center">
-            <div className="relative w-80 h-80 md:w-96 md:h-96">
-              <motion.div
-                className="absolute inset-0 bg-gradient-to-br from-primary-400 to-primary-600 rounded-full blur-3xl opacity-30"
-                animate={{
-                  scale: [1, 1.1, 1],
-                  opacity: [0.3, 0.4, 0.3],
-                }}
-                transition={{
-                  duration: 4,
-                  repeat: Infinity,
-                  ease: 'easeInOut',
-                }}
-              />
-              <motion.div
-                className="relative w-full h-full rounded-full overflow-hidden border-4 border-white shadow-2xl"
-                whileHover={{ scale: 1.05, rotate: 2 }}
-                transition={{ type: 'spring', stiffness: 300 }}
-              >
-                <Image
-                  src={heroData.profile_image_url || '/profile.jpg'}
-                  alt={heroData.name}
-                  fill
-                  className="object-cover"
-                  priority
-                  sizes="(max-width: 768px) 320px, 384px"
-                />
-              </motion.div>
-            </div>
+          <motion.div {...rise(0.08)} className="min-w-0 lg:pt-2">
+            <SaliencyFigure />
           </motion.div>
         </div>
 
+        {siteConfig.news.length > 0 && (
+          <div className="mt-14 border-t border-theme-border pt-5">
+            <h2 className="font-mono text-[11px] uppercase tracking-[0.14em] text-theme-text-muted mb-3">Latest</h2>
+            <ul className="grid gap-2 md:grid-cols-3 md:gap-8">
+              {siteConfig.news.map((n) => (
+                <li key={n.text} className="flex gap-3 text-sm">
+                  <span className="shrink-0 font-mono text-xs text-theme-text-muted pt-0.5 tabular-nums w-14">{n.date}</span>
+                  <span className="text-theme-text">{n.text}</span>
+                </li>
+              ))}
+            </ul>
+          </div>
+        )}
       </div>
     </section>
   )

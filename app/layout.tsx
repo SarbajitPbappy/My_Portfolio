@@ -2,6 +2,7 @@ import type { Metadata } from 'next'
 import { GeistSans } from 'geist/font/sans'
 import { GeistMono } from 'geist/font/mono'
 import './globals.css'
+import { fontVariables } from './fonts'
 import { siteConfig, SITE_URL } from '@/lib/site'
 import { getSettings } from '@/lib/db'
 import { isTheme } from '@/lib/types'
@@ -9,7 +10,6 @@ import Navbar from '@/components/Navbar'
 import Footer from '@/components/Footer'
 import { ThemeProvider } from '@/components/ThemeProvider'
 import ThemeBackground from '@/components/ThemeBackground'
-import ThemePreview from '@/components/ThemePreview'
 import ScrollProgress from '@/components/motion/ScrollProgress'
 import BackToTop from '@/components/motion/BackToTop'
 import AnalyticsTracker from '@/components/AnalyticsTracker'
@@ -68,9 +68,9 @@ export const metadata: Metadata = {
 async function getAppearance() {
   try {
     const settings = await getSettings()
-    return { theme: isTheme(settings?.theme) ? settings.theme : 'modern', dark: Boolean(settings?.dark_mode) } as const
+    return { theme: isTheme(settings?.theme) ? settings.theme : 'academic', dark: Boolean(settings?.dark_mode) } as const
   } catch {
-    return { theme: 'modern', dark: false } as const
+    return { theme: 'academic', dark: false } as const
   }
 }
 
@@ -84,7 +84,7 @@ export default async function RootLayout({
     <html
       lang="en"
       data-theme={theme}
-      className={`${GeistSans.variable} ${GeistMono.variable}${dark ? ' dark' : ''}`}
+      className={`${GeistSans.variable} ${GeistMono.variable} ${fontVariables}${dark ? ' dark' : ''}`}
       suppressHydrationWarning
     >
       <body>
@@ -95,7 +95,6 @@ export default async function RootLayout({
           <main>{children}</main>
           <Footer />
           <BackToTop />
-          <ThemePreview />
           <AnalyticsTracker />
           <GoogleAnalytics />
         </ThemeProvider>

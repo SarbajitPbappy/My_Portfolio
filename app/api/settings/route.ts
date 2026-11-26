@@ -7,7 +7,7 @@ export async function GET() {
     return NextResponse.json(data)
   } catch (error: any) {
     console.error('Error fetching settings:', error)
-    return NextResponse.json({ dark_mode: false, theme: 'modern' })
+    return NextResponse.json({ dark_mode: false, theme: 'academic' })
   }
 }
 

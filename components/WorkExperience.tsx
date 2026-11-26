@@ -4,11 +4,8 @@ import { useEffect, useState } from 'react'
 import { motion } from 'framer-motion'
 import type { WorkExperience } from '@/lib/types'
 import { iconMap } from '@/lib/icons'
-import dynamic from 'next/dynamic'
 import { useTheme } from '@/components/ThemeProvider'
 
-// 3D variant for the Multiverse theme, split out so other themes never load it.
-const ExperienceMV = dynamic(() => import('@/components/multiverse/ExperienceMV'))
 
 const fadeIn = {
   initial: { opacity: 0, y: 16 },
@@ -117,7 +114,6 @@ export default function WorkExperience({
     )
   }
 
-  if (theme === 'multiverse') return <ExperienceMV roles={roles} />
   return (
     <section id="experience" className="section-container relative overflow-hidden">
       <div className="absolute inset-0 overflow-hidden pointer-events-none">
@@ -126,7 +122,7 @@ export default function WorkExperience({
       </div>
 
       <div className="max-w-5xl mx-auto relative z-10">
-        <motion.div {...fadeIn} className="text-center mb-12">
+        <motion.div {...fadeIn} className="section-head text-center mb-12">
           <h2 className="text-4xl md:text-5xl font-bold mb-4">
             Work Experience & <span className="gradient-text">Volunteering</span>
           </h2>

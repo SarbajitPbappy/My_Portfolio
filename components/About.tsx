@@ -3,11 +3,8 @@
 import { useEffect, useState } from 'react'
 import { motion } from 'framer-motion'
 import type { About } from '@/lib/types'
-import dynamic from 'next/dynamic'
 import { useTheme } from '@/components/ThemeProvider'
 
-// 3D variant for the Multiverse theme, split out so other themes never load it.
-const AboutMV = dynamic(() => import('@/components/multiverse/AboutMV'))
 
 const fadeIn = {
   initial: { opacity: 0, y: 14 },
@@ -90,7 +87,6 @@ export default function About({
   }
 
   const aboutData = about || fallbackAbout
-  if (theme === 'multiverse') return <AboutMV about={aboutData} photo={profileImageUrl || '/profile.jpg'} />
   return (
     <section id="about" className="section-container relative overflow-hidden">
       <div className="absolute inset-0 overflow-hidden pointer-events-none">
@@ -99,7 +95,7 @@ export default function About({
       </div>
 
       <motion.div {...fadeIn} className="max-w-5xl mx-auto relative z-10 space-y-10">
-        <div className="text-center">
+        <div className="about-head text-center">
           <h2 className="text-5xl md:text-6xl font-bold mb-4">
             {aboutData.title?.split(' ')[0] || 'About'} <span className="gradient-text">{aboutData.title?.split(' ').slice(1).join(' ') || 'Me'}</span>
           </h2>
@@ -108,46 +104,18 @@ export default function About({
           </p>
         </div>
 
-        <div className="grid md:grid-cols-2 gap-8 items-start">
-          <motion.div {...fadeIn} className="space-y-4">
-            <div className="frosted-card p-6">
-              <h3 className="text-2xl font-bold text-theme-text mb-3">What drives me</h3>
-              <p className="text-theme-text-muted leading-relaxed">
-                I love translating complex ideas into accessible, reliable systems. Whether mentoring students or iterating on research, I prioritize clarity, reproducibility, and meaningful impact.
-              </p>
-              {aboutData.quick_facts && aboutData.quick_facts.length > 0 && (
-                <>
-                  <div className="soft-divider my-4" />
-                  <dl className="grid grid-cols-[auto_minmax(0,1fr)] items-baseline gap-x-4 gap-y-3">
-                    {aboutData.quick_facts.map((item, i) => (
-                      <div key={i} className="contents">
-                        <dt className="text-xs font-semibold uppercase tracking-wide text-theme-primary whitespace-nowrap">{item.label}</dt>
-                        <dd className="text-theme-text-muted">{item.value}</dd>
-                      </div>
-                    ))}
-                  </dl>
-                </>
-              )}
-            </div>
-          </motion.div>
-
-          {aboutData.values && aboutData.values.length > 0 && (
-            <motion.div {...fadeIn} transition={{ ...fadeIn.transition, delay: 0.1 }} className="grid gap-4">
-              {aboutData.values.map((value, idx) => (
-                <motion.div
-                  key={idx}
-                  whileHover={{ y: -4 }}
-                  transition={{ delay: idx * 0.05 }}
-                  className="frosted-card p-5"
-                >
-                  <p className="text-xs uppercase tracking-wide text-theme-primary font-semibold mb-1">Value {idx + 1}</p>
-                  <h4 className="text-xl font-semibold text-theme-text mb-2">{value.title}</h4>
-                  <p className="text-theme-text-muted leading-relaxed">{value.description}</p>
-                </motion.div>
+        {aboutData.quick_facts && aboutData.quick_facts.length > 0 && (
+          <motion.div {...fadeIn} className="frosted-card p-6 max-w-3xl mx-auto">
+            <dl className="grid grid-cols-[auto_minmax(0,1fr)] items-baseline gap-x-4 gap-y-3">
+              {aboutData.quick_facts.map((item, i) => (
+                <div key={i} className="contents">
+                  <dt className="text-xs font-semibold uppercase tracking-wide text-theme-primary whitespace-nowrap">{item.label}</dt>
+                  <dd className="text-theme-text-muted">{item.value}</dd>
+                </div>
               ))}
-            </motion.div>
-          )}
-        </div>
+            </dl>
+          </motion.div>
+        )}
       </motion.div>
     </section>
   )
