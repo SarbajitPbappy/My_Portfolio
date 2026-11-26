@@ -139,8 +139,8 @@ export default function WorkExperience({
               transition={{ ...fadeIn.transition, delay: idx * 0.05 }}
               className="group relative overflow-hidden rounded-2xl p-[1px] bg-gradient-to-r from-theme-border/40 via-theme-primary/25 to-theme-border/40 shadow-lg hover:shadow-xl transition-all hover:-translate-y-1"
             >
-              <div className="relative rounded-2xl bg-theme-surface/75 backdrop-blur-xl border border-white/60 p-6 h-full">
-                <div className="flex items-start gap-4">
+              <div className="relative rounded-2xl bg-theme-surface/75 backdrop-blur-xl border border-white/60 p-4 sm:p-6 h-full">
+                <div className="flex flex-col sm:flex-row sm:items-start gap-3 sm:gap-4">
                   <div className={`w-12 h-12 shrink-0 rounded-xl bg-gradient-to-br ${role.gradient} flex items-center justify-center text-white shadow-md`}>
                     {(() => {
                       const Icon = role.icon && iconMap[role.icon] ? iconMap[role.icon] : iconMap.Briefcase
@@ -149,8 +149,8 @@ export default function WorkExperience({
                   </div>
                   <div className="min-w-0 flex-1 space-y-2">
                     <div className="flex items-start justify-between gap-2">
-                      <div>
-                        <h3 className="text-xl font-semibold text-theme-text">{role.title}</h3>
+                      <div className="min-w-0">
+                        <h3 className="text-lg sm:text-xl font-semibold text-theme-text">{role.title}</h3>
                         <p className="text-theme-primary font-medium">{role.organization}</p>
                       </div>
                       <span

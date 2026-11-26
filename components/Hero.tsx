@@ -8,7 +8,8 @@ import Image from 'next/image'
 import type { Hero, Publication } from '@/lib/types'
 import SaliencyFigure from '@/components/figures/SaliencyFigure'
 import { countJournalArticles } from '@/lib/publications'
-import { siteConfig } from '@/lib/site'
+import type { SiteContent } from '@/lib/siteContent'
+import { useSiteContent } from '@/lib/useSiteContent'
 
 
 // Fallback data
@@ -30,10 +31,13 @@ const fallbackHero: Hero = {
 export default function Hero({
   initialData,
   publications,
+  content: initialContent,
 }: {
   initialData?: Hero | null
   publications?: Publication[]
+  content?: SiteContent
 } = {}) {
+  const content = useSiteContent(initialContent)
   // Seeded from the server (SSR) when `initialData` is provided (even if null →
   // fallback). Only fetches on the client when rendered without a seed.
   const seeded = initialData !== undefined
@@ -77,14 +81,14 @@ export default function Hero({
 
   const heroData = hero || fallbackHero
   // The journal count comes from the publication records so it can't drift.
-  const facts = siteConfig.facts.map((f) =>
+  const facts = content.facts.map((f) =>
     f.label === 'journal papers' && publications?.length
       ? { ...f, value: String(countJournalArticles(publications)) }
       : f
   )
   const links = [
-    { href: siteConfig.social.scholar, label: 'Google Scholar', Icon: BookOpen },
-    { href: siteConfig.social.orcid, label: 'ORCID', Icon: Globe },
+    content.scholarUrl && { href: content.scholarUrl, label: 'Google Scholar', Icon: BookOpen },
+    content.orcidUrl && { href: content.orcidUrl, label: 'ORCID', Icon: Globe },
     heroData.github_url && { href: heroData.github_url, label: 'GitHub', Icon: Github },
     heroData.linkedin_url && { href: heroData.linkedin_url, label: 'LinkedIn', Icon: Linkedin },
   ].filter((l): l is { href: string; label: string; Icon: typeof Github } => Boolean(l))
@@ -106,7 +110,7 @@ export default function Hero({
             <div className="flex items-center gap-4 mb-7">
               <div className="relative w-16 h-16 sm:w-[72px] sm:h-[72px] shrink-0 rounded-theme-md overflow-hidden ring-1 ring-theme-border bg-theme-surface">
                 <Image
-                  src={siteConfig.headshot}
+                  src={content.headshotUrl}
                   alt={`Portrait of ${heroData.name}`}
                   fill
                   className="object-cover object-top"
@@ -116,7 +120,7 @@ export default function Hero({
               </div>
               <div className="min-w-0 text-sm leading-snug">
                 {heroData.title && <p className="text-theme-text font-medium">{heroData.title}</p>}
-                <p className="font-mono text-xs text-theme-text-muted mt-1">{siteConfig.location} · {siteConfig.shortTitle}</p>
+                <p className="font-mono text-xs text-theme-text-muted mt-1">{[content.location, content.shortTitle].filter(Boolean).join(' · ')}</p>
               </div>
             </div>
 
@@ -125,16 +129,16 @@ export default function Hero({
             </h1>
 
             <p className="mt-6 text-lg md:text-xl text-theme-text leading-relaxed max-w-[38ch] md:max-w-[44ch]">
-              {siteConfig.researchLine}
+              {content.researchLine}
             </p>
 
-            {siteConfig.availability && (
+            {content.availability && (
               <p className="mt-6 inline-flex items-center gap-2.5 font-mono text-xs text-theme-text">
                 <span className="relative flex w-2 h-2" aria-hidden>
                   <span className="absolute inline-flex w-full h-full rounded-full bg-[#f98c0a] opacity-60 motion-safe:animate-ping" />
                   <span className="relative inline-flex w-2 h-2 rounded-full bg-[#f98c0a]" />
                 </span>
-                {siteConfig.availability}
+                {content.availability}
               </p>
             )}
 
@@ -192,15 +196,15 @@ export default function Hero({
           </motion.div>
 
           <motion.div {...rise(0.08)} className="min-w-0 lg:pt-2">
-            <SaliencyFigure />
+            <SaliencyFigure caption={content.fig1Caption} />
           </motion.div>
         </div>
 
-        {siteConfig.news.length > 0 && (
+        {content.news.length > 0 && (
           <div className="mt-14 border-t border-theme-border pt-5">
             <h2 className="font-mono text-[11px] uppercase tracking-[0.14em] text-theme-text-muted mb-3">Latest</h2>
             <ul className="grid gap-2 md:grid-cols-3 md:gap-8">
-              {siteConfig.news.map((n) => (
+              {content.news.map((n) => (
                 <li key={n.text} className="flex gap-3 text-sm">
                   <span className="shrink-0 font-mono text-xs text-theme-text-muted pt-0.5 tabular-nums w-14">{n.date}</span>
                   <span className="text-theme-text">{n.text}</span>

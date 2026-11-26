@@ -9,7 +9,6 @@ export default function AboutManager() {
   const [loading, setLoading] = useState(true)
   const [formData, setFormData] = useState<Partial<About>>({})
   const [showForm, setShowForm] = useState(false)
-  const [newValue, setNewValue] = useState({ title: '', description: '' })
   const [newFact, setNewFact] = useState({ label: '', value: '' })
 
   useEffect(() => {
@@ -67,21 +66,6 @@ export default function AboutManager() {
     }
   }
 
-  const addValue = () => {
-    if (newValue.title && newValue.description) {
-      setFormData({
-        ...formData,
-        values: [...(formData.values || []), { ...newValue }],
-      })
-      setNewValue({ title: '', description: '' })
-    }
-  }
-
-  const removeValue = (index: number) => {
-    const values = formData.values?.filter((_, i) => i !== index) || []
-    setFormData({ ...formData, values })
-  }
-
   const addFact = () => {
     if (newFact.label && newFact.value) {
       setFormData({
@@ -103,7 +87,7 @@ export default function AboutManager() {
 
   return (
     <div className="space-y-6">
-      <div className="flex justify-between items-center">
+      <div className="flex flex-wrap justify-between items-center gap-3">
         <h2 className="text-2xl font-bold text-gray-900">About Section</h2>
         {!item && (
           <button
@@ -117,7 +101,7 @@ export default function AboutManager() {
       </div>
 
       {showForm && (
-        <div className="bg-white rounded-xl shadow-lg p-6 border border-gray-200">
+        <div className="bg-white rounded-xl shadow-lg p-4 sm:p-6 border border-gray-200">
           <div className="space-y-4">
             <div>
               <label className="block text-sm font-medium text-gray-700 mb-1">Section Title *</label>
@@ -142,78 +126,13 @@ export default function AboutManager() {
               />
             </div>
 
-            <div className="border-t pt-4">
-              <label className="block text-sm font-medium text-gray-700 mb-2">Values</label>
-              <div className="space-y-2 mb-3">
-                {formData.values?.map((value, index) => (
-                  <div key={index} className="p-3 bg-gray-50 rounded-lg border border-gray-200">
-                    <div className="space-y-2">
-                      <div>
-                        <label className="block text-xs font-medium text-gray-600 mb-1">Value Title</label>
-                        <input
-                          type="text"
-                          value={value.title}
-                          onChange={(e) => {
-                            const values = [...(formData.values || [])]
-                            values[index] = { ...value, title: e.target.value }
-                            setFormData({ ...formData, values })
-                          }}
-                          className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-transparent text-sm"
-                        />
-                      </div>
-                      <div>
-                        <label className="block text-xs font-medium text-gray-600 mb-1">Value Description</label>
-                        <textarea
-                          value={value.description}
-                          onChange={(e) => {
-                            const values = [...(formData.values || [])]
-                            values[index] = { ...value, description: e.target.value }
-                            setFormData({ ...formData, values })
-                          }}
-                          className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-transparent text-sm"
-                          rows={2}
-                        />
-                      </div>
-                    </div>
-                    <button
-                      onClick={() => removeValue(index)}
-                      className="mt-2 px-3 py-1.5 bg-red-100 text-red-600 rounded-lg hover:bg-red-200 text-sm"
-                    >
-                      Remove
-                    </button>
-                  </div>
-                ))}
-              </div>
-              <div className="grid grid-cols-2 gap-2 mb-2">
-                <input
-                  type="text"
-                  value={newValue.title}
-                  onChange={(e) => setNewValue({ ...newValue, title: e.target.value })}
-                  placeholder="Value title"
-                  className="px-3 py-2 border border-gray-300 rounded-lg"
-                />
-                <input
-                  type="text"
-                  value={newValue.description}
-                  onChange={(e) => setNewValue({ ...newValue, description: e.target.value })}
-                  placeholder="Value description"
-                  className="px-3 py-2 border border-gray-300 rounded-lg"
-                />
-              </div>
-              <button
-                onClick={addValue}
-                className="px-4 py-2 bg-gray-100 text-gray-700 rounded-lg hover:bg-gray-200"
-              >
-                + Add Value
-              </button>
-            </div>
 
             <div className="border-t pt-4">
               <label className="block text-sm font-medium text-gray-700 mb-2">Quick Facts</label>
               <div className="space-y-2 mb-3">
                 {formData.quick_facts?.map((fact, index) => (
                   <div key={index} className="p-3 bg-gray-50 rounded-lg border border-gray-200">
-                    <div className="grid grid-cols-2 gap-2">
+                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
                       <div>
                         <label className="block text-xs font-medium text-gray-600 mb-1">Fact Label</label>
                         <input
@@ -250,7 +169,7 @@ export default function AboutManager() {
                   </div>
                 ))}
               </div>
-              <div className="grid grid-cols-2 gap-2 mb-2">
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-2 mb-2">
                 <input
                   type="text"
                   value={newFact.label}
@@ -295,8 +214,8 @@ export default function AboutManager() {
       )}
 
       {item && !showForm && (
-        <div className="bg-white rounded-xl shadow-sm p-6 border border-gray-200">
-          <div className="flex justify-between items-start">
+        <div className="bg-white rounded-xl shadow-sm p-4 sm:p-6 border border-gray-200">
+          <div className="flex justify-between items-start gap-3">
             <div>
               <h3 className="text-lg font-semibold text-gray-900">{item.title}</h3>
               <p className="text-gray-600 text-sm mt-2">{item.description}</p>

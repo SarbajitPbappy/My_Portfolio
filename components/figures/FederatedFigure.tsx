@@ -22,7 +22,7 @@ const SITES = [
   { id: 'D', x: W - 78, y: H - 62 },
 ]
 
-export default function FederatedFigure() {
+export default function FederatedFigure({ caption }: { caption?: string }) {
   const [round, setRound] = useState(1)
   const [animate, setAnimate] = useState(false)
 
@@ -128,11 +128,11 @@ export default function FederatedFigure() {
           </g>
         </svg>
       </div>
-      <figcaption className="fig-caption mt-3">
-        <b>Fig. 2</b> Federated learning across hospitals. Each site trains on its own patients; only model
-        updates travel to the aggregator, which returns a weighted average (FedAvg). Patient images never leave
-        the hospital. Schematic.
-      </figcaption>
+      {caption && (
+        <figcaption className="fig-caption mt-3">
+          <b>Fig. 2</b> {caption}
+        </figcaption>
+      )}
     </figure>
   )
 }

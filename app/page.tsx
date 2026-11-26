@@ -18,6 +18,7 @@ import {
   getPublications,
   getProjects,
   getContactInfo,
+  getSiteContent,
 } from '@/lib/db'
 
 // Serve statically-cached HTML (fast TTFB) and regenerate in the background at
@@ -43,6 +44,7 @@ export default async function Home() {
     publications,
     projects,
     contactInfo,
+    siteContent,
   ] = await Promise.allSettled([
     getHero(),
     getAbout(),
@@ -54,25 +56,29 @@ export default async function Home() {
     getPublications(),
     getProjects(),
     getContactInfo(),
+    getSiteContent(),
   ])
 
   const publicationsData = settled(publications)
+  const content = settled(siteContent)
 
   return (
     <div className="min-h-screen">
-      <StructuredData hero={settled(hero) ?? null} publications={publicationsData ?? []} />
-      <Hero initialData={settled(hero) ?? null} publications={publicationsData} />
+      <StructuredData hero={settled(hero) ?? null} publications={publicationsData ?? []} headshot={content?.headshotUrl} />
+      <Hero initialData={settled(hero) ?? null} publications={publicationsData} content={content} />
       {/* Order is tuned for academic readers: research and publications first.
           Keep it in sync with the Navbar items. */}
       <ResearchAndPublications
         initialResearchAreas={settled(researchAreas)}
         initialPublications={publicationsData}
+        content={content}
       />
       <About initialData={settled(about) ?? null} profileImageUrl={settled(hero)?.profile_image_url} />
       <WorkExperience initialRoles={settled(roles)} />
       <Education
         initialEducation={settled(education)}
         initialCourses={settled(courses)}
+        content={content}
       />
       <Projects initialProjects={settled(projects)} />
       <Skills initialSkills={settled(skills)} />

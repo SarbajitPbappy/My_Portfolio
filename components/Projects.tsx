@@ -161,7 +161,7 @@ export default function Projects({ initialProjects }: { initialProjects?: Projec
               variants={staggerItem}
               whileHover={{ y: -8 }}
               transition={springSnappy}
-              className={`group relative flex flex-col bg-theme-surface border border-theme-border rounded-2xl p-6 shadow-sm hover:shadow-xl transition-shadow ${lastRowSpan(i, featured.length, 2)}`}
+              className={`group relative flex flex-col bg-theme-surface border border-theme-border rounded-2xl p-4 sm:p-6 shadow-sm hover:shadow-xl transition-shadow ${lastRowSpan(i, featured.length, 2)}`}
             >
               <div className={`w-14 h-14 rounded-2xl bg-gradient-to-br ${project.gradient} flex items-center justify-center mb-4 text-white shadow-lg transition-transform duration-300 group-hover:scale-110 group-hover:-rotate-3`}>
                 {(() => {

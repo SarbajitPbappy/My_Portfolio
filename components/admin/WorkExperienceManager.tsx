@@ -125,7 +125,7 @@ export default function WorkExperienceManager() {
 
   return (
     <div className="space-y-6">
-      <div className="flex justify-between items-center">
+      <div className="flex flex-wrap justify-between items-center gap-3">
         <h2 className="text-2xl font-bold text-gray-900">Work Experience</h2>
         <div className="flex gap-2">
           {items.length > 0 && (
@@ -148,7 +148,7 @@ export default function WorkExperienceManager() {
       </div>
 
       {showForm && (
-        <div className="bg-white rounded-xl shadow-lg p-6 border border-gray-200">
+        <div className="bg-white rounded-xl shadow-lg p-4 sm:p-6 border border-gray-200">
           <div className="space-y-4">
             <div>
               <label className="block text-sm font-medium text-gray-700 mb-1">Title *</label>
@@ -202,7 +202,7 @@ export default function WorkExperienceManager() {
                 required
               />
             </div>
-            <div className="grid grid-cols-2 gap-4">
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
               <div>
                 <label className="block text-sm font-medium text-gray-700 mb-1">Type</label>
                 <select
@@ -275,9 +275,9 @@ export default function WorkExperienceManager() {
 
       <div className="space-y-4">
         {items.map((item) => (
-          <div key={item.id} className="bg-white rounded-xl shadow-sm p-6 border border-gray-200">
-            <div className="flex justify-between items-start">
-              <div className="flex-1">
+          <div key={item.id} className="bg-white rounded-xl shadow-sm p-4 sm:p-6 border border-gray-200">
+            <div className="flex justify-between items-start gap-3">
+              <div className="flex-1 min-w-0 break-words">
                 <div className="flex items-start justify-between gap-2">
                   <div>
                     <h3 className="text-lg font-semibold text-gray-900">{item.title}</h3>

@@ -123,7 +123,7 @@ export default function ContactManager() {
 
   return (
     <div className="space-y-6">
-      <div className="flex justify-between items-center">
+      <div className="flex flex-wrap justify-between items-center gap-3">
         <h2 className="text-2xl font-bold text-gray-900">Contact Information</h2>
         <div className="flex gap-2">
           {items.length > 0 && (
@@ -146,7 +146,7 @@ export default function ContactManager() {
       </div>
 
       {showForm && (
-        <div className="bg-white rounded-xl shadow-lg p-6 border border-gray-200">
+        <div className="bg-white rounded-xl shadow-lg p-4 sm:p-6 border border-gray-200">
           <div className="space-y-4">
             <div>
               <label className="block text-sm font-medium text-gray-700 mb-1">Icon *</label>
@@ -181,7 +181,7 @@ export default function ContactManager() {
                 required
               />
             </div>
-            <div className="grid grid-cols-2 gap-4">
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
               <div>
                 <label className="block text-sm font-medium text-gray-700 mb-1">Gradient</label>
                 <select
@@ -254,9 +254,9 @@ export default function ContactManager() {
 
       <div className="space-y-4">
         {items.map((item) => (
-          <div key={item.id} className="bg-white rounded-xl shadow-sm p-6 border border-gray-200">
-            <div className="flex justify-between items-start">
-              <div className="flex-1">
+          <div key={item.id} className="bg-white rounded-xl shadow-sm p-4 sm:p-6 border border-gray-200">
+            <div className="flex justify-between items-start gap-3">
+              <div className="flex-1 min-w-0 break-words">
                 <div className="flex items-center gap-3">
                   <span className="text-sm font-medium text-gray-500">{item.icon}</span>
                   <h3 className="text-lg font-semibold text-gray-900">{item.text}</h3>

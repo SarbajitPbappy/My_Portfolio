@@ -1,3 +1,4 @@
+import PublicOnly from '@/components/PublicOnly'
 import type { Metadata } from 'next'
 import { GeistSans } from 'geist/font/sans'
 import { GeistMono } from 'geist/font/mono'
@@ -89,12 +90,16 @@ export default async function RootLayout({
     >
       <body>
         <ThemeProvider initialTheme={theme} initialDark={dark}>
-          <ThemeBackground />
-          <ScrollProgress />
-          <Navbar />
+          <PublicOnly>
+            <ThemeBackground />
+            <ScrollProgress />
+            <Navbar />
+          </PublicOnly>
           <main>{children}</main>
-          <Footer />
-          <BackToTop />
+          <PublicOnly>
+            <Footer />
+            <BackToTop />
+          </PublicOnly>
           <AnalyticsTracker />
           <GoogleAnalytics />
         </ThemeProvider>

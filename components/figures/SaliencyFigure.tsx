@@ -204,7 +204,7 @@ function soften(src: HTMLCanvasElement) {
 
 const HOTSPOT = { x: BLOBS[0].x, y: BLOBS[0].y }
 
-export default function SaliencyFigure() {
+export default function SaliencyFigure({ caption }: { caption?: string }) {
   const canvasRef = useRef<HTMLCanvasElement>(null)
   const wrapRef = useRef<HTMLDivElement>(null)
   const imgs = useRef<{ base: HTMLCanvasElement; heat: HTMLCanvasElement } | null>(null)
@@ -414,10 +414,11 @@ export default function SaliencyFigure() {
         <span className="ml-1">saliency</span>
       </div>
 
-      <figcaption className="fig-caption mt-3">
-        <b>Fig. 1</b> Explanation, not just prediction. A Grad-CAM-style map shows which regions drive a
-        classifier&rsquo;s output. Move the pointer over the slice to inspect it. Synthetic image, for illustration.
-      </figcaption>
+      {caption && (
+        <figcaption className="fig-caption mt-3">
+          <b>Fig. 1</b> {caption}
+        </figcaption>
+      )}
     </figure>
   )
 }

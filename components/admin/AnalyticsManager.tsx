@@ -669,7 +669,7 @@ export default function AnalyticsManager() {
 
           {/* Table twin — every plotted value readable without hovering. */}
           {showTable && (
-            <div className="mt-5 max-h-72 overflow-y-auto rounded-lg border border-gray-200 dark:border-gray-700">
+            <div className="mt-5 max-h-72 overflow-auto rounded-lg border border-gray-200 dark:border-gray-700">
               <table className="w-full text-sm">
                 <caption className="sr-only">Daily visitors and page views</caption>
                 <thead className="sticky top-0 bg-gray-50 dark:bg-gray-900">

@@ -122,7 +122,7 @@ export default function CoursesManager() {
 
   return (
     <div className="space-y-6">
-      <div className="flex justify-between items-center">
+      <div className="flex flex-wrap justify-between items-center gap-3">
         <h2 className="text-2xl font-bold text-gray-900">Courses & Certifications</h2>
         <div className="flex gap-2">
           {items.length > 0 && (
@@ -145,7 +145,7 @@ export default function CoursesManager() {
       </div>
 
       {showForm && (
-        <div className="bg-white rounded-xl shadow-lg p-6 border border-gray-200">
+        <div className="bg-white rounded-xl shadow-lg p-4 sm:p-6 border border-gray-200">
           <div className="space-y-4">
             <div>
               <label className="block text-sm font-medium text-gray-700 mb-1">Title *</label>
@@ -210,9 +210,9 @@ export default function CoursesManager() {
 
       <div className="space-y-4">
         {items.map((item) => (
-          <div key={item.id} className="bg-white rounded-xl shadow-sm p-6 border border-gray-200">
-            <div className="flex justify-between items-start">
-              <div className="flex-1">
+          <div key={item.id} className="bg-white rounded-xl shadow-sm p-4 sm:p-6 border border-gray-200">
+            <div className="flex justify-between items-start gap-3">
+              <div className="flex-1 min-w-0 break-words">
                 <h3 className="text-lg font-semibold text-primary-600 mb-1">{item.title}</h3>
                 <p className="text-gray-600 text-sm">{item.desc}</p>
                 {item.verifyLink && (
