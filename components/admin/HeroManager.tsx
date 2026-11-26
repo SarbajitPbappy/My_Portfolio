@@ -103,7 +103,7 @@ export default function HeroManager() {
       description: '',
       email: '',
       phone: '',
-      cv_url: '/Bappy_CV_Official.pdf',
+      cv_url: '/cv.pdf',
       github_url: 'https://github.com/SarbajitPbappy',
       linkedin_url: 'https://linkedin.com/in/iamsarbajit',
       profile_image_url: '/profile.jpg',

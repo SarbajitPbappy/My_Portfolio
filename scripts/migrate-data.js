@@ -328,7 +328,7 @@ const heroData = {
   description: 'Passionate about Deep Learning, Computer Vision, and Explainable AI for healthcare and agriculture.',
   email: 'bappy15-6155@s.diu.edu.bd',
   phone: '+880 1315352270',
-  cv_url: '/Bappy_CV_Official.pdf',
+  cv_url: '/cv.pdf',
   github_url: 'https://github.com/SarbajitPbappy',
   linkedin_url: 'https://linkedin.com/in/iamsarbajit',
   profile_image_url: '/profile.jpg',

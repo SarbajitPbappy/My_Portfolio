@@ -7,14 +7,9 @@ import { isTheme, type Theme, type Settings } from '@/lib/types'
 // Theme metadata for UI display
 export const themeOptions: { value: Theme; label: string; description: string; icon: string }[] = [
   { value: 'minimal', label: 'Minimal', description: 'Clean & simple', icon: '○' },
-  { value: 'modern', label: 'Modern', description: 'Vibrant & glass', icon: '◆' },
-  { value: 'aesthetic', label: 'Aesthetic', description: 'Soft & dreamy', icon: '✦' },
   { value: 'professional', label: 'Professional', description: 'Corporate & serious', icon: '■' },
   { value: 'academic', label: 'Academic', description: 'Scholarly & research', icon: '◈' },
   { value: 'neural', label: 'Neural', description: 'Deep-tech neural network', icon: '⬡' },
-  { value: 'creative', label: 'Creative', description: 'Bold & mind-blowing', icon: '✺' },
-  { value: 'latent', label: 'Latent Space', description: 'Immersive 3D particle universe', icon: '◉' },
-  { value: 'multiverse', label: 'Multiverse', description: '3D glass prism, one ray per section', icon: '⬢' },
 ]
 
 interface ThemeContextType {
@@ -34,7 +29,7 @@ const ThemeContext = createContext<ThemeContextType | undefined>(undefined)
 
 export function ThemeProvider({
   children,
-  initialTheme = 'modern',
+  initialTheme = 'academic',
   initialDark = false,
 }: {
   children: React.ReactNode
@@ -121,7 +116,7 @@ export function ThemeProvider({
         setSettings(data.id ? data : { ...data, id: undefined })
         if (!skipApply && !previewingRef.current) {
           const darkModeValue = data.dark_mode || false
-          const themeValue = data.theme || 'modern'
+          const themeValue = data.theme || 'academic'
           setDarkMode(darkModeValue)
           setThemeState(themeValue)
           applyTheme(themeValue, darkModeValue)
@@ -129,15 +124,15 @@ export function ThemeProvider({
       } else if (!skipApply && !previewingRef.current) {
         // Default values if no settings
         setDarkMode(false)
-        setThemeState('modern')
-        applyTheme('modern', false)
+        setThemeState('academic')
+        applyTheme('academic', false)
       }
     } catch (error) {
       console.error('Error fetching settings:', error)
       if (!skipApply && !previewingRef.current) {
         setDarkMode(false)
-        setThemeState('modern')
-        applyTheme('modern', false)
+        setThemeState('academic')
+        applyTheme('academic', false)
       }
     } finally {
       setLoading(false)
@@ -285,7 +280,7 @@ export function ThemeProvider({
       localStorage.removeItem('previewTheme')
       localStorage.removeItem('previewDark')
     }
-    const t = settings?.theme || 'modern'
+    const t = settings?.theme || 'academic'
     const d = settings?.dark_mode || false
     setThemeState(t)
     setDarkMode(d)

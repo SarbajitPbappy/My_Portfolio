@@ -2,13 +2,11 @@
 
 import { useEffect, useState } from 'react'
 import { motion } from 'framer-motion'
+import { siteConfig } from '@/lib/site'
 import type { Education, Course } from '@/lib/types'
 import { iconMap } from '@/lib/icons'
-import dynamic from 'next/dynamic'
 import { useTheme } from '@/components/ThemeProvider'
 
-// 3D variant for the Multiverse theme, split out so other themes never load it.
-const EducationMV = dynamic(() => import('@/components/multiverse/EducationMV'))
 
 const fadeIn = {
   initial: { opacity: 0, y: 14 },
@@ -148,7 +146,6 @@ export default function Education({
     )
   }
 
-  if (theme === 'multiverse') return <EducationMV education={education} courses={courses} />
   return (
     <section id="education" className="section-container relative overflow-hidden">
       {/* Decorative background */}
@@ -158,7 +155,7 @@ export default function Education({
       </div>
 
       <motion.div className="relative z-10">
-        <motion.div {...fadeIn} className="text-center mb-16">
+        <motion.div {...fadeIn} className="section-head text-center mb-16">
           <h2 className="text-5xl md:text-6xl font-bold mb-6">
             <span className="gradient-text">Education</span>
           </h2>
@@ -258,7 +255,7 @@ export default function Education({
                         rel="noopener noreferrer"
                         whileHover={{ scale: 1.1, rotate: 3 }}
                         whileTap={{ scale: 0.95 }}
-                        className="flex-shrink-0 px-4 py-1.5 bg-theme-primary text-white text-sm font-semibold rounded-lg hover:bg-theme-primary-hover transition-colors"
+                        className="flex-shrink-0 px-4 py-1.5 bg-theme-primary text-theme-on-primary text-sm font-semibold rounded-lg hover:bg-theme-primary-hover transition-colors"
                       >
                         Verify
                       </motion.a>
@@ -268,6 +265,23 @@ export default function Education({
               ))}
             </div>
           </motion.div>
+        </motion.div>
+
+        <motion.div {...fadeIn} className="mt-8 max-w-4xl mx-auto">
+          <div className="card rounded-2xl p-6">
+            <h3 className="text-2xl font-bold mb-4 text-theme-text">Honours & Awards</h3>
+            <ul className="space-y-3">
+              {siteConfig.awards.map((a) => (
+                <li key={a.title} className="flex items-start justify-between gap-4">
+                  <div className="min-w-0">
+                    <p className="font-semibold text-theme-text">{a.title}</p>
+                    {a.detail && <p className="text-sm text-theme-text-muted">{a.detail}</p>}
+                  </div>
+                  <span className="shrink-0 font-mono text-sm text-theme-primary tabular-nums">{a.year}</span>
+                </li>
+              ))}
+            </ul>
+          </div>
         </motion.div>
       </motion.div>
     </section>

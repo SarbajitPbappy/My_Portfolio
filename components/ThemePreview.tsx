@@ -9,14 +9,9 @@ import type { Theme } from '@/lib/types'
 // Small colour cue per theme for the picker.
 const swatches: Record<Theme, string[]> = {
   minimal: ['#171717', '#737373', '#e5e5e5'],
-  modern: ['#0ea5e9', '#14b8a6', '#e2e8f0'],
-  aesthetic: ['#f472b6', '#c084fc', '#fde8ff'],
   professional: ['#1e3a8a', '#166534', '#d1d5db'],
-  academic: ['#7f1d1d', '#b45309', '#d6d3d1'],
+  academic: ['#3b2c8c', '#fca50a', '#d8dce0'],
   neural: ['#22d3ee', '#10b981', '#0f172a'],
-  creative: ['#d946ef', '#f59e0b', '#6366f1'],
-  latent: ['#8b5cf6', '#22d3ee', '#04050e'],
-  multiverse: ['#a78bfa', '#22d3ee', '#fb923c'],
 }
 
 /**
@@ -24,7 +19,7 @@ const swatches: Record<Theme, string[]> = {
  * (localStorage) via ThemeProvider's preview API — it never writes to the DB, so
  * it never changes what other visitors see. "Reset" returns to the admin default.
  */
-export default function ThemePreview() {
+export default function ThemePreview({ inNav = false }: { inNav?: boolean } = {}) {
   const { theme, darkMode, previewActive, previewSetTheme, previewToggleDark, resetPreview } = useTheme()
   const [open, setOpen] = useState(false)
   const [mounted, setMounted] = useState(false)
@@ -36,22 +31,33 @@ export default function ThemePreview() {
     const onDown = (e: MouseEvent) => {
       if (panelRef.current && !panelRef.current.contains(e.target as Node)) setOpen(false)
     }
-    if (open) document.addEventListener('mousedown', onDown)
-    return () => document.removeEventListener('mousedown', onDown)
+    const onKey = (e: KeyboardEvent) => {
+      if (e.key === 'Escape') setOpen(false)
+    }
+    if (open) {
+      document.addEventListener('mousedown', onDown)
+      document.addEventListener('keydown', onKey)
+    }
+    return () => {
+      document.removeEventListener('mousedown', onDown)
+      document.removeEventListener('keydown', onKey)
+    }
   }, [open])
 
-  if (!mounted) return null
+  // In the navbar the trigger must keep its space before mount, or the
+  // nav items would shift once JS loads.
+  if (!mounted) return inNav ? <span className="inline-block w-9 h-9" aria-hidden /> : null
 
   return (
-    <div ref={panelRef} className="fixed bottom-6 left-6 z-50">
+    <div ref={panelRef} className={inNav ? 'relative' : 'fixed bottom-6 left-6 z-50'}>
       <AnimatePresence>
         {open && (
           <motion.div
-            initial={{ opacity: 0, y: 16, scale: 0.95 }}
+            initial={{ opacity: 0, y: inNav ? -8 : 16, scale: 0.95 }}
             animate={{ opacity: 1, y: 0, scale: 1 }}
-            exit={{ opacity: 0, y: 16, scale: 0.95 }}
+            exit={{ opacity: 0, y: inNav ? -8 : 16, scale: 0.95 }}
             transition={{ type: 'spring', stiffness: 400, damping: 28 }}
-            className="absolute bottom-16 left-0 w-72 rounded-2xl overflow-hidden"
+            className={`absolute w-72 rounded-2xl overflow-hidden ${inNav ? 'top-12 right-0' : 'bottom-16 left-0'}`}
             style={{
               backgroundColor: 'rgb(var(--color-surface) / 0.97)',
               backdropFilter: 'blur(20px)',
@@ -156,14 +162,20 @@ export default function ThemePreview() {
         whileHover={{ scale: 1.08 }}
         whileTap={{ scale: 0.94 }}
         aria-label="Preview themes"
-        className="relative p-3 rounded-full"
-        style={{
-          backgroundColor: 'rgb(var(--color-surface))',
-          border: '1px solid rgb(var(--color-border))',
-          boxShadow: 'var(--shadow-lg)',
-        }}
+        aria-expanded={open}
+        title="Appearance"
+        className={inNav ? 'relative p-2 rounded-lg' : 'relative p-3 rounded-full'}
+        style={
+          inNav
+            ? { border: '1px solid rgb(var(--color-border) / 0.7)' }
+            : {
+                backgroundColor: 'rgb(var(--color-surface))',
+                border: '1px solid rgb(var(--color-border))',
+                boxShadow: 'var(--shadow-lg)',
+              }
+        }
       >
-        <Palette className="w-5 h-5" style={{ color: 'rgb(var(--color-primary))' }} />
+        <Palette className={inNav ? 'w-4 h-4' : 'w-5 h-5'} style={{ color: 'rgb(var(--color-primary))' }} />
         {previewActive && (
           <span
             className="absolute -top-0.5 -right-0.5 w-3 h-3 rounded-full"

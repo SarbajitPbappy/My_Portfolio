@@ -614,7 +614,7 @@ export async function deleteFooter(id: number) {
 // Settings CRUD
 export async function getSettings() {
   if (!process.env.NEXT_PUBLIC_SUPABASE_URL || !process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY) {
-    return { dark_mode: false, theme: 'modern' as const }
+    return { dark_mode: false, theme: 'academic' as const }
   }
   
   const { data, error } = await supabase
@@ -625,12 +625,12 @@ export async function getSettings() {
   
   if (error) {
     console.error('Supabase error:', error)
-    return { dark_mode: false, theme: 'modern' as const }
+    return { dark_mode: false, theme: 'academic' as const }
   }
   
   if (!data) {
     // Create default settings if none exist
-    const defaultSettings = await createSettings({ dark_mode: false, theme: 'modern' })
+    const defaultSettings = await createSettings({ dark_mode: false, theme: 'academic' })
     return defaultSettings
   }
   

@@ -6,11 +6,8 @@ import type { Skill } from '@/lib/types'
 import { categoryStyle } from '@/lib/skillCategories'
 import { lastRowSpan } from '@/lib/layout'
 import { staggerContainer, staggerItem, viewportOnce, springSnappy } from '@/lib/motion'
-import dynamic from 'next/dynamic'
 import { useTheme } from '@/components/ThemeProvider'
 
-// 3D variant for the Multiverse theme, split out so other themes never load it.
-const SkillsMV = dynamic(() => import('@/components/multiverse/SkillsMV'))
 
 const fadeIn = {
   initial: { opacity: 0, y: 12 },
@@ -59,7 +56,6 @@ export default function Skills({ initialSkills }: { initialSkills?: Skill[] } = 
     )
   }
 
-  if (theme === 'multiverse') return <SkillsMV skills={skills} />
 
   // Group skills by category
   const skillsByCategory = skills.reduce((acc, skill) => {
@@ -81,7 +77,7 @@ export default function Skills({ initialSkills }: { initialSkills?: Skill[] } = 
         </div>
 
         <div className="relative z-10">
-          <motion.div {...fadeIn} className="text-center mb-12">
+          <motion.div {...fadeIn} className="section-head text-center mb-12">
             <h2 className="text-5xl md:text-6xl font-bold mb-4">
               <span className="gradient-text">Skills</span>
             </h2>
@@ -105,7 +101,7 @@ export default function Skills({ initialSkills }: { initialSkills?: Skill[] } = 
       </div>
 
         <div className="relative z-10">
-          <motion.div {...fadeIn} className="text-center mb-12">
+          <motion.div {...fadeIn} className="section-head text-center mb-12">
             <h2 className="text-5xl md:text-6xl font-bold mb-4">
               <span className="gradient-text">Skills</span>
             </h2>

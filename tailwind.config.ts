@@ -20,6 +20,7 @@ const config: Config = {
         theme: {
           primary: 'rgb(var(--color-primary) / <alpha-value>)',
           'primary-hover': 'rgb(var(--color-primary-hover) / <alpha-value>)',
+          'on-primary': 'rgb(var(--color-on-primary, 255 255 255) / <alpha-value>)',
           accent: 'rgb(var(--color-accent) / <alpha-value>)',
           background: 'rgb(var(--color-background) / <alpha-value>)',
           surface: 'rgb(var(--color-surface) / <alpha-value>)',

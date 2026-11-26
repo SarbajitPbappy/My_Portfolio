@@ -62,18 +62,20 @@ export default async function Home() {
     <div className="min-h-screen">
       <StructuredData hero={settled(hero) ?? null} publications={publicationsData ?? []} />
       <Hero initialData={settled(hero) ?? null} publications={publicationsData} />
-      <About initialData={settled(about) ?? null} profileImageUrl={settled(hero)?.profile_image_url} />
-      <Education
-        initialEducation={settled(education)}
-        initialCourses={settled(courses)}
-      />
-      <Skills initialSkills={settled(skills)} />
-      <WorkExperience initialRoles={settled(roles)} />
+      {/* Order is tuned for academic readers: research and publications first.
+          Keep it in sync with the Navbar items. */}
       <ResearchAndPublications
         initialResearchAreas={settled(researchAreas)}
         initialPublications={publicationsData}
       />
+      <About initialData={settled(about) ?? null} profileImageUrl={settled(hero)?.profile_image_url} />
+      <WorkExperience initialRoles={settled(roles)} />
+      <Education
+        initialEducation={settled(education)}
+        initialCourses={settled(courses)}
+      />
       <Projects initialProjects={settled(projects)} />
+      <Skills initialSkills={settled(skills)} />
       <Contact initialContactInfo={settled(contactInfo)} />
     </div>
   )

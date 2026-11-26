@@ -7,11 +7,8 @@ import Link from 'next/link'
 import type { Project } from '@/lib/types'
 import { lastRowSpan } from '@/lib/layout'
 import { staggerContainer, staggerItem, viewportOnce, springSnappy } from '@/lib/motion'
-import dynamic from 'next/dynamic'
 import { useTheme } from '@/components/ThemeProvider'
 
-// 3D variant for the Multiverse theme, split out so other themes never load it.
-const ProjectsMV = dynamic(() => import('@/components/multiverse/ProjectsMV'))
 
 const fadeIn = {
   initial: { opacity: 0, y: 12 },
@@ -86,6 +83,8 @@ const fallbackProjects: Project[] = [
   },
 ]
 
+const OTHER_CATEGORIES = ['Web Application', 'Academic Project', 'Data Analysis']
+
 export default function Projects({ initialProjects }: { initialProjects?: Project[] } = {}) {
   const seeded = initialProjects !== undefined
   const { theme } = useTheme()
@@ -120,6 +119,10 @@ export default function Projects({ initialProjects }: { initialProjects?: Projec
     }
   }
 
+  // Research-relevant work leads; general web/database coursework is folded away.
+  const featured = projects.filter((p) => !OTHER_CATEGORIES.includes(p.category))
+  const other = projects.filter((p) => OTHER_CATEGORIES.includes(p.category))
+
   if (loading) {
     return (
       <section id="projects" className="section-container bg-theme-surface">
@@ -128,7 +131,6 @@ export default function Projects({ initialProjects }: { initialProjects?: Projec
     )
   }
 
-  if (theme === 'multiverse') return <ProjectsMV projects={projects} />
   return (
     <section id="projects" className="section-container bg-theme-surface relative overflow-hidden">
       <div className="absolute inset-0 overflow-hidden pointer-events-none">
@@ -137,12 +139,12 @@ export default function Projects({ initialProjects }: { initialProjects?: Projec
       </div>
 
       <div className="relative z-10">
-        <motion.div {...fadeIn} className="text-center mb-12">
+        <motion.div {...fadeIn} className="section-head text-center mb-12">
           <h2 className="text-5xl md:text-6xl font-bold mb-4">
             <span className="gradient-text">Projects</span>
           </h2>
           <p className="text-lg text-theme-text-muted">
-            Showcasing my work in machine learning, deep learning, and data analysis
+            Research software in machine learning, medical imaging and explainable AI
           </p>
         </motion.div>
 
@@ -153,13 +155,13 @@ export default function Projects({ initialProjects }: { initialProjects?: Projec
           viewport={viewportOnce}
           className="grid md:grid-cols-2 gap-6"
         >
-          {projects.map((project, i) => (
+          {featured.map((project, i) => (
             <motion.div
               key={project.title}
               variants={staggerItem}
               whileHover={{ y: -8 }}
               transition={springSnappy}
-              className={`group relative flex flex-col bg-theme-surface border border-theme-border rounded-2xl p-6 shadow-sm hover:shadow-xl transition-shadow ${lastRowSpan(i, projects.length, 2)}`}
+              className={`group relative flex flex-col bg-theme-surface border border-theme-border rounded-2xl p-6 shadow-sm hover:shadow-xl transition-shadow ${lastRowSpan(i, featured.length, 2)}`}
             >
               <div className={`w-14 h-14 rounded-2xl bg-gradient-to-br ${project.gradient} flex items-center justify-center mb-4 text-white shadow-lg transition-transform duration-300 group-hover:scale-110 group-hover:-rotate-3`}>
                 {(() => {
@@ -205,12 +207,42 @@ export default function Projects({ initialProjects }: { initialProjects?: Projec
           ))}
         </motion.div>
 
+        {other.length > 0 && (
+          <details className="mt-10 group/other rounded-2xl border border-theme-border bg-theme-surface">
+            <summary className="cursor-pointer list-none px-6 py-4 flex items-center justify-between gap-3 font-semibold text-theme-text">
+              <span>Other software projects ({other.length})</span>
+              <span className="text-sm font-medium text-theme-text-muted group-open/other:hidden">Show</span>
+              <span className="text-sm font-medium text-theme-text-muted hidden group-open/other:inline">Hide</span>
+            </summary>
+            <ul className="divide-y divide-theme-border border-t border-theme-border">
+              {other.map((project) => (
+                <li key={project.title} className="px-6 py-4 flex flex-wrap items-start justify-between gap-3">
+                  <div className="min-w-0 flex-1">
+                    <p className="font-semibold text-theme-text">{project.title}</p>
+                    <p className="text-sm text-theme-text-muted">{project.technologies.slice(0, 5).join(' · ')}</p>
+                  </div>
+                  {project.github && (
+                    <Link
+                      href={project.github}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="inline-flex items-center gap-1.5 text-sm font-semibold text-theme-primary"
+                    >
+                      <Github className="w-4 h-4" /> GitHub
+                    </Link>
+                  )}
+                </li>
+              ))}
+            </ul>
+          </details>
+        )}
+
         <motion.div {...fadeIn} className="mt-12 text-center">
           <Link
             href="https://github.com/SarbajitPbappy"
             target="_blank"
             rel="noopener noreferrer"
-            className="inline-flex items-center gap-3 bg-theme-primary text-white px-6 py-3 rounded-xl hover:bg-theme-primary-hover transition-colors font-semibold shadow-md"
+            className="inline-flex items-center gap-3 bg-theme-primary text-theme-on-primary px-6 py-3 rounded-xl hover:bg-theme-primary-hover transition-colors font-semibold shadow-md"
           >
             <Github className="w-5 h-5" />
             <span>More on GitHub</span>

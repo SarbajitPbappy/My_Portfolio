@@ -8,11 +8,8 @@ import { useForm } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { contactSchema, sendContactMessage, type ContactFormData } from '@/lib/contactForm'
 import Link from 'next/link'
-import dynamic from 'next/dynamic'
 import { useTheme } from '@/components/ThemeProvider'
 
-// 3D variant for the Multiverse theme, split out so other themes never load it.
-const ContactMV = dynamic(() => import('@/components/multiverse/ContactMV'))
 
 const fadeIn = {
   initial: { opacity: 0, y: 14 },
@@ -26,7 +23,7 @@ const fadeIn = {
 // Fallback contact info
 const fallbackContactInfo = [
   { icon: 'Mail', text: 'bappy15-6155@s.diu.edu.bd', href: 'mailto:bappy15-6155@s.diu.edu.bd', gradient: 'from-blue-500 to-cyan-500', is_external: false },
-  { icon: 'Mail', text: 'sarbajit2001@gmail.com', href: 'mailto:sarbajit2001@gmail.com', gradient: 'from-purple-500 to-pink-500', is_external: false },
+  { icon: 'Mail', text: 'bappy15-6155@s.diu.edu.bd', href: 'mailto:bappy15-6155@s.diu.edu.bd', gradient: 'from-purple-500 to-pink-500', is_external: false },
   { icon: 'Phone', text: '+880 1315352270', href: 'tel:+8801315352270', gradient: 'from-green-500 to-emerald-500', is_external: false },
   { icon: 'Github', text: 'github.com/SarbajitPbappy', href: 'https://github.com/SarbajitPbappy', gradient: 'from-gray-700 to-gray-900', is_external: true },
   { icon: 'Linkedin', text: 'linkedin.com/in/iamsarbajit', href: 'https://linkedin.com/in/iamsarbajit', gradient: 'from-blue-600 to-blue-800', is_external: true },
@@ -85,7 +82,6 @@ export default function Contact({ initialContactInfo }: { initialContactInfo?: C
     )
   }
 
-  if (theme === 'multiverse') return <ContactMV contactInfo={contactInfo} />
 
   const onSubmit = async (data: ContactFormData) => {
     if (await sendContactMessage(data)) reset()
@@ -100,7 +96,7 @@ export default function Contact({ initialContactInfo }: { initialContactInfo?: C
       </div>
 
       <motion.div className="relative z-10">
-        <motion.div {...fadeIn} className="text-center mb-16">
+        <motion.div {...fadeIn} className="section-head text-center mb-16">
           <h2 className="text-5xl md:text-6xl font-bold mb-6">
             Get In <span className="gradient-text">Touch</span>
           </h2>
@@ -255,7 +251,7 @@ export default function Contact({ initialContactInfo }: { initialContactInfo?: C
                   disabled={isSubmitting}
                   whileHover={{ scale: 1.02 }}
                   whileTap={{ scale: 0.98 }}
-                  className="w-full bg-theme-primary text-white px-6 py-4 rounded-xl hover:bg-theme-primary-hover transition-colors font-semibold flex items-center justify-center gap-2 disabled:opacity-50 disabled:cursor-not-allowed shadow-lg hover:shadow-xl"
+                  className="w-full bg-theme-primary text-theme-on-primary px-6 py-4 rounded-xl hover:bg-theme-primary-hover transition-colors font-semibold flex items-center justify-center gap-2 disabled:opacity-50 disabled:cursor-not-allowed shadow-lg hover:shadow-xl"
                 >
                   <Send className="w-5 h-5" />
                   {isSubmitting ? 'Sending...' : 'Send Message'}

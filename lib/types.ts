@@ -162,7 +162,9 @@ export interface Skill {
   updated_at?: string
 }
 
-export const THEMES = ['minimal', 'modern', 'aesthetic', 'professional', 'academic', 'neural', 'creative', 'latent', 'multiverse'] as const
+export const THEMES = ['academic', 'minimal', 'professional', 'neural'] as const
+/** Used when nothing valid is saved (and for any retired theme still stored). */
+export const DEFAULT_THEME = 'academic' as const
 export type Theme = (typeof THEMES)[number]
 export const isTheme = (v: unknown): v is Theme => typeof v === 'string' && (THEMES as readonly string[]).includes(v)
 

@@ -8,14 +8,9 @@ import type { Settings, Theme } from '@/lib/types'
 // Icon mapping for theme types
 const themeIcons: Record<Theme, React.ReactNode> = {
   minimal: <Minimize2 className="w-5 h-5" />,
-  modern: <Sparkles className="w-5 h-5" />,
-  aesthetic: <Palette className="w-5 h-5" />,
   professional: <Briefcase className="w-5 h-5" />,
   academic: <GraduationCap className="w-5 h-5" />,
   neural: <Network className="w-5 h-5" />,
-  creative: <Zap className="w-5 h-5" />,
-  latent: <Orbit className="w-5 h-5" />,
-  multiverse: <Box className="w-5 h-5" />,
 }
 
 // Extended theme descriptions
@@ -23,14 +18,6 @@ const themeDescriptions: Record<Theme, { tagline: string; features: string[] }> 
   minimal: {
     tagline: 'Clean and simple with maximum focus on content',
     features: ['Monochromatic palette', 'No shadows', 'Sharp corners', 'Inter font'],
-  },
-  modern: {
-    tagline: 'Vibrant gradients with glassmorphism effects',
-    features: ['Colorful gradients', 'Glass effects', 'Rounded corners', 'DM Sans font'],
-  },
-  aesthetic: {
-    tagline: 'Soft pastels with a dreamy, artistic feel',
-    features: ['Pink & purple palette', 'Soft shadows', 'Extra rounded', 'Playfair Display'],
   },
   professional: {
     tagline: 'Corporate design for business settings',
@@ -44,18 +31,6 @@ const themeDescriptions: Record<Theme, { tagline: string; features: string[] }> 
     tagline: 'Deep-tech look with a live neural-network background',
     features: ['Animated network', 'Cyan & emerald glow', 'Monospace headings', 'Glass panels'],
   },
-  creative: {
-    tagline: 'Bold, expressive, mind-blowing — animated aurora + glass',
-    features: ['Aurora background', 'Fuchsia gradients', 'Oversized type', 'Grain texture'],
-  },
-  latent: {
-    tagline: 'Immersive WebGL universe — particles morph into a new 3D sculpture for every section',
-    features: ['Live 3D (three.js)', 'Scroll-morphing shapes', 'Cursor & click physics', 'Best in dark mode'],
-  },
-  multiverse: {
-    tagline: 'A real-time glass prism splits one beam into a ray per section; the camera flies down the spectrum as you scroll',
-    features: ['WebGL glass + bloom', 'Scroll camera flight', 'Spectral section colours', 'Always dark'],
-  },
 }
 
 // Color previews for each theme
@@ -64,37 +39,17 @@ const themeColors: Record<Theme, { light: string[]; dark: string[] }> = {
     light: ['#171717', '#737373', '#e5e5e5'],
     dark: ['#f5f5f5', '#a3a3a3', '#404040'],
   },
-  modern: {
-    light: ['#0ea5e9', '#14b8a6', '#e2e8f0'],
-    dark: ['#38bdf8', '#2dd4bf', '#334155'],
-  },
-  aesthetic: {
-    light: ['#f472b6', '#c084fc', '#fde8ff'],
-    dark: ['#f9a8d4', '#d8b4fe', '#4c1d95'],
-  },
   professional: {
     light: ['#1e3a8a', '#166534', '#d1d5db'],
     dark: ['#60a5fa', '#4ade80', '#374151'],
   },
   academic: {
-    light: ['#7f1d1d', '#78350f', '#d6d3d1'],
-    dark: ['#f87171', '#fbbf24', '#44403c'],
+    light: ['#3b2c8c', '#fca50a', '#d8dcdf'],
+    dark: ['#b1a6ff', '#fca50a', '#262d34'],
   },
   neural: {
     light: ['#22d3ee', '#10b981', '#0f172a'],
     dark: ['#22d3ee', '#34d399', '#020617'],
-  },
-  creative: {
-    light: ['#d946ef', '#f59e0b', '#6366f1'],
-    dark: ['#e879f9', '#fbbf24', '#818cf8'],
-  },
-  latent: {
-    light: ['#7c3aed', '#0891b2', '#f4f3fb'],
-    dark: ['#8b5cf6', '#22d3ee', '#04050e'],
-  },
-  multiverse: {
-    light: ['#a78bfa', '#22d3ee', '#fb923c'],
-    dark: ['#a78bfa', '#22d3ee', '#fb923c'],
   },
 }
 
