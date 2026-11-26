@@ -128,7 +128,7 @@ export default function Skills({ initialSkills }: { initialSkills?: Skill[] } = 
                 variants={staggerItem}
                 whileHover={{ y: -6 }}
                 transition={springSnappy}
-                className={`group relative bg-theme-surface border border-theme-border rounded-2xl p-6 shadow-sm hover:shadow-xl transition-shadow ${lastRowSpan(i, all.length)}`}
+                className={`group relative bg-theme-surface border border-theme-border rounded-2xl p-4 sm:p-6 shadow-sm hover:shadow-xl transition-shadow ${lastRowSpan(i, all.length)}`}
               >
                 <div className="flex items-center gap-4 mb-5">
                   <div className={`w-12 h-12 shrink-0 rounded-xl bg-gradient-to-br ${gradient} flex items-center justify-center text-white shadow-md`}>

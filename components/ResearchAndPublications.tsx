@@ -3,11 +3,12 @@
 import { useEffect, useState } from 'react'
 import { ArrowUpRight } from 'lucide-react'
 import { toBibtex } from '@/lib/bibtex'
-import { siteConfig } from '@/lib/site'
 import type { ResearchArea, Publication } from '@/lib/types'
 import { toCv, type CvEntry } from '@/lib/publications'
 import AuthorList from '@/components/AuthorList'
 import FederatedFigure from '@/components/figures/FederatedFigure'
+import type { SiteContent } from '@/lib/siteContent'
+import { useSiteContent } from '@/lib/useSiteContent'
 
 // Fallback research areas
 const fallbackResearchAreas: ResearchArea[] = [
@@ -115,10 +116,13 @@ const fallbackPublications: Publication[] = [
 export default function ResearchAndPublications({
   initialResearchAreas,
   initialPublications,
+  content: initialContent,
 }: {
   initialResearchAreas?: ResearchArea[]
   initialPublications?: Publication[]
+  content?: SiteContent
 } = {}) {
+  const content = useSiteContent(initialContent)
   const seeded = initialResearchAreas !== undefined || initialPublications !== undefined
   const [researchAreas, setResearchAreas] = useState<ResearchArea[]>(
     initialResearchAreas !== undefined
@@ -186,7 +190,7 @@ export default function ResearchAndPublications({
         <div className="grid lg:grid-cols-[minmax(0,1fr)_minmax(0,1fr)] gap-10 lg:gap-14 items-start">
           <div>
             <ol className="space-y-7">
-              {siteConfig.researchQuestions.map((r) => (
+              {content.researchQuestions.map((r) => (
                 <li key={r.q} className="border-l-2 border-theme-primary/70 pl-5">
                   <h3 className="text-xl md:text-[1.4rem] leading-snug text-theme-text">{r.q}</h3>
                   <p className="mt-2 text-[0.95rem] text-theme-text-muted leading-relaxed">{r.note}</p>
@@ -200,15 +204,15 @@ export default function ResearchAndPublications({
               </p>
             )}
           </div>
-          <FederatedFigure />
+          <FederatedFigure caption={content.fig2Caption} />
         </div>
 
         <div id="publications" className="scroll-mt-24 mt-20">
           <SectionHead
             title="Publications"
             note={
-              <a
-                href={siteConfig.social.scholar}
+              content.scholarUrl && <a
+                href={content.scholarUrl}
                 target="_blank"
                 rel="noopener noreferrer"
                 className="inline-flex items-center gap-1 hover:text-theme-primary transition-colors"

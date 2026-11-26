@@ -1,5 +1,6 @@
 import { supabase } from './supabase'
 import type { Education, Publication, WorkExperience, Project, ResearchArea, Course, Hero, About, ContactInfo, Footer, Skill, Settings, Page } from './types'
+import { defaultSiteContent, mergeSiteContent, type SiteContent } from './siteContent'
 
 const supabaseConfigured = () =>
   !!process.env.NEXT_PUBLIC_SUPABASE_URL && !!process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY
@@ -661,3 +662,34 @@ export async function updateSettings(id: number, settings: Partial<Settings>) {
 }
 
 
+
+// --- Admin-editable homepage content (settings.site_content JSONB) ----------
+
+/**
+ * Homepage content stored as JSON on the settings row. Falls back to the
+ * defaults in lib/site.ts when the column doesn't exist yet or is empty.
+ */
+export async function getSiteContent(): Promise<SiteContent> {
+  if (!process.env.NEXT_PUBLIC_SUPABASE_URL || !process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY) {
+    return defaultSiteContent
+  }
+  const { data, error } = await supabase.from('settings').select('site_content').limit(1).maybeSingle()
+  if (error) {
+    // Most likely the column hasn't been added yet (see add_site_content.sql).
+    console.warn('site_content unavailable, using defaults:', error.message)
+    return defaultSiteContent
+  }
+  return mergeSiteContent((data as { site_content?: unknown } | null)?.site_content)
+}
+
+export async function updateSiteContent(content: unknown): Promise<SiteContent> {
+  const merged = mergeSiteContent(content)
+  const settings = await getSettings()
+  if (!settings || !(settings as Settings).id) throw new Error('No settings row to store content in')
+  const { error } = await supabase
+    .from('settings')
+    .update({ site_content: merged, updated_at: new Date().toISOString() })
+    .eq('id', (settings as Settings).id!)
+  if (error) throw error
+  return merged
+}

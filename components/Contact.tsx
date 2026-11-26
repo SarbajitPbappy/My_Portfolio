@@ -105,14 +105,14 @@ export default function Contact({ initialContactInfo }: { initialContactInfo?: C
           </p>
         </motion.div>
 
-        <div className="max-w-5xl mx-auto grid md:grid-cols-2 gap-12">
+        <div className="max-w-5xl mx-auto grid grid-cols-1 md:grid-cols-2 gap-8 md:gap-12">
           {/* Contact Info */}
           <motion.div
             {...fadeIn}
-            className="space-y-6"
+            className="space-y-6 min-w-0"
           >
             <div className="card bg-theme-surface/80 backdrop-blur-sm border-primary-200/50">
-              <h3 className="text-2xl font-bold mb-6 text-theme-text">Contact Information</h3>
+              <h3 className="text-xl sm:text-2xl font-bold mb-4 sm:mb-6 text-theme-text">Contact Information</h3>
               <div className="space-y-4">
                 {contactInfo.map((info, index) => {
                   const Icon = info.icon && iconMap[info.icon] ? iconMap[info.icon] : iconMap.Mail
@@ -129,20 +129,20 @@ export default function Contact({ initialContactInfo }: { initialContactInfo?: C
                           rel="noopener noreferrer"
                           className="flex items-center gap-4 p-3 rounded-xl bg-theme-surface-elevated hover:bg-theme-primary/10 transition-colors group"
                         >
-                          <div className={`w-10 h-10 rounded-lg bg-gradient-to-br ${info.gradient} flex items-center justify-center shadow-md group-hover:scale-110 transition-transform`}>
+                          <div className={`w-10 h-10 rounded-lg bg-gradient-to-br ${info.gradient} flex items-center justify-center shrink-0 shadow-md group-hover:scale-110 transition-transform`}>
                             <Icon className="w-5 h-5 text-white" />
                           </div>
-                          <span className="text-theme-text-muted font-medium group-hover:text-theme-primary transition-colors">{info.text}</span>
+                          <span className="min-w-0 break-words [overflow-wrap:anywhere] text-theme-text-muted font-medium group-hover:text-theme-primary transition-colors">{info.text}</span>
                         </Link>
                       ) : (
                         <motion.a
                           href={info.href}
                           className="flex items-center gap-4 p-3 rounded-xl bg-theme-surface-elevated hover:bg-theme-primary/10 transition-colors group"
                         >
-                          <div className={`w-10 h-10 rounded-lg bg-gradient-to-br ${info.gradient} flex items-center justify-center shadow-md group-hover:scale-110 transition-transform`}>
+                          <div className={`w-10 h-10 rounded-lg bg-gradient-to-br ${info.gradient} flex items-center justify-center shrink-0 shadow-md group-hover:scale-110 transition-transform`}>
                             <Icon className="w-5 h-5 text-white" />
                           </div>
-                          <span className="text-theme-text-muted font-medium group-hover:text-theme-primary transition-colors">{info.text}</span>
+                          <span className="min-w-0 break-words [overflow-wrap:anywhere] text-theme-text-muted font-medium group-hover:text-theme-primary transition-colors">{info.text}</span>
                         </motion.a>
                       )}
                     </motion.div>
@@ -155,6 +155,7 @@ export default function Contact({ initialContactInfo }: { initialContactInfo?: C
           {/* Contact Form */}
           <motion.div
             {...fadeIn}
+            className="min-w-0"
           >
             <div className="card bg-theme-surface/80 backdrop-blur-sm border-primary-200/50">
               <form onSubmit={handleSubmit(onSubmit)} className="space-y-5">

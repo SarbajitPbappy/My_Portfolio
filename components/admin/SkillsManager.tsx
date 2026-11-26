@@ -136,7 +136,7 @@ export default function SkillsManager() {
 
   return (
     <div className="space-y-6">
-      <div className="flex justify-between items-center">
+      <div className="flex flex-wrap justify-between items-center gap-3">
         <h2 className="text-2xl font-bold text-gray-900">Skills</h2>
         <div className="flex gap-2">
           {items.length > 0 && (
@@ -159,7 +159,7 @@ export default function SkillsManager() {
       </div>
 
       {showForm && (
-        <div className="bg-white rounded-xl shadow-lg p-6 border border-gray-200">
+        <div className="bg-white rounded-xl shadow-lg p-4 sm:p-6 border border-gray-200">
           <h3 className="text-lg font-semibold text-gray-900 mb-4">
             {editingId ? 'Edit Skill' : 'Add New Skill'}
           </h3>
@@ -185,27 +185,6 @@ export default function SkillsManager() {
                 placeholder="e.g., Programming Languages, Frameworks, Tools"
                 required
               />
-            </div>
-            <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">Level (optional)</label>
-              <input
-                type="text"
-                value={formData.level || ''}
-                onChange={(e) => setFormData({ ...formData, level: e.target.value })}
-                className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-transparent"
-                placeholder="e.g., Expert, Intermediate, Beginner"
-              />
-            </div>
-            <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">Icon (optional)</label>
-              <input
-                type="text"
-                value={formData.icon || ''}
-                onChange={(e) => setFormData({ ...formData, icon: e.target.value })}
-                className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-transparent"
-                placeholder="e.g., Code, Brain, Database, Cloud, Smartphone, Wrench"
-              />
-              <p className="text-xs text-gray-500 mt-1">Icon name from Lucide React (case-sensitive)</p>
             </div>
             <div>
               <label className="block text-sm font-medium text-gray-700 mb-1">Order</label>
@@ -242,14 +221,14 @@ export default function SkillsManager() {
 
       <div className="space-y-4">
         {items.length === 0 ? (
-          <div className="bg-white rounded-xl shadow-sm p-6 border border-gray-200 text-center text-gray-500">
+          <div className="bg-white rounded-xl shadow-sm p-4 sm:p-6 border border-gray-200 text-center text-gray-500">
             No skills added yet. Click "Add New Skill" to get started.
           </div>
         ) : (
           items.map((item) => (
-            <div key={item.id} className="bg-white rounded-xl shadow-sm p-6 border border-gray-200">
-              <div className="flex justify-between items-start">
-                <div className="flex-1">
+            <div key={item.id} className="bg-white rounded-xl shadow-sm p-4 sm:p-6 border border-gray-200">
+              <div className="flex justify-between items-start gap-3">
+                <div className="flex-1 min-w-0 break-words">
                   <div className="flex items-center gap-2 mb-1">
                     {item.icon && (
                       <span className="text-gray-400 text-sm font-mono">{item.icon}</span>

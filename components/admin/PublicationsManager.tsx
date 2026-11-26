@@ -125,7 +125,7 @@ export default function PublicationsManager() {
 
   return (
     <div className="space-y-6">
-      <div className="flex justify-between items-center">
+      <div className="flex flex-wrap justify-between items-center gap-3">
         <h2 className="text-2xl font-bold text-gray-900">Publications</h2>
         <div className="flex gap-2">
           {items.length > 0 && (
@@ -148,7 +148,7 @@ export default function PublicationsManager() {
       </div>
 
       {showForm && (
-        <div className="bg-white rounded-xl shadow-lg p-6 border border-gray-200">
+        <div className="bg-white rounded-xl shadow-lg p-4 sm:p-6 border border-gray-200">
           <div className="space-y-4">
             <div>
               <label className="block text-sm font-medium text-gray-700 mb-1">Publication Title *</label>
@@ -172,7 +172,7 @@ export default function PublicationsManager() {
                 required
               />
             </div>
-            <div className="grid grid-cols-2 gap-4">
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
               <div>
                 <label className="block text-sm font-medium text-gray-700 mb-1">Status</label>
                 <select
@@ -200,7 +200,7 @@ export default function PublicationsManager() {
                 />
               </div>
             </div>
-            <div className="grid grid-cols-2 gap-4">
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
               <div>
                 <label className="block text-sm font-medium text-gray-700 mb-1">Type</label>
                 <input
@@ -221,7 +221,7 @@ export default function PublicationsManager() {
                 />
               </div>
             </div>
-            <div className="grid grid-cols-2 gap-4">
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
               <div>
                 <label className="block text-sm font-medium text-gray-700 mb-1">DOI (optional)</label>
                 <input
@@ -249,32 +249,6 @@ export default function PublicationsManager() {
                 onChange={(e) => setFormData({ ...formData, link: e.target.value })}
                 className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-transparent"
               />
-            </div>
-            <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">Gradient</label>
-              <select
-                value={formData.gradient || 'from-green-500 to-emerald-500'}
-                onChange={(e) => setFormData({ ...formData, gradient: e.target.value })}
-                className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-transparent"
-              >
-                <option value="from-green-500 to-emerald-500">Green to Emerald</option>
-                <option value="from-yellow-500 to-amber-500">Yellow to Amber</option>
-                <option value="from-blue-500 to-cyan-500">Blue to Cyan</option>
-                <option value="from-purple-500 to-pink-500">Purple to Pink</option>
-                <option value="from-green-500 to-emerald-500">Green to Emerald</option>
-                <option value="from-red-500 to-rose-500">Red to Rose</option>
-                <option value="from-amber-500 to-orange-500">Amber to Orange</option>
-                <option value="from-indigo-500 to-purple-500">Indigo to Purple</option>
-                <option value="from-teal-500 to-cyan-500">Teal to Cyan</option>
-                <option value="from-rose-500 to-pink-500">Rose to Pink</option>
-                <option value="from-violet-500 to-purple-500">Violet to Purple</option>
-                <option value="from-emerald-500 to-teal-500">Emerald to Teal</option>
-                <option value="from-orange-500 to-red-500">Orange to Red</option>
-                <option value="from-cyan-500 to-blue-500">Cyan to Blue</option>
-                <option value="from-pink-500 to-rose-500">Pink to Rose</option>
-                <option value="from-yellow-500 to-amber-500">Yellow to Amber</option>
-                <option value="from-slate-500 to-gray-500">Slate to Gray</option>
-              </select>
             </div>
             <div>
               <label className="block text-sm font-medium text-gray-700 mb-1">Order</label>
@@ -311,16 +285,16 @@ export default function PublicationsManager() {
 
       <div className="space-y-4">
         {items.map((item) => (
-          <div key={item.id} className="bg-white rounded-xl shadow-sm p-6 border border-gray-200">
-            <div className="flex justify-between items-start">
-              <div className="flex-1">
+          <div key={item.id} className="bg-white rounded-xl shadow-sm p-4 sm:p-6 border border-gray-200">
+            <div className="flex justify-between items-start gap-3">
+              <div className="flex-1 min-w-0 break-words">
                 <h3 className="text-lg font-semibold text-gray-900">{item.title}</h3>
                 <p className="text-gray-600 text-sm mt-1">{item.authors}</p>
                 <div className="flex flex-wrap gap-2 mt-2">
                   <span className="px-3 py-1 bg-gray-100 text-gray-700 rounded-lg text-sm">{item.type}</span>
                   {item.journal && <span className="text-primary-700 font-semibold text-sm">{item.journal}</span>}
                   {item.year && <span className="text-gray-500 text-sm">({item.year})</span>}
-                  {item.doi && <span className="px-3 py-1 bg-primary-50 text-primary-700 rounded-lg text-sm">DOI: {item.doi}</span>}
+                  {item.doi && <span className="px-3 py-1 bg-primary-50 text-primary-700 rounded-lg text-sm break-all">DOI: {item.doi}</span>}
                 </div>
                 <div className="mt-2">
                   <span className={`px-3 py-1 rounded-full text-xs font-semibold ${

@@ -2,9 +2,10 @@
 
 import { useEffect, useState } from 'react'
 import { motion } from 'framer-motion'
-import { siteConfig } from '@/lib/site'
 import type { Education, Course } from '@/lib/types'
 import { iconMap } from '@/lib/icons'
+import type { SiteContent } from '@/lib/siteContent'
+import { useSiteContent } from '@/lib/useSiteContent'
 import { useTheme } from '@/components/ThemeProvider'
 
 
@@ -70,10 +71,13 @@ const fallbackCourses: Course[] = [
 export default function Education({
   initialEducation,
   initialCourses,
+  content: initialContent,
 }: {
   initialEducation?: Education[]
   initialCourses?: Course[]
+  content?: SiteContent
 } = {}) {
+  const content = useSiteContent(initialContent)
   const seeded = initialEducation !== undefined || initialCourses !== undefined
   const { theme } = useTheme()
   const [education, setEducation] = useState<Education[]>(
@@ -174,22 +178,22 @@ export default function Education({
               {/* Gradient glow */}
               <div className={`absolute inset-0 bg-gradient-to-r ${edu.gradient} rounded-2xl opacity-0 group-hover:opacity-20 blur-xl transition-opacity duration-500`}></div>
 
-              <div className="relative bg-theme-surface/80 backdrop-blur-sm rounded-2xl p-6 shadow-xl border border-theme-border/50 transition-all duration-300 group-hover:shadow-2xl group-hover:border-primary-200/50">
-                <div className="flex items-start gap-6">
+              <div className="relative bg-theme-surface/80 backdrop-blur-sm rounded-2xl p-4 sm:p-6 shadow-xl border border-theme-border/50 transition-all duration-300 group-hover:shadow-2xl group-hover:border-primary-200/50">
+                <div className="flex flex-col sm:flex-row sm:items-start gap-4 sm:gap-6">
                   <motion.div
                     className="flex-shrink-0"
                     whileHover={{ rotate: 360, scale: 1.15 }}
                     transition={{ duration: 0.6 }}
                   >
-                    <div className={`w-20 h-20 rounded-2xl bg-gradient-to-br ${edu.gradient} flex items-center justify-center shadow-lg`}>
+                    <div className={`w-14 h-14 sm:w-20 sm:h-20 rounded-2xl bg-gradient-to-br ${edu.gradient} flex items-center justify-center shadow-lg`}>
                       {(() => {
                         const Icon = edu.icon && iconMap[edu.icon] ? iconMap[edu.icon] : iconMap.GraduationCap
-                        return <Icon className="w-10 h-10 text-white" />
+                        return <Icon className="w-7 h-7 sm:w-10 sm:h-10 text-white" />
                       })()}
                     </div>
                   </motion.div>
-                  <div className="flex-1">
-                    <h3 className="text-2xl font-bold mb-2 text-theme-text">
+                  <div className="flex-1 min-w-0">
+                    <h3 className="text-xl sm:text-2xl font-bold mb-2 text-theme-text">
                       {edu.degree || edu.program}
                     </h3>
                     <p className="text-theme-primary font-semibold mb-1">{edu.institution}</p>
@@ -271,7 +275,7 @@ export default function Education({
           <div className="card rounded-2xl p-6">
             <h3 className="text-2xl font-bold mb-4 text-theme-text">Honours & Awards</h3>
             <ul className="space-y-3">
-              {siteConfig.awards.map((a) => (
+              {content.awards.map((a) => (
                 <li key={a.title} className="flex items-start justify-between gap-4">
                   <div className="min-w-0">
                     <p className="font-semibold text-theme-text">{a.title}</p>

@@ -12,8 +12,9 @@ const EXT: Record<string, string> = {
   'image/webp': 'webp',
 }
 
-// Admin-only (enforced by middleware.ts). Uploads a new profile image to Supabase
-// Storage and points hero.profile_image_url at the freshly uploaded file.
+// Admin-only (enforced by middleware.ts). Uploads an image to Supabase Storage.
+// target=profile (default): the About photo; also points hero.profile_image_url at it.
+// target=headshot: the hero portrait; the caller stores the URL in site content.
 export async function POST(request: NextRequest) {
   try {
     const form = await request.formData()
@@ -30,8 +31,9 @@ export async function POST(request: NextRequest) {
       return NextResponse.json({ error: 'Image too large (max 6 MB).' }, { status: 400 })
     }
 
+    const target = form.get('target') === 'headshot' ? 'headshot' : 'profile'
     const buffer = Buffer.from(await file.arrayBuffer())
-    const path = `profile.${ext}`
+    const path = `${target}.${ext}`
 
     const { error: uploadError } = await supabase.storage
       .from(BUCKET)
@@ -48,7 +50,7 @@ export async function POST(request: NextRequest) {
     // Cache-bust so the new image shows immediately.
     const imageUrl = `${pub.publicUrl}?v=${Date.now()}`
 
-    const hero = await db.getHero()
+    const hero = target === 'profile' ? await db.getHero() : null
     if (hero?.id) {
       await db.updateHero(hero.id, { profile_image_url: imageUrl })
     }

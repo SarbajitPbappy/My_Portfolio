@@ -142,7 +142,7 @@ export default function EducationManager() {
 
   return (
     <div className="space-y-6">
-      <div className="flex justify-between items-center">
+      <div className="flex flex-wrap justify-between items-center gap-3">
         <h2 className="text-2xl font-bold text-gray-900">Education</h2>
         <div className="flex gap-2">
           {items.length > 0 && (
@@ -165,7 +165,7 @@ export default function EducationManager() {
       </div>
 
       {showForm && (
-        <div className="bg-white rounded-xl shadow-lg p-6 border border-gray-200">
+        <div className="bg-white rounded-xl shadow-lg p-4 sm:p-6 border border-gray-200">
           <div className="space-y-4">
             <div>
               <label className="block text-sm font-medium text-gray-700 mb-1">Icon (optional)</label>
@@ -178,7 +178,7 @@ export default function EducationManager() {
               />
               <p className="text-xs text-gray-500 mt-1">Icon name from Lucide React (case-sensitive)</p>
             </div>
-            <div className="grid grid-cols-2 gap-4">
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
               <div>
                 <label className="block text-sm font-medium text-gray-700 mb-1">Degree</label>
                 <input
@@ -208,7 +208,7 @@ export default function EducationManager() {
                 required
               />
             </div>
-            <div className="grid grid-cols-2 gap-4">
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
               <div>
                 <label className="block text-sm font-medium text-gray-700 mb-1">Location</label>
                 <input
@@ -322,9 +322,9 @@ export default function EducationManager() {
 
       <div className="space-y-4">
         {items.map((item) => (
-          <div key={item.id} className="bg-white rounded-xl shadow-sm p-6 border border-gray-200">
-            <div className="flex justify-between items-start">
-              <div className="flex-1">
+          <div key={item.id} className="bg-white rounded-xl shadow-sm p-4 sm:p-6 border border-gray-200">
+            <div className="flex justify-between items-start gap-3">
+              <div className="flex-1 min-w-0 break-words">
                 <h3 className="text-lg font-semibold text-gray-900">{item.degree || item.program}</h3>
                 <p className="text-primary-600 font-medium">{item.institution}</p>
                 <p className="text-gray-500 text-sm">{item.location}</p>

@@ -9,7 +9,6 @@ export default function HeroManager() {
   const [loading, setLoading] = useState(true)
   const [formData, setFormData] = useState<Partial<Hero>>({})
   const [showForm, setShowForm] = useState(false)
-  const [focusTag, setFocusTag] = useState('')
   const [uploading, setUploading] = useState(false)
   const [uploadMsg, setUploadMsg] = useState<{ ok: boolean; text: string } | null>(null)
   const [imgUploading, setImgUploading] = useState(false)
@@ -32,7 +31,7 @@ export default function HeroManager() {
       const data = await res.json()
       if (res.ok) {
         setFormData((prev) => ({ ...prev, profile_image_url: data.url }))
-        setImgMsg({ ok: true, text: 'Profile image updated! It now shows on your hero section.' })
+        setImgMsg({ ok: true, text: 'Profile image updated! It now shows in the About section.' })
         if (typeof window !== 'undefined') window.dispatchEvent(new Event('content-updated'))
         await fetchItem()
       } else {
@@ -138,28 +137,13 @@ export default function HeroManager() {
     }
   }
 
-  const addFocusTag = () => {
-    if (focusTag.trim()) {
-      setFormData({
-        ...formData,
-        focus_tags: [...(formData.focus_tags || []), focusTag.trim()],
-      })
-      setFocusTag('')
-    }
-  }
-
-  const removeFocusTag = (index: number) => {
-    const tags = formData.focus_tags?.filter((_, i) => i !== index) || []
-    setFormData({ ...formData, focus_tags: tags })
-  }
-
   if (loading) {
     return <div className="text-center py-12 text-gray-600">Loading...</div>
   }
 
   return (
     <div className="space-y-6">
-      <div className="flex justify-between items-center">
+      <div className="flex flex-wrap justify-between items-center gap-3">
         <h2 className="text-2xl font-bold text-gray-900">Hero Section</h2>
         {!item && (
           <button
@@ -173,9 +157,9 @@ export default function HeroManager() {
       </div>
 
       {showForm && (
-        <div className="bg-white rounded-xl shadow-lg p-6 border border-gray-200">
+        <div className="bg-white rounded-xl shadow-lg p-4 sm:p-6 border border-gray-200">
           <div className="space-y-4">
-            <div className="grid grid-cols-2 gap-4">
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
               <div>
                 <label className="block text-sm font-medium text-gray-700 mb-1">Name *</label>
                 <input
@@ -198,16 +182,7 @@ export default function HeroManager() {
               </div>
             </div>
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">Subtitle</label>
-              <input
-                type="text"
-                value={formData.subtitle || ''}
-                onChange={(e) => setFormData({ ...formData, subtitle: e.target.value })}
-                className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-transparent"
-              />
-            </div>
-            <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">Description</label>
+              <label className="block text-sm font-medium text-gray-700 mb-1">Search-engine description <span className="font-normal text-gray-500">(Google and link previews; visitors see the research line from the Homepage tab)</span></label>
               <textarea
                 value={formData.description || ''}
                 onChange={(e) => setFormData({ ...formData, description: e.target.value })}
@@ -216,7 +191,7 @@ export default function HeroManager() {
                 placeholder="Enter a brief description about yourself..."
               />
             </div>
-            <div className="grid grid-cols-2 gap-4">
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
               <div>
                 <label className="block text-sm font-medium text-gray-700 mb-1">Email</label>
                 <input
@@ -226,17 +201,8 @@ export default function HeroManager() {
                   className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-transparent"
                 />
               </div>
-              <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1">Phone</label>
-                <input
-                  type="text"
-                  value={formData.phone || ''}
-                  onChange={(e) => setFormData({ ...formData, phone: e.target.value })}
-                  className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-transparent"
-                />
-              </div>
             </div>
-            <div className="grid grid-cols-3 gap-4">
+            <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
               <div>
                 <label className="block text-sm font-medium text-gray-700 mb-1">CV URL</label>
                 <input
@@ -312,7 +278,7 @@ export default function HeroManager() {
             </div>
 
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">Profile Image URL</label>
+              <label className="block text-sm font-medium text-gray-700 mb-1">About photo URL</label>
               <input
                 type="text"
                 value={formData.profile_image_url || ''}
@@ -325,10 +291,10 @@ export default function HeroManager() {
             <div className="rounded-lg border border-dashed border-primary-300 bg-primary-50/50 p-4">
               <div className="flex items-center gap-2 mb-2">
                 <ImageIcon className="w-4 h-4 text-primary-600" />
-                <label className="block text-sm font-semibold text-gray-800">Profile image (JPG / PNG / WEBP)</label>
+                <label className="block text-sm font-semibold text-gray-800">About photo (JPG / PNG / WEBP) <span className="font-normal text-gray-500">— the hero portrait is set in “Homepage text”</span></label>
               </div>
               <p className="text-xs text-gray-500 mb-3">
-                Upload a new photo to replace your profile picture. The <strong>Profile Image URL</strong> above and the
+                Upload a new photo to replace your profile picture. The <strong>About photo URL</strong> above and the
                 hero photo update automatically. (Requires the one-time
                 <code className="mx-1 px-1 rounded bg-gray-100">create_media_bucket.sql</code> setup in Supabase.)
               </p>
@@ -339,7 +305,7 @@ export default function HeroManager() {
                   }`}
                 >
                   {imgUploading ? <Loader2 className="w-4 h-4 animate-spin" /> : <Upload className="w-4 h-4" />}
-                  {imgUploading ? 'Uploading…' : 'Upload Profile Image'}
+                  {imgUploading ? 'Uploading…' : 'Upload About photo'}
                   <input
                     type="file"
                     accept="image/jpeg,image/png,image/webp"
@@ -365,41 +331,6 @@ export default function HeroManager() {
                 </p>
               )}
             </div>
-            <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">Focus Tags</label>
-              <div className="flex gap-2 mb-2">
-                <input
-                  type="text"
-                  value={focusTag}
-                  onChange={(e) => setFocusTag(e.target.value)}
-                  onKeyPress={(e) => e.key === 'Enter' && (e.preventDefault(), addFocusTag())}
-                  className="flex-1 px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-transparent"
-                  placeholder="Add tag and press Enter"
-                />
-                <button
-                  onClick={addFocusTag}
-                  className="px-4 py-2 bg-gray-100 text-gray-700 rounded-lg hover:bg-gray-200"
-                >
-                  Add
-                </button>
-              </div>
-              <div className="flex flex-wrap gap-2">
-                {formData.focus_tags?.map((tag, index) => (
-                  <span
-                    key={index}
-                    className="inline-flex items-center gap-1 px-3 py-1 bg-primary-100 text-primary-700 rounded-lg text-sm"
-                  >
-                    {tag}
-                    <button
-                      onClick={() => removeFocusTag(index)}
-                      className="hover:text-red-600"
-                    >
-                      <X className="w-3 h-3" />
-                    </button>
-                  </span>
-                ))}
-              </div>
-            </div>
             <div className="flex gap-2">
               <button
                 onClick={handleSave}
@@ -421,8 +352,8 @@ export default function HeroManager() {
       )}
 
       {item && !showForm && (
-        <div className="bg-white rounded-xl shadow-sm p-6 border border-gray-200">
-          <div className="flex justify-between items-start">
+        <div className="bg-white rounded-xl shadow-sm p-4 sm:p-6 border border-gray-200">
+          <div className="flex justify-between items-start gap-3">
             <div>
               <h3 className="text-lg font-semibold text-gray-900">{item.name}</h3>
               <p className="text-primary-600 font-medium">{item.title}</p>

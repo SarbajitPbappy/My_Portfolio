@@ -105,7 +105,7 @@ export default function About({
         </div>
 
         {aboutData.quick_facts && aboutData.quick_facts.length > 0 && (
-          <motion.div {...fadeIn} className="frosted-card p-6 max-w-3xl mx-auto">
+          <motion.div {...fadeIn} className="frosted-card p-4 sm:p-6 max-w-3xl mx-auto">
             <dl className="grid grid-cols-[auto_minmax(0,1fr)] items-baseline gap-x-4 gap-y-3">
               {aboutData.quick_facts.map((item, i) => (
                 <div key={i} className="contents">

@@ -320,9 +320,13 @@
     backdrop-filter: blur(12px);
     border-radius: var(--radius-xl);
     box-shadow: var(--shadow-lg);
-    padding: 1.5rem;
+    padding: 1.125rem;
     border: 1px solid rgb(var(--color-border) / 0.5);
     transition: all var(--transition-base) cubic-bezier(0.4, 0, 0.2, 1);
+  }
+
+  @media (min-width: 640px) {
+    .card { padding: 1.5rem; }
   }
 
   .card:hover {

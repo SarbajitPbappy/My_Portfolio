@@ -10,9 +10,11 @@ import { splitAuthors } from '@/lib/bibtex'
 export default function StructuredData({
   hero,
   publications = [],
+  headshot = siteConfig.headshot,
 }: {
   hero?: Hero | null
   publications?: Publication[]
+  headshot?: string
 }) {
   const personId = `${SITE_URL}/#person`
 
@@ -32,7 +34,7 @@ export default function StructuredData({
     email: `mailto:${hero?.email || siteConfig.email}`,
     jobTitle: hero?.title || siteConfig.jobTitle,
     description: hero?.description || siteConfig.description,
-    image: `${SITE_URL}${siteConfig.headshot}`,
+    image: headshot.startsWith('http') ? headshot : `${SITE_URL}${headshot}`,
     sameAs,
     worksFor: {
       '@type': 'CollegeOrUniversity',

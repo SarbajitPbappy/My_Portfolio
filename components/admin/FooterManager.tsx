@@ -103,7 +103,7 @@ export default function FooterManager() {
 
   return (
     <div className="space-y-6">
-      <div className="flex justify-between items-center">
+      <div className="flex flex-wrap justify-between items-center gap-3">
         <h2 className="text-2xl font-bold text-gray-900">Footer</h2>
         {!item && (
           <button
@@ -117,7 +117,7 @@ export default function FooterManager() {
       </div>
 
       {showForm && (
-        <div className="bg-white rounded-xl shadow-lg p-6 border border-gray-200">
+        <div className="bg-white rounded-xl shadow-lg p-4 sm:p-6 border border-gray-200">
           <div className="space-y-4">
             <div>
               <label className="block text-sm font-medium text-gray-700 mb-1">Name *</label>
@@ -190,7 +190,7 @@ export default function FooterManager() {
                   </div>
                 ))}
               </div>
-              <div className="grid grid-cols-3 gap-2 mb-2">
+              <div className="grid grid-cols-1 sm:grid-cols-3 gap-2 mb-2">
                 <input
                   type="text"
                   value={newSocial.icon}
@@ -252,8 +252,8 @@ export default function FooterManager() {
       )}
 
       {item && !showForm && (
-        <div className="bg-white rounded-xl shadow-sm p-6 border border-gray-200">
-          <div className="flex justify-between items-start">
+        <div className="bg-white rounded-xl shadow-sm p-4 sm:p-6 border border-gray-200">
+          <div className="flex justify-between items-start gap-3">
             <div>
               <h3 className="text-lg font-semibold text-gray-900">{item.name}</h3>
               <p className="text-gray-600 text-sm mt-2">{item.description}</p>
